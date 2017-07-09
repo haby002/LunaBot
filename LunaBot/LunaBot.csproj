@@ -89,10 +89,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Commands\BaseCommand.cs" />
+    <Compile Include="Commands\GetAttributeCommand.cs" />
     <Compile Include="Commands\LunaBotCommandAttribute.cs" />
     <Compile Include="Commands\PingCommand.cs" />
     <Compile Include="Commands\RegisterCommand.cs" />
     <Compile Include="Commands\RollCommand.cs" />
+    <Compile Include="Commands\SetCommand.cs" />
     <Compile Include="Database\DiscordContext.cs" />
     <Compile Include="Database\User.cs" />
     <Compile Include="DiscordExtensions.cs" />

@@ -12,7 +12,7 @@ namespace LunaBot.Database
     {
         public DiscordContext() : base("DiscordContext")
         {
-
+            this.Configuration.AutoDetectChangesEnabled = true;
         }
 
         public DbSet<User> Users { get; set; }

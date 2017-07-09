@@ -59,6 +59,10 @@ namespace LunaBot
             {
                 this.ProcessCommand(message);
             }
+            if(messageText.StartsWith("+"))
+            {
+                this.ProcessAttribute(message);
+            }
             else
             {
                 await message.Log();
@@ -83,6 +87,36 @@ namespace LunaBot
                 try
                 {
                     this.commandDictionary[command].Process(message, commandParams);
+                }
+                catch (Exception e)
+                {
+                    message.Channel.SendMessageAsync(string.Format("Command failed: {0}", e.Message));
+                }
+
+                return;
+            }
+            else
+            {
+                Logger.Error(message.Author.Username, string.Format(StringTable.UnrecognizedCommand, command));
+            }
+        }
+
+        private void ProcessAttribute(SocketMessage message)
+        {
+            // Cut up the message with the relevent parts
+            string messageText = message.Content;
+            string[] commandPts = messageText.Substring(1).Split(new Char[] {' '}, 2);
+            string command = commandPts[0].ToLower();
+            string content = commandPts[1];
+
+            if (this.commandDictionary.ContainsKey(command))
+            {
+                Logger.Verbose(
+                    message.Author.Username,
+                    string.Format(StringTable.RecognizedCommand, command, string.Join(",", content)));
+                try
+                {
+                    this.commandDictionary[command].Process(message, new String[] { content });
                 }
                 catch (Exception e)
                 {
