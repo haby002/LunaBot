@@ -91,6 +91,11 @@ namespace LunaBot
                 catch (Exception e)
                 {
                     message.Channel.SendMessageAsync(string.Format("Command failed: {0}", e.Message));
+                    while (e.InnerException != null)
+                    {
+                        e = e.InnerException;
+                        message.Channel.SendMessageAsync(string.Format("Command failed: {0}", e.Message));
+                    }
                 }
 
                 return;

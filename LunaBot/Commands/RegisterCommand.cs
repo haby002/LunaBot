@@ -17,7 +17,7 @@ namespace LunaBot.Commands
             using (DiscordContext db = new DiscordContext())
             {
                 long userId = Convert.ToInt64(message.Author.Id);
-                if (db.Users.FirstOrDefault<User>(userId))
+                if (db.Users.Where(x => x.ID == userId).Count() != 0)
                 {
                     Logger.Verbose(message.Author.Username, "User already registered");
                     message.Channel.SendMessageAsync("You're already registered you goon");
@@ -27,12 +27,11 @@ namespace LunaBot.Commands
 
                 Logger.Verbose(message.Author.Username, "Creating User Data");
                 message.Channel.SendMessageAsync("Creating User Data");
-
-                User newUser = new User();
+                
+                User newUser = db.Users.Create(); 
                 newUser.ID = userId;
-                db.Users.Attach(newUser);
-                db.Entry(newUser).State = EntityState.Added;
                 db.Users.Add(newUser);
+                var list = db.Users.ToList();
                 db.SaveChanges();
 
                 Logger.Verbose(message.Author.Username, "Created User");

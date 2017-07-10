@@ -11,6 +11,7 @@ namespace LunaBot.Database
     class User
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public long ID { get; set; }
 
         public string Description { get; set; }

@@ -104,6 +104,10 @@
     <Compile Include="Migrations\201707082309599_DbMigration1.Designer.cs">
       <DependentUpon>201707082309599_DbMigration1.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201707100208198_Tom.cs" />
+    <Compile Include="Migrations\201707100208198_Tom.Designer.cs">
+      <DependentUpon>201707100208198_Tom.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -125,6 +129,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201707082309599_DbMigration1.resx">
       <DependentUpon>201707082309599_DbMigration1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201707100208198_Tom.resx">
+      <DependentUpon>201707100208198_Tom.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="SecretStrings.resx">
       <Generator>ResXFileCodeGenerator</Generator>
