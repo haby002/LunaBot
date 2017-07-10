@@ -12,7 +12,10 @@ namespace LunaBot.Database
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public long ID { get; set; }
+        public int ID { get; set; }
+
+        [Index(IsUnique = true)]
+        public long DiscordId { get; set; }
 
         public string Description { get; set; }
 
