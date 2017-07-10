@@ -59,7 +59,7 @@ namespace LunaBot
             {
                 this.ProcessCommand(message);
             }
-            if(messageText.StartsWith("+"))
+            else if(messageText.StartsWith("+"))
             {
                 this.ProcessAttribute(message);
             }
