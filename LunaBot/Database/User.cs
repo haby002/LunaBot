@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace LunaBot.Database
 {
-    class User
+    public class User
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -16,7 +17,7 @@ namespace LunaBot.Database
 
         [Index(IsUnique = true)]
         public long DiscordId { get; set; }
-
+        
         public string Description { get; set; }
 
         public int Xp { get; set; }
