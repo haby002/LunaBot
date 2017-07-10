@@ -3,3 +3,5 @@ LunaBot/SecretStrings.resx
 LunaBot/bin
 LunaBot/obj
 packages
+.vs/LunaBot/v15/.suo
+*.suo
