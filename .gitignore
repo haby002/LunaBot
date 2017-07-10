@@ -2,6 +2,7 @@ LunaBot/SecretStrings.Designer.cs
 LunaBot/SecretStrings.resx
 LunaBot/bin
 LunaBot/obj
+LunaBot/Migrations
 packages
 .vs/LunaBot/v15/.suo
 *.suo

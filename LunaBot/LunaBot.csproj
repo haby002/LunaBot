@@ -90,6 +90,7 @@
   <ItemGroup>
     <Compile Include="Commands\BaseCommand.cs" />
     <Compile Include="Commands\ChoreWheelCommand.cs" />
+    <Compile Include="Commands\FixRoomsCommand.cs" />
     <Compile Include="Commands\GetAttributeCommand.cs" />
     <Compile Include="Commands\GetCommand.cs" />
     <Compile Include="Commands\LunaBotCommandAttribute.cs" />
@@ -106,9 +107,9 @@
     <Compile Include="DiscordExtensions.cs" />
     <Compile Include="Engine.cs" />
     <Compile Include="Logger.cs" />
-    <Compile Include="Migrations\201707100433357_init.cs" />
-    <Compile Include="Migrations\201707100433357_init.Designer.cs">
-      <DependentUpon>201707100433357_init.cs</DependentUpon>
+    <Compile Include="Migrations\201707100258553_asdfasdddd.cs" />
+    <Compile Include="Migrations\201707100258553_asdfasdddd.Designer.cs">
+      <DependentUpon>201707100258553_asdfasdddd.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Program.cs" />
@@ -130,8 +131,8 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201707100433357_init.resx">
-      <DependentUpon>201707100433357_init.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201707100258553_asdfasdddd.resx">
+      <DependentUpon>201707100258553_asdfasdddd.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="SecretStrings.resx">
       <Generator>ResXFileCodeGenerator</Generator>
