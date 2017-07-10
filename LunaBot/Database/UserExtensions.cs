@@ -34,5 +34,16 @@ namespace LunaBot.Database
                 return "";
             }
         }
+
+        public static int GetLevel(this User user)
+        {
+            return Convert.ToInt32(0.1 * Math.Sqrt(user.Xp));
+        }
+
+        public static int GetXpForNextLevel(this User user)
+        {
+            int nextLevel = user.GetLevel() + 1;
+            return Convert.ToInt32(100*nextLevel*nextLevel);
+        }
     }
 }

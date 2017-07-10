@@ -89,6 +89,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Commands\BaseCommand.cs" />
+    <Compile Include="Commands\ChoreWheelCommand.cs" />
     <Compile Include="Commands\GetAttributeCommand.cs" />
     <Compile Include="Commands\GetCommand.cs" />
     <Compile Include="Commands\LunaBotCommandAttribute.cs" />
@@ -97,6 +98,7 @@
     <Compile Include="Commands\RollCommand.cs" />
     <Compile Include="Commands\SetCommand.cs" />
     <Compile Include="Commands\SettingsCommand.cs" />
+    <Compile Include="Commands\XpCommand.cs" />
     <Compile Include="Database\DiscordContext.cs" />
     <Compile Include="Database\Setting.cs" />
     <Compile Include="Database\User.cs" />

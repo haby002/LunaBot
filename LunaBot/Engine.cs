@@ -1,6 +1,8 @@
 ﻿using Discord;
+using Discord.Rest;
 using Discord.WebSocket;
 using LunaBot.Commands;
+using LunaBot.Database;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -54,6 +56,11 @@ namespace LunaBot
 
         private async Task MessageReceived(SocketMessage message)
         {
+            if(message.Author.IsBot)
+            {
+                return;
+            }
+
             try
             {
                 string messageText = message.Content;
@@ -71,12 +78,37 @@ namespace LunaBot
                 }
                 else
                 {
+                    //FunEmojis(message);
+                    await ProcessXpAsync(message);
                     await message.Log();
                 }
+                
             }
             catch(Exception e)
             {
                 e.Log(message);
+            }
+        }
+
+        private async Task ProcessXpAsync(SocketMessage message)
+        {
+            using (DiscordContext db = new DiscordContext())
+            {
+                long userId = Convert.ToInt64(message.Author.Id);
+                User user = db.Users.Where(x => x.DiscordId == userId).SingleOrDefault();
+
+                int oldLevel = user.GetLevel();
+                user.Xp++;
+
+                if (user.GetLevel() != oldLevel)
+                {
+                    IDMChannel channel = await message.Author.GetOrCreateDMChannelAsync();
+                    await channel.SendMessageAsync(string.Format("Congrats!! You've leveled up. You're now level {0}", user.GetLevel()));
+                }
+
+                db.Users.Attach(user);
+                db.Entry(user).State = System.Data.Entity.EntityState.Modified;
+                db.SaveChanges();
             }
         }
 
@@ -148,6 +180,41 @@ namespace LunaBot
             }
 
             this.commandDictionary["get"].Process(message, new[] { command, user });
+        }
+
+        private async void FunEmojis(SocketMessage message)
+        {
+            //Javi
+            if (message.Author.Id == 123470919535427584)
+            {
+                var m = (RestUserMessage)await message.Channel.GetMessageAsync(message.Id);
+                await m.AddReactionAsync(new Emoji("🇲🇽"));
+            }
+            // Ben
+            else if (message.Author.Id == 199271133764255745)
+            {
+                var m = (RestUserMessage)await message.Channel.GetMessageAsync(message.Id);
+                await m.AddReactionAsync(new Emoji("🇮🇱"));
+            }
+            // Tim
+            else if (message.Author.Id == 199864978264686592)
+            {
+                var m = (RestUserMessage)await message.Channel.GetMessageAsync(message.Id);
+                await m.AddReactionAsync(new Emoji("👓"));
+            }
+            // Mat
+            else if (message.Author.Id == 142394877219438592)
+            {
+                var m = (RestUserMessage)await message.Channel.GetMessageAsync(message.Id);
+                await m.AddReactionAsync(new Emoji("🚴"));
+            }
+            // Tom
+            else if (message.Author.Id == 199270845930012672)
+            {
+                var m = (RestUserMessage)await message.Channel.GetMessageAsync(message.Id);
+                await m.AddReactionAsync(new Emoji("☕"));
+                await m.AddReactionAsync(new Emoji("🍺"));
+            }
         }
     }
 }
