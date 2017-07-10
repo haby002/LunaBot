@@ -123,7 +123,12 @@ namespace LunaBot
             string messageText = message.Content;
             string[] commandPts = messageText.Substring(1).Split(new Char[] {' '}, 2);
             string command = commandPts[0].ToLower();
-            string content = commandPts[1];
+
+            string content = string.Empty;
+            if(commandPts.Count() != 1)
+            {
+                content = commandPts[1];
+            }
 
             this.commandDictionary["set"].Process(message, new[] { command, content });
         }

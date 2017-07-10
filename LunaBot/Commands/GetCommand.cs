@@ -56,8 +56,15 @@ namespace LunaBot.Commands
                 }
                 else
                 {
-                    message.Channel.SendMessageAsync("Unrecognized attribute");
-                    return;
+                    if (Settings.GetExtraAttributes().Contains(field))
+                    {
+                        toDisplay = user.GetExtra(field);
+                    }
+                    else
+                    {
+                        message.Channel.SendMessageAsync("Unrecognized attribute");
+                        return;
+                    }
                 }
 
                 message.Channel.SendMessageAsync(string.Format("{0}: {1}", field, toDisplay));

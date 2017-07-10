@@ -96,12 +96,18 @@
     <Compile Include="Commands\RegisterCommand.cs" />
     <Compile Include="Commands\RollCommand.cs" />
     <Compile Include="Commands\SetCommand.cs" />
+    <Compile Include="Commands\SettingsCommand.cs" />
     <Compile Include="Database\DiscordContext.cs" />
     <Compile Include="Database\Setting.cs" />
     <Compile Include="Database\User.cs" />
+    <Compile Include="Database\UserExtensions.cs" />
     <Compile Include="DiscordExtensions.cs" />
     <Compile Include="Engine.cs" />
     <Compile Include="Logger.cs" />
+    <Compile Include="Migrations\201707100433357_init.cs" />
+    <Compile Include="Migrations\201707100433357_init.Designer.cs">
+      <DependentUpon>201707100433357_init.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -110,6 +116,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>SecretStrings.resx</DependentUpon>
     </Compile>
+    <Compile Include="Settings.cs" />
     <Compile Include="StringTable.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -121,6 +128,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Migrations\201707100433357_init.resx">
+      <DependentUpon>201707100433357_init.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="SecretStrings.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>SecretStrings.Designer.cs</LastGenOutput>

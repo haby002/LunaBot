@@ -38,7 +38,7 @@ namespace LunaBot.Commands
                     {
                         age = Convert.ToInt32(value);
                     }
-                    catch(FormatException e)
+                    catch(FormatException)
                     {
                         message.Channel.SendMessageAsync("Age must be a number");
                         return;
@@ -64,8 +64,15 @@ namespace LunaBot.Commands
                 }
                 else
                 {
-                    message.Channel.SendMessageAsync("Unrecognized attribute");
-                    return;
+                    if (Settings.GetExtraAttributes().Contains(field))
+                    {
+                        user.SetExtra(field, value);
+                    }
+                    else
+                    {
+                        message.Channel.SendMessageAsync("Unrecognized attribute");
+                        return;
+                    }
                 }
 
                 db.Users.Attach(user);
