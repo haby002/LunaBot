@@ -16,7 +16,7 @@ namespace LunaBot.Database
 
         [Index(IsUnique = true)]
         public long DiscordId { get; set; }
-
+        
         public string Description { get; set; }
 
         public int Xp { get; set; }

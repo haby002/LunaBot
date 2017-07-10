@@ -54,18 +54,29 @@ namespace LunaBot
 
         private async Task MessageReceived(SocketMessage message)
         {
-            string messageText = message.Content;
-            if(messageText.StartsWith("!"))
+            try
             {
-                this.ProcessCommand(message);
+                string messageText = message.Content;
+                if (messageText.StartsWith("!"))
+                {
+                    this.ProcessCommand(message);
+                }
+                else if (messageText.StartsWith("+"))
+                {
+                    this.ProcessSetAttribute(message);
+                }
+                else if (messageText.StartsWith("?"))
+                {
+                    this.ProcessGetAttribute(message);
+                }
+                else
+                {
+                    await message.Log();
+                }
             }
-            if(messageText.StartsWith("+"))
+            catch(Exception e)
             {
-                this.ProcessAttribute(message);
-            }
-            else
-            {
-                await message.Log();
+                e.Log(message);
             }
         }
 
@@ -106,7 +117,7 @@ namespace LunaBot
             }
         }
 
-        private void ProcessAttribute(SocketMessage message)
+        private void ProcessSetAttribute(SocketMessage message)
         {
             // Cut up the message with the relevent parts
             string messageText = message.Content;
@@ -114,26 +125,24 @@ namespace LunaBot
             string command = commandPts[0].ToLower();
             string content = commandPts[1];
 
-            if (this.commandDictionary.ContainsKey(command))
-            {
-                Logger.Verbose(
-                    message.Author.Username,
-                    string.Format(StringTable.RecognizedCommand, command, string.Join(",", content)));
-                try
-                {
-                    this.commandDictionary[command].Process(message, new String[] { content });
-                }
-                catch (Exception e)
-                {
-                    message.Channel.SendMessageAsync(string.Format("Command failed: {0}", e.Message));
-                }
+            this.commandDictionary["set"].Process(message, new[] { command, content });
+        }
 
-                return;
-            }
-            else
+        private void ProcessGetAttribute(SocketMessage message)
+        {
+            // Cut up the message with the relevent parts
+            string messageText = message.Content;
+            string[] commandPts = messageText.Substring(1).Split(new Char[] { ' ' }, 2);
+            string command = commandPts[0].ToLower();
+
+            string user = message.Author.Id.ToString();
+            SocketUser mentionedUser = message.MentionedUsers.FirstOrDefault();
+            if (mentionedUser != null)
             {
-                Logger.Error(message.Author.Username, string.Format(StringTable.UnrecognizedCommand, command));
+                user = mentionedUser.Id.ToString();
             }
+
+            this.commandDictionary["get"].Process(message, new[] { command, user });
         }
     }
 }
