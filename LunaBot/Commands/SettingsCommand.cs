@@ -15,22 +15,38 @@ namespace LunaBot.Commands
         {
             using (DiscordContext db = new DiscordContext())
             {
-                if(parameters.Count() < 2)
+                if(parameters.Count() < 1)
                 {
                     message.Channel.SendMessageAsync("Invalid settings command");
                     return;
                 }
 
                 string action = parameters[0].ToLower();
-                string setting = parameters[1].ToLower();
+                string setting = "";
+                string value = "";
 
-                List<string> values = new List<string>(parameters);
-                string value = string.Join(" ", values.GetRange(2, values.Count() - 2));
+                if(parameters.Count() > 1)
+                {
+                    setting = parameters[1].ToLower();
+                }
+
+                if(parameters.Count() > 2)
+                {
+                    List<string> values = new List<string>(parameters);
+                    value = string.Join(" ", values.GetRange(2, values.Count() - 2));
+                }
 
                 if(action.Equals("get"))
                 {
-                    message.Channel.SendMessageAsync(Settings.Get<string>(setting));
-                    return;
+                    if(setting.Equals(string.Empty))
+                    {
+                        message.Channel.SendMessageAsync(this.DisplayAllSettings());
+                    }
+                    else
+                    {
+                        message.Channel.SendMessageAsync(Settings.Get<string>(setting));
+                        return;
+                    }
                 }
                 else if (action.Equals("set"))
                 {
@@ -39,6 +55,18 @@ namespace LunaBot.Commands
                     return;
                 }
             }
+        }
+
+        private string DisplayAllSettings()
+        {
+            IDictionary<string, string> settings = Settings.GetAll();
+            string toDisplay = "";
+            foreach (KeyValuePair<string, string> entry in settings)
+            {
+                toDisplay += $"\n{entry.Key}: {entry.Value}";
+            }
+
+            return toDisplay;
         }
     }
 }

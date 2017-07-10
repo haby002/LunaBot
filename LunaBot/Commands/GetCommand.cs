@@ -41,8 +41,18 @@ namespace LunaBot.Commands
                 }
 
                 string toDisplay = "";
-
-                if (field.Equals("desc") || field.Equals("description"))
+                if (field.Equals("all"))
+                {
+                    toDisplay = $@" Displaying all set attributes:
+Description: {user.Description}
+Age: {user.Age}
+Gender: {user.Gender}";
+                    foreach(KeyValuePair<string,string> entry in user.GetAllExtras())
+                    {
+                        toDisplay += $"\n{entry.Key}: {entry.Value}";
+                    }
+                }
+                else if (field.Equals("desc") || field.Equals("description"))
                 {
                     toDisplay = user.Description;
                 }

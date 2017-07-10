@@ -33,6 +33,16 @@ namespace LunaBot
             }
         }
 
+        public static IDictionary<string, string> GetAll()
+        {
+            using (DiscordContext db = new DiscordContext())
+            {
+                IList<Setting> settings = db.Settings.ToList();
+
+                return settings.ToDictionary(x => x.SettingName, x => x.Value);
+            }
+        }
+
         public static void Set(string key, string value)
         {
             using (DiscordContext db = new DiscordContext())
