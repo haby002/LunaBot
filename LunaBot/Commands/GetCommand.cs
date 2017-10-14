@@ -47,10 +47,10 @@ namespace LunaBot.Commands
 Description: {user.Description}
 Age: {user.Age}
 Gender: {user.Gender}";
-                    foreach(KeyValuePair<string,string> entry in user.GetAllExtras())
-                    {
-                        toDisplay += $"\n{entry.Key}: {entry.Value}";
-                    }
+                    //foreach(KeyValuePair<string,string> entry in user.GetAllExtras())
+                    //{
+                    //    toDisplay += $"\n{entry.Key}: {entry.Value}";
+                    //}
                 }
                 else if (field.Equals("desc") || field.Equals("description"))
                 {
@@ -66,15 +66,15 @@ Gender: {user.Gender}";
                 }
                 else
                 {
-                    if (Settings.GetExtraAttributes().Contains(field))
-                    {
-                        toDisplay = user.GetExtra(field);
-                    }
-                    else
-                    {
-                        message.Channel.SendMessageAsync("Unrecognized attribute");
-                        return;
-                    }
+                    //if (Settings.GetExtraAttributes().Contains(field))
+                    //{
+                    //    toDisplay = user.GetExtra(field);
+                    //}
+                    //else
+                    //{
+                    //    message.Channel.SendMessageAsync("Unrecognized attribute");
+                    //    return;
+                    //}
                 }
 
                 message.Channel.SendMessageAsync(string.Format("{0}: {1}", field, toDisplay));

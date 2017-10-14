@@ -26,16 +26,15 @@ namespace LunaBot.Database
 
         public int Age { get; set; }
 
-        public Genders Gender { get; set; }
+        public string Gender { get; set; }
 
-        public string XmlExtra { get; set; }
+        public string Ref { get; set; }
 
-        public enum Genders
-        {
-            Male,
-            Female,
-            Other,
-            ApacheHelicopter = 100
-        };
+        //public enum Genders
+        //{
+        //    Male,
+        //    Female,
+        //    Other,
+        //};
     }
 }
