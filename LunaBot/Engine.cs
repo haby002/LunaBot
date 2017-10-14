@@ -1,7 +1,6 @@
 ﻿using Discord;
 using Discord.Rest;
 using Discord.WebSocket;
-using LunaBot.Behaivor;
 using LunaBot.Commands;
 using LunaBot.Database;
 using System;
@@ -114,6 +113,9 @@ namespace LunaBot
                 else
                 {
                     //FunEmojis(message);
+
+                    if(await ProcessMessage(message))
+                        return;
                     await ProcessXpAsync(message);
                     await message.Log();
                 }
@@ -131,14 +133,18 @@ namespace LunaBot
             {
                 long userId = Convert.ToInt64(message.Author.Id);
                 User user = db.Users.Where(x => x.DiscordId == userId).SingleOrDefault();
+                
+                // calculate amount of xp to give for the message.
+                int words = (message.Content.Split(' ').Count<string>());
 
-                int oldLevel = user.GetLevel();
-                user.Xp++;
+                // No XP gain if you only say 2 words or less.
+                if (words < 3)
+                    return;
 
-                if (user.GetLevel() != oldLevel)
+                // Returns true if user leveled up.
+                if (user.AddXP(words))
                 {
-                    IDMChannel channel = await message.Author.GetOrCreateDMChannelAsync();
-                    await channel.SendMessageAsync(string.Format("Congrats!! You've leveled up. You're now level {0}", user.GetLevel()));
+                    await message.Channel.SendMessageAsync($"Congrats @<{user.DiscordId}>! You leveled up to {user.Level}");
                 }
 
                 db.Users.Attach(user);
@@ -217,6 +223,47 @@ namespace LunaBot
             this.commandDictionary["get"].Process(message, new[] { command, user });
         }
 
+        /// <summary>
+        /// Processes messages and prevents raids by checking user level and message content.
+        /// </summary>
+        /// <param name="message"></param>
+        /// <returns></returns>
+        private async Task<bool> ProcessMessage(SocketMessage message)
+        {
+            SocketUser user = message.Author;
+            IAsyncEnumerable<IReadOnlyCollection<IMessage>> cache = message.Channel.GetMessagesAsync(10);
+
+            
+            
+            for(IAsyncEnumerator<IReadOnlyCollection<IMessage>> itr = cache.GetEnumerator(); await itr.MoveNext() != false;)
+            {
+                Logger.Info("System", $"User {user.Username}<{user.Id}> timestamp: {message.Timestamp}.");
+
+                foreach (RestUserMessage cachedMessage in itr.Current.Skip(1))
+                {
+                    if(message.Timestamp.Subtract(cachedMessage.Timestamp) < TimeSpan.FromSeconds(1))
+                    {
+                        Logger.Info("System", $"User {user.Username}<{user.Id}> is talking too fast. Deleting latest message.");
+                        message.DeleteAsync();
+                        return true;
+                    }
+                }
+
+            }
+
+            // foreach(SocketMessage cachedMessage in cache.GetEnumerator())
+            //{
+            //    Logger.Info("System", $"User {user.Username}<{user.Id}> timestamp: {message.Timestamp}.");
+
+            //    if (cachedMessage.Timestamp == message.Timestamp)
+            //    {
+            //        Logger.Info("System", $"User {user.Username}<{user.Id}> cached message timestamp: {cachedMessage.Timestamp}.");
+            //        //message.DeleteAsync();
+            //    }
+            //}
+
+            return true;
+        }
         private async void FunEmojis(SocketMessage message)
         {
             //Javi
@@ -275,7 +322,10 @@ namespace LunaBot
             
 
             await introRoom.DeleteAsync();
-            
+
+            RestTextChannel personalRoom = await guild.CreateTextChannelAsync($"room-{user.Id}");
+            await personalRoom.SendMessageAsync("This is your room, you can do whatever you want in here. Try using the !help command to start ;)");
+
             return true;
         }
 

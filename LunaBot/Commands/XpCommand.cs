@@ -32,8 +32,8 @@ namespace LunaBot.Commands
         {
             IDMChannel channel = await message.Author.GetOrCreateDMChannelAsync();
             string output = "XP Info:\n";
-            output += string.Format("You are currently level {0}\n", user.GetLevel());
-            output += string.Format("{0}xp\\{1}xp", user.Xp, user.GetXpForNextLevel());
+            output += string.Format("You are currently level {0}\n", user.Level);
+            output += string.Format("{0}xp\\{1}xp", user.Xp, user.Level * 100);
             await channel.SendMessageAsync(output);
         }
     }

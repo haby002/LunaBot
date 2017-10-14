@@ -34,16 +34,24 @@ namespace LunaBot.Database
                 return "";
             }
         }
-
-        public static int GetLevel(this User user)
+        
+        /// <summary>
+        /// Add XP to user and calculates if user has leveled up.
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="words"></param>
+        /// <returns>True if user leveled up, false otherwise.</returns>
+        public static bool AddXP(this User user, int words)
         {
-            return Convert.ToInt32(0.1 * Math.Sqrt(user.Xp));
-        }
+            user.Xp += words;
 
-        public static int GetXpForNextLevel(this User user)
-        {
-            int nextLevel = user.GetLevel() + 1;
-            return Convert.ToInt32(100*nextLevel*nextLevel);
+            if (user.Xp > (user.Level * 100))
+            {
+                user.Level++;
+                return true;
+            }
+
+            return false;
         }
     }
 }

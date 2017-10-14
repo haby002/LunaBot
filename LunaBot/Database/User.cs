@@ -20,6 +20,8 @@ namespace LunaBot.Database
         
         public string Description { get; set; }
 
+        public int Level { get; set; }
+
         public int Xp { get; set; }
 
         public int Age { get; set; }

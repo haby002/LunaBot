@@ -134,8 +134,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Events\OnJoin.cs" />
-    <Compile Include="Events\Tutorial.cs" />
     <Compile Include="Commands\BaseCommand.cs" />
     <Compile Include="Commands\ChoreWheelCommand.cs" />
     <Compile Include="Commands\FixRoomsCommand.cs" />
