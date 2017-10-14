@@ -1,13 +1,14 @@
 ﻿using Discord;
 using Discord.Rest;
 using Discord.WebSocket;
+using LunaBot.Behaivor;
 using LunaBot.Commands;
 using LunaBot.Database;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace LunaBot
@@ -15,8 +16,12 @@ namespace LunaBot
     class Engine
     {
         private IDictionary<string, BaseCommand> commandDictionary;
-
+        
         private readonly DiscordSocketClient client;
+
+        public SocketGuild guild;
+        public SocketTextChannel lobby;
+        public List<SocketRole> roles;
 
         public Engine()
         {
@@ -31,10 +36,13 @@ namespace LunaBot
             string token = SecretStrings.token;
             await client.LoginAsync(TokenType.Bot, token);
             await client.StartAsync();
-
+            
             client.MessageReceived += MessageReceived;
-
+            client.UserJoined += UserJoined;
+       
             this.RegisterCommands();
+
+            client.Ready += Ready;
 
             await Task.Delay(-1);
         }
@@ -54,13 +62,40 @@ namespace LunaBot
             }
         }
 
+        private async Task Ready()
+        {
+            guild = client.GetGuild(324967746465169410);
+            lobby = client.GetChannel(343193171431522304) as SocketTextChannel;
+            roles = guild.Roles.ToList();
+        }
+        private async Task UserJoined(SocketUser user)
+        {
+            Logger.Info("System", $"User {user.Username}<{user.Id}> joined the server.");
+            if (lobby == null)
+                lobby = client.GetChannel(343193171431522304) as SocketTextChannel;
+            
+            Logger.Info("System", $"Placing {user.Username}<{user.Id}> through tutorial...");
+            if(!await StartTutorial(user as SocketGuildUser))
+                Logger.Info("System", $"User {user.Username}<{user.Id}> failed the tutorial.");
+            
+            await lobby.SendMessageAsync($"Welcome {user.Mention} to the server!");
+        }
+
         private async Task MessageReceived(SocketMessage message)
         {
+            // ignore your own message if you ever manage to do this.
             if(message.Author.IsBot)
             {
                 return;
             }
 
+            // Handle tutorial messages that cannot run commands.
+            if(message.Channel.Name.Contains("intro"))
+            {
+
+            }
+
+            // Handle commands within the public text channels.
             try
             {
                 string messageText = message.Content;
@@ -216,5 +251,33 @@ namespace LunaBot
                 await m.AddReactionAsync(new Emoji("🍺"));
             }
         }
+
+        /// <summary>
+        /// Sets newbie role to user and places them through the tutorial.
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
+        private async Task<bool> StartTutorial(SocketGuildUser user)
+        {
+            Predicate<SocketRole> newbieFinder = (SocketRole sr) => { return sr.Name == "newbie"; };
+            SocketRole newbie = roles.Find(newbieFinder);
+            await user.AddRoleAsync(newbie);
+            
+            RestTextChannel introRoom = await guild.CreateTextChannelAsync($"intro-{user.Id}");
+            SocketGuildChannel introChannel = guild.GetChannel(introRoom.Id);
+
+            RestUserMessage msg;
+
+            // Start interaction with user.
+            await introRoom.SendMessageAsync("Welcome to the server! Lets get you settled alright?");
+            Thread.Sleep(2000);
+            await introRoom.SendMessageAsync("Firstly, what should we call you?");
+            
+
+            await introRoom.DeleteAsync();
+            
+            return true;
+        }
+
     }
 }

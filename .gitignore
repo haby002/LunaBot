@@ -6,3 +6,4 @@ LunaBot/Migrations
 packages
 .vs/LunaBot/v15/.suo
 *.suo
+/.vs/LunaBot/v15/sqlite3

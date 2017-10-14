@@ -17,7 +17,6 @@ namespace LunaBot.Commands
             {
                 long userId = Convert.ToInt64(message.Author.Id);
                 
-
                 Logger.Verbose(message.Author.Username, "Fixing rooms...");
                 RestUserMessage myMessage = message.Channel.SendMessageAsync("Fixing rooms...").Result;
 
