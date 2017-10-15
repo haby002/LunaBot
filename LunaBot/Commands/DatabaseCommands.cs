@@ -40,7 +40,7 @@ namespace LunaBot.Commands
                     {
                         case "description":
                         case "desc":
-                            user.Description = parameters[2];
+                            user.Description = String.Join(" ", parameters.Skip(2).Where(s => !String.IsNullOrEmpty(s)));
                             message.Channel.SendMessageAsync($"Success: {parameters[0]}'s description updated");
                             break;
                         case "level":
@@ -99,7 +99,7 @@ namespace LunaBot.Commands
                             if (Uri.TryCreate(parameters[2], UriKind.Absolute, out var uriResult) && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps))
                             {
                                 Logger.Info(message.Author.Username, $"Changed user {parameters[0]}'s ref from {user.Ref} to {parameters[2]}");
-                                user.Age = Convert.ToInt32(parameters[2]);
+                                user.Ref = parameters[2];
                                 message.Channel.SendMessageAsync($"Success: {parameters[0]}'s ref has been updated");
                             }
                             else
@@ -113,7 +113,7 @@ namespace LunaBot.Commands
                             message.Channel.SendMessageAsync($"Error: Could not find attribute {parameters[1]}. Check you syntax!");
                             return;
                     }
-                    user.Description = parameters[0];
+
                     db.SaveChanges();
                     Logger.Verbose(message.Author.Username, $"Updated data for {userId}");
 

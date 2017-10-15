@@ -220,7 +220,7 @@ namespace LunaBot
                 user = mentionedUser.Id.ToString();
             }
 
-            this.commandDictionary["get"].Process(message, new[] { command, user });
+            this.commandDictionary[command].Process(message, new[] { command, user });
         }
 
         /// <summary>
