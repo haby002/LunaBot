@@ -6,7 +6,7 @@ using LunaBot.Database;
 namespace LunaBot.Commands
 {
     [LunaBotCommand("set")]
-    class DatabaseCommands : BaseCommand
+    class SetCommands : BaseCommand
     {
         public override void Process(SocketMessage message, string[] parameters)
         {
