@@ -15,6 +15,7 @@ namespace LunaBot
     class Engine
     {
         private IDictionary<string, BaseCommand> commandDictionary;
+        private IDictionary<ulong, DateTime> messageTimestamps;
         
         private readonly DiscordSocketClient client;
 
@@ -26,6 +27,7 @@ namespace LunaBot
         {
             this.client = new DiscordSocketClient();
             this.commandDictionary = new Dictionary<string, BaseCommand>();
+            this.messageTimestamps = new Dictionary<ulong, DateTime>();
         }
 
         public async Task Run()
@@ -67,6 +69,7 @@ namespace LunaBot
             lobby = client.GetChannel(343193171431522304) as SocketTextChannel;
             roles = guild.Roles.ToList();
         }
+
         private async Task UserJoined(SocketUser user)
         {
             Logger.Info("System", $"User {user.Username}<{user.Id}> joined the server.");
@@ -82,8 +85,12 @@ namespace LunaBot
 
         private async Task MessageReceived(SocketMessage message)
         {
+            //Anti-raid system
+            if (await ProcessMessage(message))
+                return;
+
             // ignore your own message if you ever manage to do this.
-            if(message.Author.IsBot)
+            if (message.Author.IsBot)
             {
                 return;
             }
@@ -91,7 +98,7 @@ namespace LunaBot
             // Handle tutorial messages that cannot run commands.
             if(message.Channel.Name.Contains("intro"))
             {
-
+                // check user, check provided input, fill in details
             }
 
             // Handle commands within the public text channels.
@@ -112,19 +119,16 @@ namespace LunaBot
                 }
                 else
                 {
-                    //FunEmojis(message);
-
-                    if(await ProcessMessage(message))
-                        return;
                     await ProcessXpAsync(message);
                     await message.Log();
                 }
-                
+
             }
             catch(Exception e)
             {
                 e.Log(message);
             }
+
         }
 
         private async Task ProcessXpAsync(SocketMessage message)
@@ -224,78 +228,36 @@ namespace LunaBot
         }
 
         /// <summary>
-        /// Processes messages and prevents raids by checking user level and message content.
+        /// Processes messages and prevents raids by checking the newest message sent by the user and deletes if it doesn't pass criteria
         /// </summary>
         /// <param name="message"></param>
         /// <returns></returns>
         private async Task<bool> ProcessMessage(SocketMessage message)
         {
-            SocketUser user = message.Author;
-            IAsyncEnumerable<IReadOnlyCollection<IMessage>> cache = message.Channel.GetMessagesAsync(10);
+            ulong user = message.Author.Id;
+            DateTime userTimestamp = message.Timestamp.DateTime;
+            DateTime cachedTimestamp;
 
-            
-            
-            for(IAsyncEnumerator<IReadOnlyCollection<IMessage>> itr = cache.GetEnumerator(); await itr.MoveNext() != false;)
+            if(messageTimestamps.TryGetValue(user, out cachedTimestamp))
             {
-                Logger.Info("System", $"User {user.Username}<{user.Id}> timestamp: {message.Timestamp}.");
-
-                foreach (RestUserMessage cachedMessage in itr.Current.Skip(1))
+                if (userTimestamp.Subtract(cachedTimestamp) < TimeSpan.FromSeconds(2))
                 {
-                    if(message.Timestamp.Subtract(cachedMessage.Timestamp) < TimeSpan.FromSeconds(1))
-                    {
-                        Logger.Info("System", $"User {user.Username}<{user.Id}> is talking too fast. Deleting latest message.");
-                        message.DeleteAsync();
-                        return true;
-                    }
+                    Logger.Info("System", $"User {message.Author.Username}<{message.Author.Id}> is talking too fast. Deleting latest message.");
+                    await message.DeleteAsync();
+
+                    return true;
                 }
+                else
+                {
+                    messageTimestamps[user] = userTimestamp;
+                    return false;
+                }
+            }
+            else
+            {
+                messageTimestamps.Add(user, DateTime.Now);
 
-            }
-
-            // foreach(SocketMessage cachedMessage in cache.GetEnumerator())
-            //{
-            //    Logger.Info("System", $"User {user.Username}<{user.Id}> timestamp: {message.Timestamp}.");
-
-            //    if (cachedMessage.Timestamp == message.Timestamp)
-            //    {
-            //        Logger.Info("System", $"User {user.Username}<{user.Id}> cached message timestamp: {cachedMessage.Timestamp}.");
-            //        //message.DeleteAsync();
-            //    }
-            //}
-
-            return true;
-        }
-        private async void FunEmojis(SocketMessage message)
-        {
-            //Javi
-            if (message.Author.Id == 123470919535427584)
-            {
-                var m = (RestUserMessage)await message.Channel.GetMessageAsync(message.Id);
-                await m.AddReactionAsync(new Emoji("🇲🇽"));
-            }
-            // Ben
-            else if (message.Author.Id == 199271133764255745)
-            {
-                var m = (RestUserMessage)await message.Channel.GetMessageAsync(message.Id);
-                await m.AddReactionAsync(new Emoji("🇮🇱"));
-            }
-            // Tim
-            else if (message.Author.Id == 199864978264686592)
-            {
-                var m = (RestUserMessage)await message.Channel.GetMessageAsync(message.Id);
-                await m.AddReactionAsync(new Emoji("👓"));
-            }
-            // Mat
-            else if (message.Author.Id == 142394877219438592)
-            {
-                var m = (RestUserMessage)await message.Channel.GetMessageAsync(message.Id);
-                await m.AddReactionAsync(new Emoji("🚴"));
-            }
-            // Tom
-            else if (message.Author.Id == 199270845930012672)
-            {
-                var m = (RestUserMessage)await message.Channel.GetMessageAsync(message.Id);
-                await m.AddReactionAsync(new Emoji("☕"));
-                await m.AddReactionAsync(new Emoji("🍺"));
+                return false;
             }
         }
 
