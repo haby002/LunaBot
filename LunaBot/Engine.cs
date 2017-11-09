@@ -40,7 +40,7 @@ namespace LunaBot
             
             client.MessageReceived += MessageReceived;
             client.UserJoined += UserJoined;
-       
+            
             this.RegisterCommands();
 
             client.Ready += Ready;
@@ -77,10 +77,9 @@ namespace LunaBot
                 lobby = client.GetChannel(343193171431522304) as SocketTextChannel;
             
             Logger.Info("System", $"Placing {user.Username}<{user.Id}> through tutorial...");
-            if(!await StartTutorial(user as SocketGuildUser))
-                Logger.Info("System", $"User {user.Username}<{user.Id}> failed the tutorial.");
+            await StartTutorial(user as SocketGuildUser);
             
-            await lobby.SendMessageAsync($"Welcome {user.Mention} to the server!");
+            // await lobby.SendMessageAsync($"Welcome {user.Mention} to the server!");
         }
 
         private async Task MessageReceived(SocketMessage message)
@@ -268,24 +267,28 @@ namespace LunaBot
         private async Task<bool> StartTutorial(SocketGuildUser user)
         {
             Predicate<SocketRole> newbieFinder = (SocketRole sr) => { return sr.Name == "newbie"; };
+            Predicate<SocketRole> everyoneFinder = (SocketRole sr) => { return sr.Name == "@everyone"; };
             SocketRole newbie = roles.Find(newbieFinder);
-            await user.AddRoleAsync(newbie);
-            
-            RestTextChannel introRoom = await guild.CreateTextChannelAsync($"intro-{user.Id}");
-            SocketGuildChannel introChannel = guild.GetChannel(introRoom.Id);
+            SocketRole everyone = roles.Find(everyoneFinder);
 
-            RestUserMessage msg;
+            await user.AddRoleAsync(newbie);
+
+            // Creat intro room
+            RestTextChannel introRoom = await guild.CreateTextChannelAsync($"intro-{user.Id}");
+
+            await introRoom.AddPermissionOverwriteAsync(everyone, new OverwritePermissions(PermValue.Deny, PermValue.Deny, PermValue.Deny, PermValue.Deny, PermValue.Deny, PermValue.Deny, PermValue.Deny, PermValue.Deny, PermValue.Deny, PermValue.Deny, PermValue.Deny, PermValue.Deny, PermValue.Deny, PermValue.Deny, PermValue.Deny, PermValue.Deny, PermValue.Deny, PermValue.Deny, PermValue.Deny, PermValue.Deny));
+            
+            //OverwritePermissions perms = new OverwritePermissions();
+            await introRoom.AddPermissionOverwriteAsync(newbie, new OverwritePermissions(PermValue.Deny, PermValue.Deny, PermValue.Allow, PermValue.Allow, PermValue.Allow, PermValue.Deny, PermValue.Deny, PermValue.Deny, PermValue.Deny, PermValue.Allow, PermValue.Deny, PermValue.Deny, PermValue.Deny, PermValue.Deny, PermValue.Deny, PermValue.Deny, PermValue.Deny, PermValue.Deny, PermValue.Deny, PermValue.Deny));
 
             // Start interaction with user.
-            await introRoom.SendMessageAsync("Welcome to the server! Lets get you settled alright?");
-            Thread.Sleep(2000);
+            await introRoom.SendMessageAsync("Welcome to the server! Lets get you settled, alright?");
             await introRoom.SendMessageAsync("Firstly, what should we call you?");
             
+            //await introRoom.DeleteAsync();
 
-            await introRoom.DeleteAsync();
-
-            RestTextChannel personalRoom = await guild.CreateTextChannelAsync($"room-{user.Id}");
-            await personalRoom.SendMessageAsync("This is your room, you can do whatever you want in here. Try using the !help command to start ;)");
+            //RestTextChannel personalRoom = await guild.CreateTextChannelAsync($"room-{user.Id}");
+            //await personalRoom.SendMessageAsync("This is your room, you can do whatever you want in here. Try using the !help command to start ;)");
 
             return true;
         }
