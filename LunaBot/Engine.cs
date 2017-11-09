@@ -281,9 +281,13 @@ namespace LunaBot
             //OverwritePermissions perms = new OverwritePermissions();
             await introRoom.AddPermissionOverwriteAsync(newbie, new OverwritePermissions(PermValue.Deny, PermValue.Deny, PermValue.Allow, PermValue.Allow, PermValue.Allow, PermValue.Deny, PermValue.Deny, PermValue.Deny, PermValue.Deny, PermValue.Allow, PermValue.Deny, PermValue.Deny, PermValue.Deny, PermValue.Deny, PermValue.Deny, PermValue.Deny, PermValue.Deny, PermValue.Deny, PermValue.Deny, PermValue.Deny));
 
-            // Start interaction with user.
+            // Start interaction with user. Sleeps are for humanizing the bot.
+            Thread.Sleep(2000);
             await introRoom.SendMessageAsync("Welcome to the server! Lets get you settled, alright?");
+            Thread.Sleep(2000);
             await introRoom.SendMessageAsync("Firstly, what should we call you?");
+
+            // TODO Register user
             
             //await introRoom.DeleteAsync();
 
