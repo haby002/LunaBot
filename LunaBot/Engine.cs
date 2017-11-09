@@ -138,17 +138,16 @@ namespace LunaBot
                 long userId = Convert.ToInt64(message.Author.Id);
                 User user = db.Users.Where(x => x.DiscordId == userId).SingleOrDefault();
                 
-                // calculate amount of xp to give for the message.
+                // No XP gain if you only say 2 words or less.
                 int words = (message.Content.Split(' ').Count<string>());
 
-                // No XP gain if you only say 2 words or less.
                 if (words < 3)
                     return;
-
-                // Returns true if user leveled up.
-                if (user.AddXP(words))
+                
+                // Adds characters (no whitespace) as XP. Returns true if user leveled up.
+                if (user.AddXP(message.Content.Count(c => !Char.IsWhiteSpace(c))))
                 {
-                    await message.Channel.SendMessageAsync($"Congrats @<{user.DiscordId}>! You leveled up to {user.Level}");
+                    await message.Channel.SendMessageAsync($"Congrats <@{user.DiscordId}>! You leveled up to {user.Level}! :confetti_ball:");
                 }
 
                 db.Users.Attach(user);
@@ -231,7 +230,7 @@ namespace LunaBot
         /// Processes messages and prevents raids by checking the newest message sent by the user and deletes if it doesn't pass criteria
         /// </summary>
         /// <param name="message"></param>
-        /// <returns></returns>
+        /// <returns>True if deleted, false otherwise.</returns>
         private async Task<bool> ProcessMessage(SocketMessage message)
         {
             ulong user = message.Author.Id;
