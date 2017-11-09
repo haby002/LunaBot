@@ -135,7 +135,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Commands\BaseCommand.cs" />
-    <Compile Include="Commands\ChoreWheelCommand.cs" />
     <Compile Include="Commands\FixRoomsCommand.cs" />
     <Compile Include="Commands\GetAttributeCommand.cs" />
     <Compile Include="Commands\GetCommand.cs" />
