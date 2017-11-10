@@ -29,6 +29,7 @@ namespace LunaBot.Commands
                 newUser.Level = 1;
                 newUser.Privilege = 0;
                 newUser.TutorialFinished = false;
+                newUser.Gender = User.Genders.None;
                 db.Users.Add(newUser);
                 var list = db.Users.ToList();
                 db.SaveChanges();
@@ -59,6 +60,7 @@ namespace LunaBot.Commands
                 newUser.Level = 1;
                 newUser.Privilege = 0;
                 newUser.TutorialFinished = false;
+                newUser.Gender = User.Genders.None;
                 db.Users.Add(newUser);
                 var list = db.Users.ToList();
                 db.SaveChanges();
