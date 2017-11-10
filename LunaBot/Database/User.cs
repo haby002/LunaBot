@@ -20,25 +20,43 @@ namespace LunaBot.Database
 
         public uint Privilege { get; set; }
 
-        public string Description { get; set; }
+        public bool TutorialFinished { get; set; }
 
         public int Level { get; set; }
 
         public int Xp { get; set; }
 
+        public string Nickname { get; set; }
+
+        public Genders Gender { get; set; }
+
+        public Orientation orientation { get; set; }
+
         public int Age { get; set; }
 
-        public string Gender { get; set; }
+        public string Fur { get; set; }
+
+        public string Description { get; set; }
 
         public string Ref { get; set; }
 
-        public bool TutorialFinished { get; set; }
+        public enum Genders
+        {
+            None,
+            Male,
+            Female,
+            TransF,
+            TransM,
+            Other,
+        };
 
-        //public enum Genders
-        //{
-        //    Male,
-        //    Female,
-        //    Other,
-        //};
+        public enum Orientation
+        {
+            None,
+            Straight,
+            Gay,
+            Bi,
+            Asexual,
+        };
     }
 }
