@@ -164,6 +164,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>SecretStrings.resx</DependentUpon>
     </Compile>
+    <Compile Include="ServerUtilities\BotReporting.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="StringTable.Designer.cs">
       <AutoGen>True</AutoGen>

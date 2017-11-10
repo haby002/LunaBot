@@ -18,7 +18,7 @@ namespace LunaBot.Database
         [Index(IsUnique = true)]
         public long DiscordId { get; set; }
 
-        public string Privilege { get; set; }
+        public uint Privilege { get; set; }
 
         public string Description { get; set; }
 
@@ -31,6 +31,8 @@ namespace LunaBot.Database
         public string Gender { get; set; }
 
         public string Ref { get; set; }
+
+        public bool TutorialFinished { get; set; }
 
         //public enum Genders
         //{

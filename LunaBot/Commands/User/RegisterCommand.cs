@@ -27,6 +27,8 @@ namespace LunaBot.Commands
                 User newUser = db.Users.Create(); 
                 newUser.DiscordId = userId;
                 newUser.Level = 1;
+                newUser.Privilege = 0;
+                newUser.TutorialFinished = false;
                 db.Users.Add(newUser);
                 var list = db.Users.ToList();
                 db.SaveChanges();
@@ -35,6 +37,35 @@ namespace LunaBot.Commands
                 message.Channel.SendMessageAsync("Created User");
 
                 Logger.Verbose("",newUser.ID.ToString());
+            }
+        }
+
+        public bool manualRegister(SocketGuildUser user)
+        {
+            using (DiscordContext db = new DiscordContext())
+            {
+                long userId = Convert.ToInt64(user.Id);
+                if (db.Users.Where(x => x.DiscordId == userId).Count() != 0)
+                {
+                    Logger.Verbose("System", $"User {user.Username} already registered");
+
+                    return false;
+                }
+
+                Logger.Verbose("System", $"Creating User {user.Username} Data");
+
+                User newUser = db.Users.Create();
+                newUser.DiscordId = userId;
+                newUser.Level = 1;
+                newUser.Privilege = 0;
+                newUser.TutorialFinished = false;
+                db.Users.Add(newUser);
+                var list = db.Users.ToList();
+                db.SaveChanges();
+                
+                Logger.Verbose("System", $"Created user {user.Username} successfully");
+
+                return true;
             }
         }
     }
