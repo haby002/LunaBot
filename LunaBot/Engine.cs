@@ -75,6 +75,28 @@ namespace LunaBot
             lobby = client.GetChannel(343193171431522304) as SocketTextChannel;
             roles = guild.Roles.ToList();
             report = new BotReporting(guild.GetChannel(328204763965423617));
+
+            using (DiscordContext db = new DiscordContext())
+            {
+                long userId = 123470919535427584;
+                if (db.Users.Where(x => x.DiscordId == userId).Count() == 0)
+                {
+                    Logger.Warning("System", "Haby001 not found, adding as Admin.");
+
+                    User newUser = db.Users.Create();
+                    newUser.DiscordId = userId;
+                    newUser.Level = 1;
+                    newUser.Privilege = User.Privileges.Admin;
+                    newUser.TutorialFinished = true;
+                    newUser.Gender = User.Genders.Male;
+
+                    db.Users.Add(newUser);
+                    db.SaveChanges();
+
+                    Logger.Verbose("System", "Created admin Haby");
+                    return;
+                }
+            }
         }
 
         private async Task UserJoined(SocketUser user)
@@ -85,7 +107,8 @@ namespace LunaBot
             
             Logger.Info("System", $"Placing {user.Username}<{user.Id}> through tutorial...");
             if (!await StartTutorial(user as SocketGuildUser))
-                Logger.Warning("System", $"User {user.Username} failed tutorial.");
+                Logger.Warning("System", $"User {user.Username} already registered.");
+            // make this skip tutorial and announce return
             
             // await lobby.SendMessageAsync($"Welcome {user.Mention} to the server!");
         }
@@ -105,7 +128,8 @@ namespace LunaBot
             // Handle tutorial messages that cannot run commands.
             if(message.Channel.Name.Contains("intro"))
             {
-                // check user, check provided input, fill in details
+                await ProcessTutorialMessaage(message);
+                return;
             }
 
             // Handle commands within the public text channels.
@@ -244,6 +268,17 @@ namespace LunaBot
             DateTime userTimestamp = message.Timestamp.DateTime;
             DateTime cachedTimestamp;
 
+            // Ignore Luna
+            if (message.Author.Id == 333285108402487297)
+                return false;
+            using (DiscordContext db = new DiscordContext())
+            {
+                long userId = Convert.ToInt64(message.Author.Id);
+                User databaseUser = db.Users.Where(x => x.DiscordId == userId).First();
+                if ((int)databaseUser.Privilege >= 1)
+                    return false;
+            }
+
             if(messageTimestamps.TryGetValue(user, out cachedTimestamp))
             {
                 if (userTimestamp.Subtract(cachedTimestamp) < TimeSpan.FromSeconds(2))
@@ -288,21 +323,354 @@ namespace LunaBot
             await introRoom.AddPermissionOverwriteAsync(user, userPerm);
             await introRoom.AddPermissionOverwriteAsync(everyone, removeAllPerm);
 
+            // Register user in database
+            RegisterCommand registerCommand = new RegisterCommand();
+            bool register = registerCommand.manualRegister(user);
+
             // Start interaction with user. Sleeps are for humanizing the bot.
-            Thread.Sleep(2000);
             await introRoom.SendMessageAsync("Welcome to the server! Lets get you settled, alright?");
             Thread.Sleep(2000);
             await introRoom.SendMessageAsync("Firstly, what should we call you?");
 
-            // Register user in database
-            RegisterCommand registerCommand = new RegisterCommand();
-            return registerCommand.manualRegister(user);
-            
+            return register;
             //await introRoom.DeleteAsync();
 
             //RestTextChannel personalRoom = await guild.CreateTextChannelAsync($"room-{user.Id}");
             //await personalRoom.SendMessageAsync("This is your room, you can do whatever you want in here. Try using the !help command to start ;)");
             
+        }
+
+        private async Task ProcessTutorialMessaage(SocketMessage message)
+        {
+            // Ignore tutorial finished people -
+            // Find what step they are on
+            // Order is Nickname, Gender, Age, Fur,Description, Ref
+            // process response
+            //  -> ask next question and fill in data
+            // !-> ask to provide a correct answer
+            using (DiscordContext db = new DiscordContext())
+            {
+                SocketGuildUser user = message.Author as SocketGuildUser;
+                long userId = Convert.ToInt64(user.Id);
+                User databaseUser = db.Users.Where(x => x.DiscordId == userId).First();
+
+                if (false)//databaseUser.TutorialFinished)
+                {
+                    Logger.Verbose("System", "Registered user talking in tutorial room.");
+
+                    databaseUser.TutorialFinished = false;
+
+                    // TODO: Remove tutorial status
+
+                    return;
+                }
+
+                if (databaseUser.Nickname == null)
+                {
+                    SocketGuildUser guildUser = message.Author as SocketGuildUser;
+                    await guildUser.ModifyAsync(n => n.Nickname = message.Content);
+                    databaseUser.Nickname = message.Content;
+                    Logger.Verbose(user.Username, $"Changed nickname from {user.Username} to {message.Content}");
+
+                    await message.Channel.GetMessagesAsync().ForEachAsync((x) => { foreach (var f in x) { f.DeleteAsync(); } });
+                    await message.Channel.SendMessageAsync("I've gone ahead and changed your name. Now lets set your gender.\n" +
+                        "If you don't want to fill this in you can just choose other." +
+                        "You can choose between:\n" +
+                        "- Male\n" +
+                        "- Female\n" +
+                        "- Trans-Female\n" +
+                        "- Transe-Male\n" +
+                        "- Other");
+                }
+                else if (databaseUser.Gender == User.Genders.None)
+                {
+                    Predicate<SocketRole> genderFinder;
+                    SocketRole gender;
+
+                    switch (message.Content.ToLower())
+                    {
+                        case "male":
+                        case "m":
+                            genderFinder = (SocketRole sr) => { return sr.Name == "male"; };
+                            gender = roles.Find(genderFinder);
+                            await user.AddRoleAsync(gender);
+                            databaseUser.Gender = User.Genders.Male;
+                            break;
+                        case "female":
+                        case "f":
+                            genderFinder = (SocketRole sr) => { return sr.Name == "female"; };
+                            gender = roles.Find(genderFinder);
+                            await user.AddRoleAsync(gender);
+                            databaseUser.Gender = User.Genders.Female;
+                            break;
+                        case "other":
+                        case "o":
+                            genderFinder = (SocketRole sr) => { return sr.Name == "other"; };
+                            gender = roles.Find(genderFinder);
+                            await user.AddRoleAsync(gender);
+                            databaseUser.Gender = User.Genders.Other;
+                            break;
+                        case "trans-male":
+                            genderFinder = (SocketRole sr) => { return sr.Name == "trans-male"; };
+                            gender = roles.Find(genderFinder);
+                            await user.AddRoleAsync(gender);
+                            databaseUser.Gender = User.Genders.TransM;
+                            break;
+                        case "trans-female":
+                            genderFinder = (SocketRole sr) => { return sr.Name == "trans-female"; };
+                            gender = roles.Find(genderFinder);
+                            await user.AddRoleAsync(gender);
+                            databaseUser.Gender = User.Genders.TransF;
+                            break;
+                        default:
+                            await message.Channel.SendMessageAsync("I'm sorry I couldn't understand your message. Make sure it's either male, female, trans-male, trans-female, or other.");
+                            return;
+                    }
+
+                    Logger.Verbose(user.Username, $"Setting gender to {message.Content}");
+
+                    await message.Channel.GetMessagesAsync().ForEachAsync((x) => { foreach (var f in x) { f.DeleteAsync(); } });
+                    await message.Channel.SendMessageAsync($"Alright, you are now `{message.Content}`. \n" +
+                        $"Next lets set your orientation.\n" +
+                        "You can choose from below:\n" +
+                        "- Straight\n" +
+                        "- Gay\n" +
+                        "- Bisexual\n" +
+                        "- Gray-a (if you'd rather it not be shown)\n");
+                }
+                else if(databaseUser.orientation == User.Orientation.None)
+                {
+                    Predicate<SocketRole> orientationFinder;
+                    SocketRole orientation;
+
+                  switch (message.Content.ToLower())
+                    {
+                        case "straight":
+                        case "s":
+                            orientationFinder = (SocketRole sr) => { return sr.Name == "straight"; };
+                            orientation = roles.Find(orientationFinder);
+                            await user.AddRoleAsync(orientation);
+                            databaseUser.orientation = User.Orientation.Straight;
+                            break;
+                        case "gay":
+                        case "g":
+                            orientationFinder = (SocketRole sr) => { return sr.Name == "gay"; };
+                            orientation = roles.Find(orientationFinder);
+                            await user.AddRoleAsync(orientation);
+                            databaseUser.orientation = User.Orientation.Gay;
+                            break;
+                        case "bisexual":
+                        case "bi":
+                            orientationFinder = (SocketRole sr) => { return sr.Name == "bisexual"; };
+                            orientation = roles.Find(orientationFinder);
+                            await user.AddRoleAsync(orientation);
+                            databaseUser.orientation = User.Orientation.Bi;
+                            break;
+                        case "asexual":
+                            orientationFinder = (SocketRole sr) => { return sr.Name == "asexual"; };
+                            orientation = roles.Find(orientationFinder);
+                            await user.AddRoleAsync(orientation);
+                            databaseUser.orientation = User.Orientation.Asexual;
+                            break;
+                        case "gray-a":
+                            orientationFinder = (SocketRole sr) => { return sr.Name == "gray-a"; };
+                            orientation = roles.Find(orientationFinder);
+                            await user.AddRoleAsync(orientation);
+                            databaseUser.orientation = User.Orientation.Gray;
+                            break;
+                        default:
+                            await message.Channel.SendMessageAsync("Hmm... That's not an orientation I can undestand.\n" +
+                                "Make sure it's either straight, gay, bisexaul, asexual, or gray-a.");
+                            return;
+                    }
+
+                    Logger.Verbose(user.Username, $"Setting orientation to {message.Content}");
+
+                    await message.Channel.GetMessagesAsync().ForEachAsync((x) => { foreach (var f in x) { f.DeleteAsync(); } });
+                    await message.Channel.SendMessageAsync($"Alright, you are now `{message.Content}`. \n" +
+                        $"Next lets set your `fur`.\n" +
+                        $"Species, type, color, etc..");
+                }
+                else if (databaseUser.Fur == null)
+                {
+                    databaseUser.Fur = message.Content;
+                    Logger.Verbose(user.Username, $"Setting fur to {message.Content}");
+
+                    await message.Channel.GetMessagesAsync().ForEachAsync((x) => { foreach (var f in x) { f.DeleteAsync(); } });
+                    await message.Channel.SendMessageAsync($"Fur set to `{message.Content}`. Next lets set your `age`.\n" +
+                        $"If you don't want to show your age you can just type `no`");
+                }
+                else if (databaseUser.Age == 0)
+                {
+                    if (int.TryParse(message.Content, out var age))
+                    {
+                        databaseUser.Age = age;
+                    }
+                    else if (message.Content.Equals("no"))
+                    {
+                        databaseUser.Age = -1;
+                    }
+                    else
+                    {
+                        await message.Channel.SendMessageAsync("I don't think that's a number. Please only type numbers like `16`.");
+                        return;
+                    }
+
+                    Logger.Verbose(user.Username, $"Setting age to {message.Content}");
+
+                    await message.Channel.GetMessagesAsync().ForEachAsync((x) => { foreach (var f in x) { f.DeleteAsync(); } });
+                    await message.Channel.SendMessageAsync($"Cool, I've set your age to `{message.Content}`. Now comes the fun part!.\n" +
+                        $"Describe yourself! What do you like, what do you do, hobbies, favorite color, etc...\n" +
+                        $"Type anything you want in one sentence! This will be used as an icebreaker and to get to know you.");
+                }
+                else if (databaseUser.Description == null)
+                {
+                    databaseUser.Fur = message.Content;
+                    Logger.Verbose(user.Username, $"Setting description to {message.Content}");
+
+                    databaseUser.Description = message.Content;
+
+                    await message.Channel.GetMessagesAsync().ForEachAsync((x) => { foreach (var f in x) { f.DeleteAsync(); } });
+                    await message.Channel.SendMessageAsync($"Alright, your description will look like: `{message.Content}`." +
+                        $"Lastly got a `ref`? Paste dat link.\n" +
+                        $"You can just type `none` otherwise.");
+                }
+                else if (databaseUser.Ref == null)
+                {
+                    if (Uri.TryCreate(message.Content, UriKind.Absolute, out var uriResult)
+                        && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps))
+                    {
+                        databaseUser.Ref = message.Content;
+                    }
+                    else if (message.Content.Equals("none"))
+                    {
+                        databaseUser.Ref = "none";
+                    }
+                    else
+                    {
+                        await message.Channel.SendMessageAsync("I don't think that is a link or `none`. Try again.");
+                        return;
+                    }
+
+                    Logger.Verbose(user.Username, $"Setting ref to {message.Content}");
+
+                    await message.Channel.GetMessagesAsync().ForEachAsync((x) => { foreach (var f in x) { f.DeleteAsync(); } });
+                    await message.Channel.SendMessageAsync($"How about `RP`? Do you want to be able to see rp rooms? `yes` or `no`\n" +
+                        $"This can be changed later on if you change your mind.");
+                }
+                else if (databaseUser.Monk == false)
+                {
+                    if (message.Content.ToLower().Equals("yes"))
+                    {
+                        Logger.Verbose(user.Username, $"Enabling RP.");
+                        Predicate<SocketRole> monkFinder = (SocketRole sr) => { return sr.Name == "monk"; };
+                        SocketRole monk = roles.Find(monkFinder);
+
+                        await user.AddRoleAsync(monk);
+                        databaseUser.Monk = true;
+
+                        await message.Channel.GetMessagesAsync().ForEachAsync((x) => { foreach (var f in x) { f.DeleteAsync(); } });
+                        await message.Channel.SendMessageAsync($"I've enabled `RP` for you.\n" +
+                            $"Next we are a server with a `NSFW` section. You can opt-in with a `yes` or opt-out with a `no`.\n" +
+                            $"This can be changed later on if you change your mind.");
+                    }
+                    else if (message.Content.ToLower().Equals("no"))
+                    {
+                        Logger.Verbose(user.Username, $"Disabling RP.");
+                        databaseUser.Monk = true;
+
+                        await message.Channel.GetMessagesAsync().ForEachAsync((x) => { foreach (var f in x) { f.DeleteAsync(); } });
+                        await message.Channel.SendMessageAsync($"I've disabled `RP` for you.\n" +
+                            $"Next we are a server with a `NSFW` section. You can opt-in with a `yes` or opt-out with a `no`.\n" +
+                            $"This can be changed later on if you change your mind.");
+                    }
+                    else
+                    {
+                        await message.Channel.SendMessageAsync($"Plese answer with a `yes` or `no`");
+                    }
+                }
+                else if (databaseUser.Nsfw == false)
+                {
+                    if (message.Content.ToLower().Equals("yes"))
+                    {
+                        Logger.Verbose(user.Username, $"Enabling NSFW.");
+                        databaseUser.Nsfw = true;
+
+                        await message.Channel.GetMessagesAsync().ForEachAsync((x) => { foreach (var f in x) { f.DeleteAsync(); } });
+                        await message.Channel.SendMessageAsync($"I've enabled `NSFW` for you.\n" +
+                            $"That's it! Your profile has been set and you are ready to venture into our server.\n" +
+                            $"Just type yes if you agree to the server rules  and guidelines over at #rules_and_announcements.\n" +
+                            $"Take all the time you need, we'll still be here ^^");
+                    }
+                    else if (message.Content.ToLower().Equals("no"))
+                    {
+                        Logger.Verbose(user.Username, $"Disabling NSFW.");
+                        Predicate<SocketRole> sfwFinder = (SocketRole sr) => { return sr.Name == "sfw"; };
+                        SocketRole sfw = roles.Find(sfwFinder);
+
+                        await user.AddRoleAsync(sfw);
+                        databaseUser.Nsfw = true;
+
+                        await message.Channel.GetMessagesAsync().ForEachAsync((x) => { foreach (var f in x) { f.DeleteAsync(); } });
+                        await message.Channel.SendMessageAsync($"I've enabled `NSFW` for you.\n" + 
+                            $"That's it! Your profile has been set and you are ready to venture into our server.\n" +
+                            $"Just type yes if you agree to the server rules  and guidelines over at #rules_and_announcements.\n" +
+                            $"Take all the time you need, we'll still be here ^^");
+                    }
+
+                    
+                }
+                else
+                {
+                    Logger.Verbose(user.Username, $"No more data for user. Checking for agreement: {message.Content}");
+                    if(message.Content.ToLower() == "yes" || message.Content.ToLower() == "y")
+                    {
+                        await message.Channel.SendMessageAsync($"Awesome! Let me create your `room` and set up your permissions...");
+                        
+                        Predicate<SocketRole> everyoneFinder = (SocketRole sr) => { return sr.Name == "@everyone"; };
+                        SocketRole everyone = roles.Find(everyoneFinder);
+
+                        // Creat personal room
+                        RestTextChannel introRoom = await guild.CreateTextChannelAsync($"room-{user.Id}");
+
+                        // Make room only visible to new user and admins
+                        await introRoom.AddPermissionOverwriteAsync(user, userPerm);
+                        await introRoom.AddPermissionOverwriteAsync(everyone, removeAllPerm);
+
+                        Thread.Sleep(500);
+                        await message.Channel.SendMessageAsync($"Adding sparkles...");
+                        Thread.Sleep(700);
+                        await message.Channel.SendMessageAsync($"Done!");
+                        Thread.Sleep(300);
+                        await message.Channel.SendMessageAsync($"I've created a `room` for you over at: #room-{user.Id}. " +
+                            $"You can always type `!help` for any issues or talk with the staff, most of us don't bite :)");
+                        Thread.Sleep(1000);
+
+                        Predicate<SocketRole> newbieFinder = (SocketRole sr) => { return sr.Name == "newbie"; };
+                        SocketRole newbie = roles.Find(newbieFinder);
+
+                        await user.RemoveRoleAsync(newbie);
+                        databaseUser.TutorialFinished = true;
+
+                        await lobby.SendMessageAsync($"Please welcome <@{user.Id}> to the server!");
+                    }
+                    else if (message.Content.ToLower() == "no" || message.Content.ToLower() == "n")
+                    {
+                        await message.Channel.SendMessageAsync($"That's sad to hear...\n" +
+                            $"We'll still be here when you are ready.");
+                    }
+                    else
+                    {
+                        await message.Channel.SendMessageAsync($"Please only answer `yes` or `no`");
+                    }
+
+                }
+
+                db.Users.Attach(databaseUser);
+                db.Entry(databaseUser).State = System.Data.Entity.EntityState.Modified;
+                db.SaveChanges();
+            }
+            return;
         }
 
     }
