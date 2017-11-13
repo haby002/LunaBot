@@ -136,6 +136,7 @@
   <ItemGroup>
     <Compile Include="Commands\BaseCommand.cs" />
     <Compile Include="Commands\Admin\FixRoomsCommand.cs" />
+    <Compile Include="Commands\Moderator\ForcetutCommand.cs" />
     <Compile Include="Commands\User\GetAttributeCommand.cs" />
     <Compile Include="Commands\Moderator\GetCommand.cs" />
     <Compile Include="Commands\LunaBotCommandAttribute.cs" />
@@ -152,9 +153,9 @@
     <Compile Include="DiscordExtensions.cs" />
     <Compile Include="Engine.cs" />
     <Compile Include="Logger.cs" />
-    <Compile Include="Migrations\201707100258553_asdfasdddd.cs" />
-    <Compile Include="Migrations\201707100258553_asdfasdddd.Designer.cs">
-      <DependentUpon>201707100258553_asdfasdddd.cs</DependentUpon>
+    <Compile Include="Migrations\201711130523537_Initial.cs" />
+    <Compile Include="Migrations\201711130523537_Initial.Designer.cs">
+      <DependentUpon>201711130523537_Initial.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Program.cs" />
@@ -177,8 +178,8 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201707100258553_asdfasdddd.resx">
-      <DependentUpon>201707100258553_asdfasdddd.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201711130523537_Initial.resx">
+      <DependentUpon>201711130523537_Initial.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="SecretStrings.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -189,5 +190,6 @@
       <LastGenOutput>StringTable.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

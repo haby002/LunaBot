@@ -2,6 +2,7 @@
 using System.Linq;
 using Discord.WebSocket;
 using LunaBot.Database;
+using System.Collections.Generic;
 
 namespace LunaBot.Commands
 {
@@ -83,17 +84,53 @@ namespace LunaBot.Commands
                             }
                             break;
                         case "gender":
-                            if(parameters[2].ToLower() == "male" || parameters[2].ToLower() == "female" || parameters[2].ToLower() == "other")
+                            Predicate<SocketRole> genderFinder;
+                            SocketRole gender;
+                            SocketTextChannel channel = message.Channel as SocketTextChannel;
+                            List<SocketRole> roles = channel.Guild.Roles.ToList();
+                            SocketGuildUser discordUser = message.Author as SocketGuildUser;
+                            switch (parameters[2].ToLower())
                             {
-                                Logger.Info(message.Author.Username, $"Changed user {parameters[0]}'s gender from {user.Gender} to {parameters[2]}");
-                                user.Gender = parameters[2];
-                                message.Channel.SendMessageAsync($"Success: {parameters[0]}'s gender set to `{user.Gender}`");
+                                case "male":
+                                case "m":
+                                    genderFinder = (SocketRole sr) => { return sr.Name == "male"; };
+                                    gender = roles.Find(genderFinder);
+                                    discordUser.AddRoleAsync(gender);
+                                    user.Gender = User.Genders.Male;
+                                    break;
+                                case "female":
+                                case "f":
+                                    genderFinder = (SocketRole sr) => { return sr.Name == "female"; };
+                                    gender = roles.Find(genderFinder);
+                                    discordUser.AddRoleAsync(gender);
+                                    user.Gender = User.Genders.Female;
+                                    break;
+                                case "other":
+                                case "o":
+                                    genderFinder = (SocketRole sr) => { return sr.Name == "other"; };
+                                    gender = roles.Find(genderFinder);
+                                    discordUser.AddRoleAsync(gender);
+                                    user.Gender = User.Genders.Other;
+                                    break;
+                                case "trans-male":
+                                    genderFinder = (SocketRole sr) => { return sr.Name == "trans-male"; };
+                                    gender = roles.Find(genderFinder);
+                                    discordUser.AddRoleAsync(gender);
+                                    user.Gender = User.Genders.TransM;
+                                    break;
+                                case "trans-female":
+                                    genderFinder = (SocketRole sr) => { return sr.Name == "trans-female"; };
+                                    gender = roles.Find(genderFinder);
+                                    discordUser.AddRoleAsync(gender);
+                                    user.Gender = User.Genders.TransF;
+                                    break;
+                                default:
+                                    message.Channel.SendMessageAsync("I'm sorry I couldn't understand your message. Make sure the gender is either male, female, trans-male, trans-female, or other.\n" +
+                                        $"You gave: {parameters[2]}");
+                                    return;
                             }
-                            else
-                            {
-                                Logger.Warning(message.Author.Username, "Failed database set gender command");
-                                message.Channel.SendMessageAsync($"Error: gender can only be `male`, `female`, or `other`. You gave: {parameters[2]}");
-                            }
+                            Logger.Info(message.Author.Username, $"Changed user {parameters[0]}'s gender from {user.Gender} to {parameters[2]}");
+                            message.Channel.SendMessageAsync($"Success: {parameters[0]}'s gender set to `{user.Gender}`");
                             break;
                         case "ref":
                             if (Uri.TryCreate(parameters[2], UriKind.Absolute, out var uriResult) && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps))

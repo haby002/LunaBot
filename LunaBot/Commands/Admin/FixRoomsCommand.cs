@@ -27,7 +27,7 @@ namespace LunaBot.Commands
                     if (ch.Name.Contains("room-") || ch.Name.Contains("void-") || ch.Name.Contains("intro-"))
                     {
                         Logger.Verbose("system", $"Found: {ch.Name}");
-                        //ch.DeleteAsync();
+                        ch.DeleteAsync();
                     }
                     else
                     {
@@ -74,7 +74,7 @@ namespace LunaBot.Commands
                                 break;
                             default:
                                 Logger.Warning("system", $"Found room {ch.Name}");
-                                //ch.DeleteAsync();
+                                ch.DeleteAsync();
                                 break;
                         }
                         Logger.Warning("system", $"Found room {ch.Name}");
