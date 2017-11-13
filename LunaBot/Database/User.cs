@@ -18,7 +18,7 @@ namespace LunaBot.Database
         [Index(IsUnique = true)]
         public long DiscordId { get; set; }
 
-        public uint Privilege { get; set; }
+        public Privileges Privilege { get; set; }
 
         public bool TutorialFinished { get; set; }
 
@@ -40,6 +40,10 @@ namespace LunaBot.Database
 
         public string Ref { get; set; }
 
+        public bool Nsfw { get; set; }
+
+        public bool Monk { get; set; }
+
         public enum Genders
         {
             None,
@@ -57,6 +61,14 @@ namespace LunaBot.Database
             Gay,
             Bi,
             Asexual,
+            Gray
         };
+
+        public enum Privileges
+        {
+            User,
+            Moderator,
+            Admin
+        }
     }
 }
