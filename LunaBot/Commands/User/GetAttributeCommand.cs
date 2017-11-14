@@ -8,7 +8,7 @@ using LunaBot.Database;
 
 namespace LunaBot.Commands
 {
-    [LunaBotCommand("desc")]
+    [LunaBotCommand("Desc")]
     class DescCommand : BaseCommand
     {
         public override void Process(SocketMessage message, string[] parameters)
