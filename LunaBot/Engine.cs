@@ -71,7 +71,9 @@ namespace LunaBot
             }
         }
 
+#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
         private async Task Ready()
+#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
         {
             guild = client.GetGuild(324967746465169410);
             lobby = client.GetChannel(343193171431522304) as SocketTextChannel;
@@ -106,10 +108,22 @@ namespace LunaBot
             Logger.Info("System", $"User {user.Username}<{user.Id}> joined the server.");
             if (lobby == null)
                 lobby = client.GetChannel(343193171431522304) as SocketTextChannel;
-            
-            Logger.Info("System", $"Placing {user.Username}<{user.Id}> through tutorial...");
-            if (!await StartTutorial(user as SocketGuildUser))
-                Logger.Warning("System", $"User {user.Username} already registered.");
+
+            using (DiscordContext db = new DiscordContext())
+            {
+                long userId = Convert.ToInt64(user.Id);
+                if (db.Users.Where(x => x.DiscordId == userId).First().TutorialFinished)
+                {
+                    Logger.Info("System", $"{user.Username}<@{user.Id}> already finished the tutorial. Announcing in lobby.");
+                    await lobby.SendMessageAsync($"Welcome back <@{user.Id}> to the server!");
+                }
+                else
+                {
+                    Logger.Info("System", $"Placing {user.Username}<@{user.Id}> through tutorial...");
+                    if (!await StartTutorial(user as SocketGuildUser))
+                        Logger.Warning("System", $"User {user.Username} already registered.");
+                }
+            }
             // make this skip tutorial and announce return
             
             // await lobby.SendMessageAsync($"Welcome {user.Mention} to the server!");
@@ -119,16 +133,19 @@ namespace LunaBot
         {
             using (DiscordContext db = new DiscordContext())
             {
-                if(db.Users.Where(x => x.DiscordId == 0).First().TutorialFinished)
+                long userId = Convert.ToInt64(user.Id);
+                if (db.Users.Where(x => x.DiscordId == userId).First().TutorialFinished)
                 {
-                    await lobby.SendMessageAsync($"<@{user.Id} has left the server :wave:");
+                    Logger.Info("System", $"User {user.Username}<@{user.Id}> has left the server.");
+                    await lobby.SendMessageAsync($"<@{user.Id}> has left the server :wave:");
                 }
             }
         }
 
-        private async Task UserBanned(SocketUser user)
+        private async Task UserBanned(SocketUser user, SocketGuild guild)
         {
-            await lobby.SendMessageAsync($"My Hammer to your face <@{user.Id}!");
+            await lobby.SendMessageAsync($"My :banhammer: to your face!");
+            Logger.Info("System", $"User {user.Username}<@{user.Id}> has been banned from the server.");
         }
 
         private async Task MessageReceived(SocketMessage message)
@@ -630,7 +647,7 @@ namespace LunaBot
                         databaseUser.Nsfw = true;
 
                         await message.Channel.GetMessagesAsync().ForEachAsync((x) => { foreach (var f in x) { f.DeleteAsync(); } });
-                        await message.Channel.SendMessageAsync($"I've enabled `NSFW` for you.\n" + 
+                        await message.Channel.SendMessageAsync($"I've disabled `NSFW` for you.\n" + 
                             $"That's it! Your profile has been set and you are ready to venture into our server.\n" +
                             $"Just type yes if you agree to the server rules  and guidelines over at #rules_and_announcements.\n" +
                             $"Take all the time you need, we'll still be here ^^");
