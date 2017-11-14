@@ -83,14 +83,15 @@ namespace LunaBot
             using (DiscordContext db = new DiscordContext())
             {
                 long userId = 123470919535427584;
-                if (db.Users.Where(x => x.DiscordId == userId).Count() == 0)
+                User haby = db.Users.Where(x => x.DiscordId == userId).First();
+                if (haby == null)
                 {
                     Logger.Warning("System", "Haby001 not found, adding as Admin.");
 
                     User newUser = db.Users.Create();
                     newUser.DiscordId = userId;
                     newUser.Level = 1;
-                    newUser.Privilege = User.Privileges.Admin;
+                    newUser.Privilege = User.Privileges.Owner;
                     newUser.TutorialFinished = true;
                     newUser.Gender = User.Genders.Male;
 
@@ -99,6 +100,14 @@ namespace LunaBot
 
                     Logger.Verbose("System", "Created admin Haby");
                     return;
+                }
+                else if(haby.Privilege != User.Privileges.Owner)
+                {
+                    haby.Privilege = User.Privileges.Owner;
+                    
+                    db.SaveChanges();
+
+                    Logger.Verbose("System", "Updated Haby's priviledges to Owner");
                 }
             }
         }
