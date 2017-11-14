@@ -46,6 +46,8 @@ namespace LunaBot
             
             client.MessageReceived += MessageReceived;
             client.UserJoined += UserJoined;
+            client.UserLeft += UserLeft;
+            client.UserBanned += UserBanned;
             
             this.RegisterCommands();
 
@@ -111,6 +113,22 @@ namespace LunaBot
             // make this skip tutorial and announce return
             
             // await lobby.SendMessageAsync($"Welcome {user.Mention} to the server!");
+        }
+
+        private async Task UserLeft(SocketUser user)
+        {
+            using (DiscordContext db = new DiscordContext())
+            {
+                if(db.Users.Where(x => x.DiscordId == 0).First().TutorialFinished)
+                {
+                    await lobby.SendMessageAsync($"<@{user.Id} has left the server :wave:");
+                }
+            }
+        }
+
+        private async Task UserBanned(SocketUser user)
+        {
+            await lobby.SendMessageAsync($"My Hammer to your face <@{user.Id}!");
         }
 
         private async Task MessageReceived(SocketMessage message)
