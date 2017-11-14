@@ -68,7 +68,8 @@ namespace LunaBot.Database
         {
             User,
             Moderator,
-            Admin
+            Admin,
+            Owner
         }
     }
 }
