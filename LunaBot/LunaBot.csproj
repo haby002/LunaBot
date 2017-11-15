@@ -140,14 +140,13 @@
     <Compile Include="Commands\Moderator\ForcetutCommand.cs" />
     <Compile Include="Commands\Owner\DescendCommand.cs" />
     <Compile Include="Commands\User\GetAttributeCommand.cs" />
-    <Compile Include="Commands\Moderator\GetCommand.cs" />
+    <Compile Include="Commands\User\GetCommand.cs" />
     <Compile Include="Commands\LunaBotCommandAttribute.cs" />
     <Compile Include="Commands\User\PingCommand.cs" />
     <Compile Include="Commands\Moderator\SetCommands.cs" />
     <Compile Include="Commands\User\RegisterCommand.cs" />
     <Compile Include="Commands\User\RollCommand.cs" />
     <Compile Include="Commands\SettingsCommand.cs" />
-    <Compile Include="Commands\User\XpCommand.cs" />
     <Compile Include="Database\DiscordContext.cs" />
     <Compile Include="Database\Setting.cs" />
     <Compile Include="Database\User.cs" />
