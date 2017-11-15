@@ -8,8 +8,8 @@ using LunaBot.Database;
 
 namespace LunaBot.Commands
 {
-    [LunaBotCommand("Desc")]
-    class DescCommand : BaseCommand
+    [LunaBotCommand("get_Desc")]
+    class GetDescCommand : BaseCommand
     {
         public override void Process(SocketMessage message, string[] parameters)
         {
@@ -50,8 +50,8 @@ namespace LunaBot.Commands
         }
     }
 
-    [LunaBotCommand("Age")]
-    class AgeCommand : BaseCommand
+    [LunaBotCommand("get_Age")]
+    class GetAgeCommand : BaseCommand
     {
         public override void Process(SocketMessage message, string[] parameters)
         {
@@ -92,8 +92,8 @@ namespace LunaBot.Commands
         }
     }
 
-    [LunaBotCommand("Lvl")]
-    class LvlCommand : BaseCommand
+    [LunaBotCommand("get_Lvl")]
+    class GetLvlCommand : BaseCommand
     {
         public override void Process(SocketMessage message, string[] parameters)
         {
@@ -126,8 +126,8 @@ namespace LunaBot.Commands
         }
     }
 
-    [LunaBotCommand("xp")]
-    class XpCommand : BaseCommand
+    [LunaBotCommand("get_xp")]
+    class GetXpCommand : BaseCommand
     {
         public override void Process(SocketMessage message, string[] parameters)
         {
@@ -160,8 +160,8 @@ namespace LunaBot.Commands
         }
     }
 
-    [LunaBotCommand("g")]
-    class GenderCommand : BaseCommand
+    [LunaBotCommand("get_g")]
+    class GetGenderCommand : BaseCommand
     {
         public override void Process(SocketMessage message, string[] parameters)
         {
@@ -194,8 +194,8 @@ namespace LunaBot.Commands
         }
     }
 
-    [LunaBotCommand("o")]
-    class OrientationCommand : BaseCommand
+    [LunaBotCommand("get_o")]
+    class GetOrientationCommand : BaseCommand
     {
         public override void Process(SocketMessage message, string[] parameters)
         {
@@ -228,8 +228,8 @@ namespace LunaBot.Commands
         }
     }
 
-    [LunaBotCommand("Fur")]
-    class FurCommand : BaseCommand
+    [LunaBotCommand("get_Fur")]
+    class GetFurCommand : BaseCommand
     {
         public override void Process(SocketMessage message, string[] parameters)
         {
@@ -270,8 +270,8 @@ namespace LunaBot.Commands
         }
     }
 
-    [LunaBotCommand("Ref")]
-    class RefCommand : BaseCommand
+    [LunaBotCommand("get_Ref")]
+    class GetRefCommand : BaseCommand
     {
         public override void Process(SocketMessage message, string[] parameters)
         {
@@ -312,8 +312,8 @@ namespace LunaBot.Commands
         }
     }
 
-    [LunaBotCommand("priv")]
-    class PrivilegeCommand : BaseCommand
+    [LunaBotCommand("get_priv")]
+    class GetPrivilegeCommand : BaseCommand
     {
         public override void Process(SocketMessage message, string[] parameters)
         {

@@ -272,16 +272,23 @@ namespace LunaBot
         {
             // Cut up the message with the relevent parts
             string messageText = message.Content;
-            string[] commandPts = messageText.Substring(1).Split(new Char[] {' '}, 2);
+            string[] commandPts = messageText.Substring(1).Split(new Char[] {' '}, 3);
             string command = commandPts[0].ToLower();
 
             string content = string.Empty;
-            if(commandPts.Count() != 1)
+            if(commandPts.Count() > 2)
             {
-                content = commandPts[1];
+                content = commandPts[2];
             }
 
-            this.commandDictionary["set"].Process(message, new[] { command, content });
+            if (message.MentionedUsers.Count > 0)
+            {
+                this.commandDictionary["modset_" + command].Process(message, new[] { content });
+            }
+            else
+            {
+                this.commandDictionary["set_" + command].Process(message, new[] { content });
+            }
         }
 
         private void ProcessGetAttribute(SocketMessage message)
@@ -298,7 +305,7 @@ namespace LunaBot
                 user = mentionedUser.Id.ToString();
             }
 
-            this.commandDictionary[command].Process(message, new[] { command, user });
+            this.commandDictionary["get_" + command].Process(message, new[] { command, user });
         }
 
         /// <summary>
@@ -398,14 +405,10 @@ namespace LunaBot
                 long userId = Convert.ToInt64(user.Id);
                 User databaseUser = db.Users.Where(x => x.DiscordId == userId).First();
 
-                if (false)//databaseUser.TutorialFinished)
+                if (databaseUser.TutorialFinished)
                 {
                     Logger.Verbose("System", "Registered user talking in tutorial room.");
-
-                    databaseUser.TutorialFinished = false;
-
-                    // TODO: Remove tutorial status
-
+                    
                     return;
                 }
 

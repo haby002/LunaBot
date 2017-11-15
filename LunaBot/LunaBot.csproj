@@ -139,8 +139,8 @@
     <Compile Include="Commands\Admin\FixRoomsCommand.cs" />
     <Compile Include="Commands\Moderator\ForcetutCommand.cs" />
     <Compile Include="Commands\Owner\DescendCommand.cs" />
+    <Compile Include="Commands\User\SetAttributeCommand.cs" />
     <Compile Include="Commands\User\GetAttributeCommand.cs" />
-    <Compile Include="Commands\User\GetCommand.cs" />
     <Compile Include="Commands\LunaBotCommandAttribute.cs" />
     <Compile Include="Commands\User\PingCommand.cs" />
     <Compile Include="Commands\Moderator\SetCommands.cs" />
