@@ -235,7 +235,7 @@ namespace LunaBot
         {
             // Cut up the message with the relevent parts
             string messageText = message.Content;
-            string[] commandPts = messageText.Substring(1).Split(' ');
+            string[] commandPts = messageText.Substring(1).Split(new Char[] { ' ' }, 4);
             string command = commandPts[0].ToLower();
             List<string> commandParamsList = new List<string>(commandPts);
             commandParamsList.RemoveAt(0);
@@ -272,23 +272,21 @@ namespace LunaBot
         {
             // Cut up the message with the relevent parts
             string messageText = message.Content;
-            string[] commandPts = messageText.Substring(1).Split(new Char[] {' '}, 3);
+            string[] commandPts = messageText.Substring(1).Split(new Char[] {' '}, 2);
             string command = commandPts[0].ToLower();
 
             string content = string.Empty;
-            if(commandPts.Count() > 2)
+            if(commandPts.Count() > 1)
             {
-                content = commandPts[2];
-            }
-
-            if (message.MentionedUsers.Count > 0)
-            {
-                this.commandDictionary["modset_" + command].Process(message, new[] { content });
+                content = commandPts[1];
             }
             else
             {
-                this.commandDictionary["set_" + command].Process(message, new[] { content });
+                message.Channel.SendMessageAsync("I can't set something as nothing, try `+Attribute <Content>`");
+                return;
             }
+            
+            this.commandDictionary["set_" + command].Process(message, new[] { content });
         }
 
         private void ProcessGetAttribute(SocketMessage message)
@@ -490,7 +488,7 @@ namespace LunaBot
                     Predicate<SocketRole> orientationFinder;
                     SocketRole orientation;
 
-                  switch (message.Content.ToLower())
+                    switch (message.Content.ToLower())
                     {
                         case "straight":
                         case "s":

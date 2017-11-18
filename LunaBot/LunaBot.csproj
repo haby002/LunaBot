@@ -134,6 +134,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Utilities.cs" />
     <Compile Include="Commands\Owner\AscendCommand.cs" />
     <Compile Include="Commands\BaseCommand.cs" />
     <Compile Include="Commands\Admin\FixRoomsCommand.cs" />
@@ -143,7 +144,7 @@
     <Compile Include="Commands\User\GetAttributeCommand.cs" />
     <Compile Include="Commands\LunaBotCommandAttribute.cs" />
     <Compile Include="Commands\User\PingCommand.cs" />
-    <Compile Include="Commands\Moderator\SetCommands.cs" />
+    <Compile Include="Commands\Moderator\AdminSetCommands.cs" />
     <Compile Include="Commands\User\RegisterCommand.cs" />
     <Compile Include="Commands\User\RollCommand.cs" />
     <Compile Include="Commands\SettingsCommand.cs" />
