@@ -33,8 +33,19 @@ namespace LunaBot.Commands
             
             using (DiscordContext db = new DiscordContext())
             {
-                long userId = Convert.ToInt64(unparsedUserId[1]);
+                // check privileges
+                long userId = Convert.ToInt64(message.Author.Id);
                 User user = db.Users.FirstOrDefault(x => x.DiscordId == userId);
+                if((int)user.Privilege < 1)
+                {
+                    Logger.Warning(message.Author.Username, "Not enough permissions.");
+                    message.Channel.SendMessageAsync("Can't let you do that Dave.");
+                    return;
+                }
+
+                // Modify given user
+                userId = Convert.ToInt64(unparsedUserId[1]);
+                user = db.Users.FirstOrDefault(x => x.DiscordId == userId);
                 if (user != null)
                 {
                     switch (parameters[1].ToLower())
