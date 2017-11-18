@@ -16,29 +16,18 @@ namespace LunaBot.Commands
 
             using (DiscordContext db = new DiscordContext())
             {
-                long userId;
+                long userId = Convert.ToInt64(message.Author.Id);
 
-                if (message.MentionedUsers.Count > 0)
-                {
-                    userId = Convert.ToInt64(message.MentionedUsers.First().Id);
-                }
-                else
-                {
-                    userId = Convert.ToInt64(parameters[1]);
-                }
                 User user = db.Users.FirstOrDefault(x => x.DiscordId == userId);
+
                 if (user != null)
                 {
-                    if (user.Description == null)
-                    {
-                        Logger.Warning(message.Author.Username, $"user <@{userId}> description not found.");
-                        message.Channel.SendMessageAsync($"<@{userId}> has no description. *Mysterious...*");
+                    Logger.Verbose(message.Author.Username, $"Setting description for {userId} to: {parameters[0]}");
 
-                        return;
-                    }
+                    user.Description = parameters[0];
+                    db.SaveChanges();
 
-                    Logger.Verbose(message.Author.Username, $"Setting description for {userId} to: ");
-                    message.Channel.SendMessageAsync($"<@{userId}> describes themselve as: {user.Description}");
+                    message.Channel.SendMessageAsync($"Changed <@{userId}> description to: {user.Description}");
 
                     return;
                 }
@@ -55,100 +44,25 @@ namespace LunaBot.Commands
     {
         public override void Process(SocketMessage message, string[] parameters)
         {
-            using (DiscordContext db = new DiscordContext())
+            if(!int.TryParse(parameters[0], out int age))
             {
-                long userId;
+                message.Channel.SendMessageAsync("The numbers Mason, what are the numbers?!");
 
-                if (message.MentionedUsers.Count > 0)
-                {
-                    userId = Convert.ToInt64(message.MentionedUsers.First().Id);
-                }
-                else
-                {
-                    userId = Convert.ToInt64(parameters[1]);
-                }
-
-                User user = db.Users.FirstOrDefault(x => x.DiscordId == userId);
-                if (user != null)
-                {
-                    if (user.Age == 0)
-                    {
-                        Logger.Warning(message.Author.Username, $"user <@{userId}> age not set.");
-                        message.Channel.SendMessageAsync($"<@{userId}> is ageless");
-
-                        return;
-                    }
-
-                    Logger.Verbose(message.Author.Username, $"Looking for {userId} description.");
-                    message.Channel.SendMessageAsync($"<@{userId}> is {user.Age} years old.");
-
-                    return;
-                }
-
-                Logger.Verbose(message.Author.Username, $"Failed to find user: {userId}");
-                message.Channel.SendMessageAsync($"Failed to find user: `{message.Author}`");
-
+                return;
             }
-        }
-    }
-
-    [LunaBotCommand("set_Lvl")]
-    class SetLvlCommand : BaseCommand
-    {
-        public override void Process(SocketMessage message, string[] parameters)
-        {
-
             using (DiscordContext db = new DiscordContext())
             {
-                long userId;
+                long userId = Convert.ToInt64(message.Author.Id);
 
-                if (message.MentionedUsers.Count > 0)
-                {
-                    userId = Convert.ToInt64(message.MentionedUsers.First().Id);
-                }
-                else
-                {
-                    userId = Convert.ToInt64(parameters[1]);
-                }
                 User user = db.Users.FirstOrDefault(x => x.DiscordId == userId);
                 if (user != null)
                 {
-                    Logger.Warning(message.Author.Username, $"looking for user <@{userId}> level.");
-                    message.Channel.SendMessageAsync($"<@{userId}> is level {user.Level}");
+                    Logger.Verbose(message.Author.Username, $"Setting {userId} description to {age}");
 
-                    return;
-                }
+                    user.Age = age;
+                    db.SaveChanges();
 
-                Logger.Verbose(message.Author.Username, $"Failed to find user: {userId}");
-                message.Channel.SendMessageAsync($"Failed to find user: `{message.Author}`");
-
-            }
-        }
-    }
-
-    [LunaBotCommand("set_xp")]
-    class SetXpCommand : BaseCommand
-    {
-        public override void Process(SocketMessage message, string[] parameters)
-        {
-
-            using (DiscordContext db = new DiscordContext())
-            {
-                long userId;
-
-                if (message.MentionedUsers.Count > 0)
-                {
-                    userId = Convert.ToInt64(message.MentionedUsers.First().Id);
-                }
-                else
-                {
-                    userId = Convert.ToInt64(parameters[1]);
-                }
-                User user = db.Users.FirstOrDefault(x => x.DiscordId == userId);
-                if (user != null)
-                {
-                    Logger.Warning(message.Author.Username, $"looking for user <@{userId}> xp.");
-                    message.Channel.SendMessageAsync($"<@{userId}> has {user.Xp}xp");
+                    message.Channel.SendMessageAsync($"Changed <@{userId}> age to `{user.Age}` years old.");
 
                     return;
                 }
@@ -165,24 +79,46 @@ namespace LunaBot.Commands
     {
         public override void Process(SocketMessage message, string[] parameters)
         {
+            User.Genders gender = Utilities.StringToGender(parameters[0]);
+            if (gender == User.Genders.None)
+            {
+                message.Channel.SendMessageAsync("Couldn't understand that gender... it can either be\n" +
+                    "```\n" +
+                    "- Male\n" +
+                    "- Female\n" +
+                    "- Trans-Female\n" +
+                    "- Transe-Male\n" +
+                    "- Other\n" +
+                    "```");
+
+                return;
+            }
 
             using (DiscordContext db = new DiscordContext())
             {
-                long userId;
+                long userId = Convert.ToInt64(message.Author.Id);
 
-                if (message.MentionedUsers.Count > 0)
-                {
-                    userId = Convert.ToInt64(message.MentionedUsers.First().Id);
-                }
-                else
-                {
-                    userId = Convert.ToInt64(parameters[1]);
-                }
                 User user = db.Users.FirstOrDefault(x => x.DiscordId == userId);
                 if (user != null)
                 {
-                    Logger.Warning(message.Author.Username, $"looking for user @<{userId}> gender.");
-                    message.Channel.SendMessageAsync($"<@{userId}> is `{user.Gender.ToString()}`");
+                    Logger.Warning(message.Author.Username, $"Setting @<{userId}>'s gender to {gender.ToString()}.");
+
+                    // Adding role to user
+                    SocketGuildChannel guildChannel = message.Channel as SocketGuildChannel;
+                    List<SocketRole> roles = guildChannel.Guild.Roles.ToList();
+                    Predicate<SocketRole> genderFinder = (SocketRole sr) => { return sr.Name == gender.ToString().ToLower(); };
+                    SocketRole genderRole = roles.Find(genderFinder);
+                    guildChannel.GetUser((ulong)userId).AddRoleAsync(genderRole);
+
+                    // Remove old role
+                    genderFinder = (SocketRole sr) => { return sr.Name == user.Gender.ToString().ToLower(); };
+                    genderRole = roles.Find(genderFinder);
+                    guildChannel.GetUser((ulong)userId).RemoveRoleAsync(genderRole);
+
+                    user.Gender = gender;
+                    db.SaveChanges();
+
+                    message.Channel.SendMessageAsync($"Changed <@{userId}> gender to `{gender.ToString()}`");
 
                     return;
                 }
@@ -199,24 +135,46 @@ namespace LunaBot.Commands
     {
         public override void Process(SocketMessage message, string[] parameters)
         {
+            User.Orientation orientation = Utilities.StringToOrientation(parameters[0]);
+
+            if (orientation == User.Orientation.None)
+            {
+                message.Channel.SendMessageAsync("Couldn't understand that orientation... it can either be\n" +
+                    "```\n" +
+                    "- Straight\n" +
+                    "- Gay\n" +
+                    "- Bisexual\n" +
+                    "- Gray-a (if you'd rather it not be shown)\n"+
+                    "```");
+
+                return;
+            }
 
             using (DiscordContext db = new DiscordContext())
             {
-                long userId;
+                long userId = Convert.ToInt64(message.Author.Id);
 
-                if (message.MentionedUsers.Count > 0)
-                {
-                    userId = Convert.ToInt64(message.MentionedUsers.First().Id);
-                }
-                else
-                {
-                    userId = Convert.ToInt64(parameters[1]);
-                }
                 User user = db.Users.FirstOrDefault(x => x.DiscordId == userId);
                 if (user != null)
                 {
-                    Logger.Warning(message.Author.Username, $"looking for user @<{userId}> orientation.");
-                    message.Channel.SendMessageAsync($"<@{userId}> is {user.orientation.ToString()}");
+                    Logger.Warning(message.Author.Username, $"Changing @<{userId}> orientation to {orientation.ToString()}.");
+
+                    // Adding role to user
+                    SocketGuildChannel guildChannel = message.Channel as SocketGuildChannel;
+                    List<SocketRole> roles = guildChannel.Guild.Roles.ToList();
+                    Predicate<SocketRole> orientationFinder = (SocketRole sr) => { return sr.Name == orientation.ToString().ToLower(); };
+                    SocketRole orientationRole = roles.Find(orientationFinder);
+                    guildChannel.GetUser((ulong)userId).AddRoleAsync(orientationRole);
+
+                    // Remove old role
+                    orientationFinder = (SocketRole sr) => { return sr.Name == user.orientation.ToString().ToLower(); };
+                    orientationRole = roles.Find(orientationFinder);
+                    guildChannel.GetUser((ulong)userId).RemoveRoleAsync(orientationRole);
+
+                    user.orientation = orientation;
+                    db.SaveChanges();
+
+                    message.Channel.SendMessageAsync($"<@{userId}> orientation is now {user.orientation.ToString()}");
 
                     return;
                 }
@@ -236,29 +194,17 @@ namespace LunaBot.Commands
 
             using (DiscordContext db = new DiscordContext())
             {
-                long userId;
+                long userId = Convert.ToInt64(message.Author.Id);
 
-                if (message.MentionedUsers.Count > 0)
-                {
-                    userId = Convert.ToInt64(message.MentionedUsers.First().Id);
-                }
-                else
-                {
-                    userId = Convert.ToInt64(parameters[1]);
-                }
                 User user = db.Users.FirstOrDefault(x => x.DiscordId == userId);
                 if (user != null)
                 {
-                    if (user.Description == null)
-                    {
-                        Logger.Warning(message.Author.Username, $"user <@{userId}> fur not found.");
-                        message.Channel.SendMessageAsync($"<@{userId}> has no fur. Maybe they're invisible...");
+                    Logger.Warning(message.Author.Username, $"user <@{userId}> fur set to: {parameters[0]}");
 
-                        return;
-                    }
+                    user.Fur = parameters[0];
+                    db.SaveChanges();
 
-                    Logger.Verbose(message.Author.Username, $"Looking for {userId} fur.");
-                    message.Channel.SendMessageAsync($"<@{userId}> is a {user.Fur}");
+                    message.Channel.SendMessageAsync($"<@{userId}>'s fur set to {parameters[0]}");  
 
                     return;
                 }
@@ -278,29 +224,17 @@ namespace LunaBot.Commands
 
             using (DiscordContext db = new DiscordContext())
             {
-                long userId;
+                long userId = Convert.ToInt64(message.Author.Id);
 
-                if (message.MentionedUsers.Count > 0)
-                {
-                    userId = Convert.ToInt64(message.MentionedUsers.First().Id);
-                }
-                else
-                {
-                    userId = Convert.ToInt64(parameters[1]);
-                }
                 User user = db.Users.FirstOrDefault(x => x.DiscordId == userId);
                 if (user != null)
                 {
-                    if (user.Description == null)
-                    {
-                        Logger.Warning(message.Author.Username, $"user <@{userId}> ref not found.");
-                        message.Channel.SendMessageAsync($"<@{userId}> has no ref. use this one instead -> :wolf:");
+                    Logger.Warning(message.Author.Username, $"Setting <@{userId}> ref to {parameters[0]}");
 
-                        return;
-                    }
+                    user.Ref = parameters[0];
+                    db.SaveChanges();
 
-                    Logger.Verbose(message.Author.Username, $"Looking for {userId} ref.");
-                    message.Channel.SendMessageAsync($"<@{userId}> is a {user.Fur}");
+                    message.Channel.SendMessageAsync($"<@{userId}> ref has been set to {parameters[0]}");
 
                     return;
                 }
@@ -312,44 +246,4 @@ namespace LunaBot.Commands
         }
     }
 
-    [LunaBotCommand("set_priv")]
-    class SetPrivilegeCommand : BaseCommand
-    {
-        public override void Process(SocketMessage message, string[] parameters)
-        {
-
-            using (DiscordContext db = new DiscordContext())
-            {
-                long userId;
-
-                if (message.MentionedUsers.Count > 0)
-                {
-                    userId = Convert.ToInt64(message.MentionedUsers.First().Id);
-                }
-                else
-                {
-                    userId = Convert.ToInt64(parameters[1]);
-                }
-                User user = db.Users.FirstOrDefault(x => x.DiscordId == userId);
-                if (user != null)
-                {
-                    Logger.Verbose(message.Author.Username, $"Looking for {userId} privilege.");
-                    if (user.Privilege == User.Privileges.Admin || user.Privilege == User.Privileges.User)
-                    {
-                        message.Channel.SendMessageAsync($"<@{userId}> is a `{user.Privilege.ToString()}`");
-
-                        return;
-                    }
-
-                    message.Channel.SendMessageAsync($"<@{userId}> is a `{user.Privilege.ToString()}`");
-
-                    return;
-                }
-
-                Logger.Verbose(message.Author.Username, $"Failed to find user: {userId}");
-                message.Channel.SendMessageAsync($"Failed to find user: `{message.Author}`");
-
-            }
-        }
-    }
 }

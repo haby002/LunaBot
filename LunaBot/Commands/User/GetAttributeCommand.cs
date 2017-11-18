@@ -300,7 +300,7 @@ namespace LunaBot.Commands
                     }
 
                     Logger.Verbose(message.Author.Username, $"Looking for {userId} ref.");
-                    message.Channel.SendMessageAsync($"<@{userId}> is a {user.Fur}");
+                    message.Channel.SendMessageAsync($"<@{userId}> ref: {user.Ref}");
 
                     return;
                 }
