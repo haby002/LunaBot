@@ -118,6 +118,9 @@ namespace LunaBot
             if (lobby == null)
                 lobby = client.GetChannel(343193171431522304) as SocketTextChannel;
 
+            RegisterCommand registerCommand = new RegisterCommand();
+
+            registerCommand.manualRegister(user as SocketGuildUser);
             using (DiscordContext db = new DiscordContext())
             {
                 long userId = Convert.ToInt64(user.Id);
@@ -481,6 +484,8 @@ namespace LunaBot
                         "- Straight\n" +
                         "- Gay\n" +
                         "- Bisexual\n" +
+                        "- Asexual\n" +
+                        "- Pansexual\n" +
                         "- Gray-a (if you'd rather it not be shown)\n");
                 }
                 else if(databaseUser.orientation == User.Orientation.None)
@@ -522,6 +527,13 @@ namespace LunaBot
                             orientation = roles.Find(orientationFinder);
                             await user.AddRoleAsync(orientation);
                             databaseUser.orientation = User.Orientation.Gray;
+                            break;
+                        case "pansexual":
+                        case "pan":
+                            orientationFinder = (SocketRole sr) => { return sr.Name == "pan"; };
+                            orientation = roles.Find(orientationFinder);
+                            await user.AddRoleAsync(orientation);
+                            databaseUser.orientation = User.Orientation.Pansexual;
                             break;
                         default:
                             await message.Channel.SendMessageAsync("Hmm... That's not an orientation I can undestand.\n" +
@@ -587,7 +599,7 @@ namespace LunaBot
                     {
                         databaseUser.Ref = message.Content;
                     }
-                    else if (message.Content.Equals("none"))
+                    else if (message.Content.ToLower().Equals("none"))
                     {
                         databaseUser.Ref = "none";
                     }
@@ -644,7 +656,7 @@ namespace LunaBot
                         await message.Channel.GetMessagesAsync().ForEachAsync((x) => { foreach (var f in x) { f.DeleteAsync(); } });
                         await message.Channel.SendMessageAsync($"I've enabled `NSFW` for you.\n" +
                             $"That's it! Your profile has been set and you are ready to venture into our server.\n" +
-                            $"Just type yes if you agree to the server rules  and guidelines over at #rules_and_announcements.\n" +
+                            $"Just type `yes` if you agree to the server rules  and guidelines over at #rules_and_announcements.\n" +
                             $"Take all the time you need, we'll still be here ^^");
                     }
                     else if (message.Content.ToLower().Equals("no"))
@@ -698,6 +710,13 @@ namespace LunaBot
                         databaseUser.TutorialFinished = true;
 
                         await lobby.SendMessageAsync($"Please welcome <@{user.Id}> to the server!");
+
+                        await message.Channel.SendMessageAsync("This channel will self-destruct in 10 seconds");
+
+                        Thread.Sleep(10000);
+
+                        await (message.Channel as SocketTextChannel).DeleteAsync();
+                        
                     }
                     else if (message.Content.ToLower() == "no" || message.Content.ToLower() == "n")
                     {
