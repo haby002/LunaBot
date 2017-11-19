@@ -13,6 +13,6 @@ namespace LunaBot.Database
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
             => optionsBuilder
-                .UseMySql(@"Server=localhost;database=DiscordContext;uid=root;pwd=;");
+                .UseMySql(string.Format(@"Server=localhost;database={0};uid={1};pwd={2};", SecretStrings.database, SecretStrings.user, SecretStrings.password));
     }
 }

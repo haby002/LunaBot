@@ -83,6 +83,8 @@ namespace LunaBot
 
             using (DiscordContext db = new DiscordContext())
             {
+                db.Database.EnsureCreated();
+
                 long userId = 123470919535427584;
                 User haby = db.Users.Where(x => x.DiscordId == userId).First();
                 if (haby == null)
