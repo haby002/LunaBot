@@ -4,6 +4,7 @@ using Discord.WebSocket;
 using LunaBot.Commands;
 using LunaBot.Database;
 using LunaBot.ServerUtilities;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -88,7 +89,7 @@ namespace LunaBot
                 {
                     Logger.Warning("System", "Haby001 not found, adding as Admin.");
 
-                    User newUser = db.Users.Create();
+                    User newUser = new User();
                     newUser.DiscordId = userId;
                     newUser.Level = 1;
                     newUser.Privilege = User.Privileges.Owner;
@@ -229,7 +230,6 @@ namespace LunaBot
                 }
 
                 db.Users.Attach(user);
-                db.Entry(user).State = System.Data.Entity.EntityState.Modified;
                 db.SaveChanges();
             }
         }
@@ -427,7 +427,7 @@ namespace LunaBot
                         "- Male\n" +
                         "- Female\n" +
                         "- Trans-Female\n" +
-                        "- Transe-Male\n" +
+                        "- Trans-Male\n" +
                         "- Other");
                 }
                 else if (databaseUser.Gender == User.Genders.None)
@@ -731,7 +731,6 @@ namespace LunaBot
                 }
 
                 db.Users.Attach(databaseUser);
-                db.Entry(databaseUser).State = System.Data.Entity.EntityState.Modified;
                 db.SaveChanges();
             }
             return;

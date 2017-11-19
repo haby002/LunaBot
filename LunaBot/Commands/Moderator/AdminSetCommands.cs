@@ -229,7 +229,6 @@ namespace LunaBot.Commands
                             return;
                     }
                     
-                    db.Entry(user).State = System.Data.Entity.EntityState.Modified;
                     db.SaveChanges();
                     Logger.Verbose(message.Author.Username, $"Updated data for {userId}");
 

@@ -23,8 +23,8 @@ namespace LunaBot.Commands
 
                 Logger.Verbose(message.Author.Username, "Creating User Data");
                 message.Channel.SendMessageAsync("Creating User Data");
-                
-                User newUser = db.Users.Create(); 
+
+                User newUser = new User(); 
                 newUser.DiscordId = userId;
                 newUser.Level = 1;
                 newUser.Privilege = 0;
@@ -55,7 +55,7 @@ namespace LunaBot.Commands
 
                 Logger.Verbose("System", $"Creating User {user.Username} Data");
 
-                User newUser = db.Users.Create();
+                User newUser = new User();
                 newUser.DiscordId = userId;
                 newUser.Level = 1;
                 newUser.Privilege = 0;
@@ -63,6 +63,7 @@ namespace LunaBot.Commands
                 newUser.Gender = User.Genders.None;
                 db.Users.Add(newUser);
                 var list = db.Users.ToList();
+
                 db.SaveChanges();
                 
                 Logger.Verbose("System", $"Created user {user.Username} successfully");

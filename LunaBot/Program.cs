@@ -1,12 +1,7 @@
 ﻿using System;
-using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
-
-using Discord;
 using Discord.Commands;
-using Discord.WebSocket;
-using System.Collections;
-using System.Collections.Generic;
+using MySql.Data.MySqlClient;
 
 namespace LunaBot
 {
@@ -20,6 +15,7 @@ namespace LunaBot
         static void Main(string[] args)
         {
             new Engine().Run().GetAwaiter().GetResult();
+
         }
     }
 }

@@ -1,27 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity;
-using System.Data.Entity.ModelConfiguration.Conventions;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace LunaBot.Database
 {
-    class DiscordContext : DbContext
+    public class DiscordContext : DbContext
     {
-        public DiscordContext() : base("DiscordContext")
-        {
-            this.Configuration.AutoDetectChangesEnabled = true;
-        }
-
         public DbSet<User> Users { get; set; }
 
-        public DbSet<Setting> Settings { get; set; }
-
-        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Conventions.Remove<PluralizingTableNameConvention>();
+            modelBuilder.Entity<User>().ToTable("User");
         }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+            => optionsBuilder
+                .UseMySql(@"Server=localhost;database=DiscordContext;uid=root;pwd=;");
     }
 }
