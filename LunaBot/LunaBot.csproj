@@ -224,6 +224,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Commands\Admin\DemoteComman.cs" />
+    <Compile Include="Commands\Admin\PromoteCommand.cs" />
     <Compile Include="Utilities.cs" />
     <Compile Include="Commands\Owner\AscendCommand.cs" />
     <Compile Include="Commands\BaseCommand.cs" />
