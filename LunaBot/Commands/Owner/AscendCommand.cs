@@ -19,11 +19,10 @@ namespace LunaBot.Commands
 
                 return;
             }
-
-            string[] unparsedUserId = parameters[0].Split(new[] { '@', '>' });
+            
 
             // Check if user attached is correct.
-            if (unparsedUserId.Length < 2 || unparsedUserId[0] != "<" || unparsedUserId[1].Length != 18)
+            if (message.MentionedUsers.Count == 0)
             {
                 Logger.Verbose(message.Author.Username, "Failed ascend command");
                 message.Channel.SendMessageAsync("Error: Command requires an attached `user` to command. Forgot the '@'?");
@@ -32,7 +31,7 @@ namespace LunaBot.Commands
             }
 
             // User to ascend
-            long parsedUserId = long.Parse(unparsedUserId[1]);
+            long parsedUserId = (long)message.MentionedUsers.First().Id;
 
             using (DiscordContext db = new DiscordContext())
             {
