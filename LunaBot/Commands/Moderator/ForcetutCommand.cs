@@ -48,9 +48,14 @@ namespace LunaBot.Commands
                     return;
                 }
 
+                // Register user in database
+                RegisterCommand registerCommand = new RegisterCommand();
+                registerCommand.manualRegister(message.MentionedUsers.First() as SocketGuildUser);
+
                 User user = db.Users.Where(x => x.DiscordId == parsedUserId).First();
                 {
                     user.TutorialFinished = false;
+                    db.SaveChanges();
 
                     SocketGuildChannel channel = message.Channel as SocketGuildChannel;
                     IReadOnlyCollection<SocketRole> guildRoles = channel.Guild.Roles;
@@ -65,11 +70,7 @@ namespace LunaBot.Commands
                     // Make room only visible to new user and admins
                     introRoom.AddPermissionOverwriteAsync(message.MentionedUsers.First(), Engine.userPerm);
                     introRoom.AddPermissionOverwriteAsync(guildRoles.Where(x => x.Name.Equals("@everyone")).First(), Engine.removeAllPerm);
-
-                    // Register user in database
-                    RegisterCommand registerCommand = new RegisterCommand();
-                    bool register = registerCommand.manualRegister(message.Author as SocketGuildUser);
-
+                    
                     // Start interaction with user. Sleeps are for humanizing the bot.
                     introRoom.SendMessageAsync("Welcome to the server! Lets get you settled, alright?");
                     Thread.Sleep(2000);
