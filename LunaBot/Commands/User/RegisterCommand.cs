@@ -27,11 +27,11 @@ namespace LunaBot.Commands
                 User newUser = new User(); 
                 newUser.DiscordId = userId;
                 newUser.Level = 1;
+                newUser.LastMessage = DateTime.UtcNow;
                 newUser.Privilege = 0;
                 newUser.TutorialFinished = false;
                 newUser.Gender = User.Genders.None;
                 db.Users.Add(newUser);
-                var list = db.Users.ToList();
                 db.SaveChanges();
 
                 Logger.Verbose(message.Author.Username, "Created User");
@@ -58,11 +58,11 @@ namespace LunaBot.Commands
                 User newUser = new User();
                 newUser.DiscordId = userId;
                 newUser.Level = 1;
+                newUser.LastMessage = DateTime.UtcNow;
                 newUser.Privilege = 0;
                 newUser.TutorialFinished = false;
                 newUser.Gender = User.Genders.None;
                 db.Users.Add(newUser);
-                var list = db.Users.ToList();
 
                 db.SaveChanges();
                 
