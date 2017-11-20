@@ -631,9 +631,9 @@ namespace LunaBot
                 }
                 else if (databaseUser.Monk == false)
                 {
-                    if (message.Content.ToLower().Equals("yes"))
+                    if (message.Content.ToLower().Equals("no"))
                     {
-                        Logger.Verbose(user.Username, $"Enabling RP.");
+                        Logger.Verbose(user.Username, $"Disabling RP.");
                         Predicate<SocketRole> monkFinder = (SocketRole sr) => { return sr.Name == "monk"; };
                         SocketRole monk = roles.Find(monkFinder);
 
@@ -641,17 +641,17 @@ namespace LunaBot
                         databaseUser.Monk = true;
 
                         await message.Channel.GetMessagesAsync().ForEachAsync((x) => { foreach (var f in x) { f.DeleteAsync(); } });
-                        await message.Channel.SendMessageAsync($"I've enabled `RP` for you.\n" +
+                        await message.Channel.SendMessageAsync($"I've disabled `RP` for you.\n" +
                             $"Next we are a server with a `NSFW` section. You can opt-in with a `yes` or opt-out with a `no`.\n" +
                             $"This can be changed later on if you change your mind.");
                     }
-                    else if (message.Content.ToLower().Equals("no"))
+                    else if (message.Content.ToLower().Equals("yes"))
                     {
-                        Logger.Verbose(user.Username, $"Disabling RP.");
+                        Logger.Verbose(user.Username, $"Enabled RP.");
                         databaseUser.Monk = true;
 
                         await message.Channel.GetMessagesAsync().ForEachAsync((x) => { foreach (var f in x) { f.DeleteAsync(); } });
-                        await message.Channel.SendMessageAsync($"I've disabled `RP` for you.\n" +
+                        await message.Channel.SendMessageAsync($"I've enabled `RP` for you.\n" +
                             $"Next we are a server with a `NSFW` section. You can opt-in with a `yes` or opt-out with a `no`.\n" +
                             $"This can be changed later on if you change your mind.");
                     }
