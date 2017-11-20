@@ -64,5 +64,10 @@ namespace LunaBot
         {
             Log(new LogMessage(LogSeverity.Info, source, message));
         }
+
+        public static void Debug(string source, string message)
+        {
+            Log(new LogMessage(LogSeverity.Debug, source, message));
+        }
     }
 }
