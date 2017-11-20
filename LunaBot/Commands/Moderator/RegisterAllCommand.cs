@@ -13,7 +13,6 @@ namespace LunaBot.Commands
         {
             using (DiscordContext db = new DiscordContext())
             {
-                long userId = Convert.ToInt64(message.Author.Id);
                 if (db.Users.Where(x => x.DiscordId == userId).First().Privilege == 0)
                 {
                     Logger.Warning(message.Author.Username, "Failed RegisterAll command");
@@ -32,6 +31,7 @@ namespace LunaBot.Commands
                 {
                     if(db.Users.Where(x => x.DiscordId == (long)u.Id).Count() == 0)
                     {
+                        long userId = Convert.ToInt64(u.Id);
                         Logger.Verbose(message.Author.Username, $"Creating User Data for {u.Username}");
 
                         User newUser = new User();
