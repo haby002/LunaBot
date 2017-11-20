@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
+using System;
 
 namespace LunaBot.Database
 {
@@ -19,6 +20,8 @@ namespace LunaBot.Database
         public int Level { get; set; }
 
         public int Xp { get; set; }
+
+        public DateTime LastMessage { get; set; }
 
         public string Nickname { get; set; }
 

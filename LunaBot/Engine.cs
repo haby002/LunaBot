@@ -113,6 +113,9 @@ namespace LunaBot
                     Logger.Verbose("System", "Updated Haby's priviledges to Owner");
                 }
             }
+
+            // Set Playing flavor text
+            await client.SetGameAsync("!help");
         }
 
         private async Task UserJoined(SocketUser user)
@@ -165,29 +168,30 @@ namespace LunaBot
 
         private async Task MessageReceived(SocketMessage message)
         {
-            // Log Message
-            await message.Log();
-
-            //Anti-raid system
-            if (await ProcessMessage(message))
-                return;
-
-            // ignore your own message if you ever manage to do this.
-            if (message.Author.IsBot)
-            {
-                return;
-            }
-
-            // Handle tutorial messages that cannot run commands.
-            if(message.Channel.Name.Contains("intro"))
-            {
-                await ProcessTutorialMessaage(message);
-                return;
-            }
-
             // Handle commands within the public text channels.
             try
             {
+                // Log Message
+                await message.Log();
+
+                // ignore your own message if you ever manage to do this.
+                if (message.Author.IsBot)
+                {
+                    return;
+                }
+
+                //Anti-raid system
+                if (await ProcessMessage(message))
+                    return;
+
+                // Tutorial messages that cannot run commands.
+                if(message.Channel.Name.Contains("intro"))
+                {
+                    await ProcessTutorialMessaage(message);
+                    return;
+                }
+            
+                // Commands
                 string messageText = message.Content;
                 if (messageText.StartsWith("!"))
                 {
@@ -230,8 +234,14 @@ namespace LunaBot
                 // Adds characters (no whitespace) as XP. Returns true if user leveled up.
                 if (user.AddXP(message.Content.Count(c => !Char.IsWhiteSpace(c))))
                 {
-                    await message.Channel.SendMessageAsync($"Congrats <@{user.DiscordId}>! You leveled up to {user.Level}! :confetti_ball:");
+                    if (user.Level % 5 == 0)
+                    {
+                        await message.Channel.SendMessageAsync($"Congrats <@{user.DiscordId}>! You leveled up to {user.Level}! :confetti_ball:");
+                    }
                 }
+
+                // Updates last time message was recieved.
+                user.LastMessage = DateTime.UtcNow;
 
                 db.Users.Attach(user);
                 db.SaveChanges();
