@@ -5,6 +5,7 @@ using Discord.WebSocket;
 using System.Linq;
 using LunaBot.Database;
 using Discord;
+using System.Threading;
 
 namespace LunaBot.Commands
 {
@@ -34,16 +35,8 @@ namespace LunaBot.Commands
                     // check if user has messaged in the past 2 weeks. Kick if false
                     if (databaseUser.LastMessage.Subtract(twoWeeksAgo).TotalDays < 0)
                     {
-                        Logger.Info("System", $"Kicking {u.Username}");
-                        
-                        IDMChannel dm = u.GetOrCreateDMChannelAsync().Result;
-                        dm.SendMessageAsync("You have been kicked from the server from inactivity.\n" +
-                            "You can join again but once you get kicked 3 times you are banned.\n" +
-                            "Hint: Prevent getting kicked by being part of the community.\n" +
-                            "https://discord.gg/J4c8wKg");
-
-                        u.KickAsync("Purged for inactivity");
-                        message.Channel.SendMessageAsync($"Critical hit! {u.Username} bit the dust.\n");
+                        Thread.Sleep(500);
+                        ServerUtilities.KickUserHelper.kick(channel as SocketTextChannel, u);
                     }
                 }
             }
