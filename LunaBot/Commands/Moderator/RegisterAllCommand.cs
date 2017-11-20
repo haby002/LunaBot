@@ -3,9 +3,8 @@ using LunaBot.Database;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
-namespace LunaBot.Commands.Moderator
+namespace LunaBot.Commands
 {
     [LunaBotCommand("RegisterAll")]
     class RegisterAllCommand : BaseCommand
