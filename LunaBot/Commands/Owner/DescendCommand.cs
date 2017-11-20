@@ -31,19 +31,19 @@ namespace LunaBot.Commands
             }
 
             // User to descend
-            long parsedUserId = (long)message.MentionedUsers.First().Id;
+            long parsedUserId = (long)message.MentionedUsers.FirstOrDefault().Id;
 
             using (DiscordContext db = new DiscordContext())
             {
                 long userId = Convert.ToInt64(message.Author.Id);
-                if (db.Users.Where(x => x.DiscordId == userId).First().Privilege != User.Privileges.Owner)
+                if (db.Users.Where(x => x.DiscordId == userId).FirstOrDefault().Privilege != User.Privileges.Owner)
                 {
                     Logger.Warning(message.Author.Id.ToString(), "User tried to use descend command and failed");
                     message.Channel.SendMessageAsync($"Nice try. Dont want me calling your parents, right?");
                     return;
                 }
 
-                User user = db.Users.Where(x => x.DiscordId == parsedUserId).First();
+                User user = db.Users.Where(x => x.DiscordId == parsedUserId).FirstOrDefault();
                 {
                     if (user.Privilege == User.Privileges.User)
                     {
@@ -68,9 +68,9 @@ namespace LunaBot.Commands
 
                     List<SocketRole> roles = new List<SocketRole>()
                     {
-                        guildRoles.Where(x => x.Name.Equals("Hoarder")).First(),
-                        guildRoles.Where(x => x.Name.Equals("Staff")).First(),
-                        guildRoles.Where(x => x.Name.Equals("Moddlet")).First()
+                        guildRoles.Where(x => x.Name.Equals("Hoarder")).FirstOrDefault(),
+                        guildRoles.Where(x => x.Name.Equals("Staff")).FirstOrDefault(),
+                        guildRoles.Where(x => x.Name.Equals("Moddlet")).FirstOrDefault()
                     };
 
                     channel.Guild.GetUser((ulong)parsedUserId).RemoveRolesAsync(roles);

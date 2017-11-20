@@ -43,7 +43,7 @@ namespace LunaBot.Commands
                 }
 
                 // Modify given user
-                userId = Convert.ToInt64(message.MentionedUsers.First().Id);
+                userId = Convert.ToInt64(message.MentionedUsers.FirstOrDefault().Id);
                 user = db.Users.FirstOrDefault(x => x.DiscordId == userId);
                 if (user != null)
                 {
@@ -102,7 +102,7 @@ namespace LunaBot.Commands
                             SocketRole gender;
                             SocketTextChannel channel = message.Channel as SocketTextChannel;
                             List<SocketRole> roles = channel.Guild.Roles.ToList();
-                            SocketGuildUser discordUser = message.MentionedUsers.First() as SocketGuildUser;
+                            SocketGuildUser discordUser = message.MentionedUsers.FirstOrDefault() as SocketGuildUser;
 
                             // Remove old role
                             genderFinder = (SocketRole sr) => { return sr.Name == user.Gender.ToString().ToLower(); };
@@ -159,7 +159,7 @@ namespace LunaBot.Commands
                             SocketRole orientation;
                             channel = message.Channel as SocketTextChannel;
                             roles = channel.Guild.Roles.ToList();
-                            discordUser = message.MentionedUsers.First() as SocketGuildUser;
+                            discordUser = message.MentionedUsers.FirstOrDefault() as SocketGuildUser;
 
                             // Remove old role
                             orientationFinder = (SocketRole sr) => { return sr.Name == user.Gender.ToString().ToLower(); };

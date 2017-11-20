@@ -86,7 +86,7 @@ namespace LunaBot
                 db.Database.EnsureCreated();
 
                 long userId = 123470919535427584;
-                User haby = db.Users.Where(x => x.DiscordId == userId).First();
+                User haby = db.Users.Where(x => x.DiscordId == userId).FirstOrDefault();
                 if (haby == null)
                 {
                     Logger.Warning("System", "Haby001 not found, adding as Admin.");
@@ -127,7 +127,7 @@ namespace LunaBot
             using (DiscordContext db = new DiscordContext())
             {
                 long userId = Convert.ToInt64(user.Id);
-                if (db.Users.Where(x => x.DiscordId == userId).First().TutorialFinished)
+                if (db.Users.Where(x => x.DiscordId == userId).FirstOrDefault().TutorialFinished)
                 {
                     Logger.Info("System", $"{user.Username}<@{user.Id}> already finished the tutorial. Announcing in lobby.");
                     await lobby.SendMessageAsync($"Welcome back <@{user.Id}> to the server!");
@@ -149,7 +149,7 @@ namespace LunaBot
             using (DiscordContext db = new DiscordContext())
             {
                 long userId = Convert.ToInt64(user.Id);
-                if (db.Users.Where(x => x.DiscordId == userId).First().TutorialFinished)
+                if (db.Users.Where(x => x.DiscordId == userId).FirstOrDefault().TutorialFinished)
                 {
                     Logger.Info("System", $"User {user.Username}<@{user.Id}> has left the server.");
                     await lobby.SendMessageAsync($"<@{user.Id}> has left the server :wave:");
@@ -165,6 +165,9 @@ namespace LunaBot
 
         private async Task MessageReceived(SocketMessage message)
         {
+            // Log Message
+            await message.Log();
+
             //Anti-raid system
             if (await ProcessMessage(message))
                 return;
@@ -201,7 +204,6 @@ namespace LunaBot
                 else
                 {
                     await ProcessXpAsync(message);
-                    await message.Log();
                 }
 
             }
@@ -328,7 +330,7 @@ namespace LunaBot
             using (DiscordContext db = new DiscordContext())
             {
                 long userId = Convert.ToInt64(message.Author.Id);
-                User databaseUser = db.Users.Where(x => x.DiscordId == userId).First();
+                User databaseUser = db.Users.Where(x => x.DiscordId == userId).FirstOrDefault();
                 if ((int)databaseUser.Privilege >= 1)
                     return false;
             }
@@ -406,7 +408,7 @@ namespace LunaBot
             {
                 SocketGuildUser user = message.Author as SocketGuildUser;
                 long userId = Convert.ToInt64(user.Id);
-                User databaseUser = db.Users.Where(x => x.DiscordId == userId).First();
+                User databaseUser = db.Users.Where(x => x.DiscordId == userId).FirstOrDefault();
 
                 if (databaseUser.TutorialFinished)
                 {

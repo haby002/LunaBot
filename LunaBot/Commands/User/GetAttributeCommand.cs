@@ -20,7 +20,7 @@ namespace LunaBot.Commands
 
                 if (message.MentionedUsers.Count > 0)
                 {
-                    userId = Convert.ToInt64(message.MentionedUsers.First().Id);
+                    userId = Convert.ToInt64(message.MentionedUsers.FirstOrDefault().Id);
                 }
                 else
                 {
@@ -61,7 +61,7 @@ namespace LunaBot.Commands
 
                 if (message.MentionedUsers.Count > 0)
                 {
-                    userId = Convert.ToInt64(message.MentionedUsers.First().Id);
+                    userId = Convert.ToInt64(message.MentionedUsers.FirstOrDefault().Id);
                 }
                 else
                 {
@@ -104,7 +104,7 @@ namespace LunaBot.Commands
 
                 if (message.MentionedUsers.Count > 0)
                 {
-                    userId = Convert.ToInt64(message.MentionedUsers.First().Id);
+                    userId = Convert.ToInt64(message.MentionedUsers.FirstOrDefault().Id);
                 }
                 else
                 {
@@ -138,7 +138,7 @@ namespace LunaBot.Commands
 
                 if (message.MentionedUsers.Count > 0)
                 {
-                    userId = Convert.ToInt64(message.MentionedUsers.First().Id);
+                    userId = Convert.ToInt64(message.MentionedUsers.FirstOrDefault().Id);
                 }
                 else
                 {
@@ -172,7 +172,7 @@ namespace LunaBot.Commands
 
                 if (message.MentionedUsers.Count > 0)
                 {
-                    userId = Convert.ToInt64(message.MentionedUsers.First().Id);
+                    userId = Convert.ToInt64(message.MentionedUsers.FirstOrDefault().Id);
                 }
                 else
                 {
@@ -206,7 +206,7 @@ namespace LunaBot.Commands
 
                 if (message.MentionedUsers.Count > 0)
                 {
-                    userId = Convert.ToInt64(message.MentionedUsers.First().Id);
+                    userId = Convert.ToInt64(message.MentionedUsers.FirstOrDefault().Id);
                 }
                 else
                 {
@@ -240,7 +240,7 @@ namespace LunaBot.Commands
 
                 if (message.MentionedUsers.Count > 0)
                 {
-                    userId = Convert.ToInt64(message.MentionedUsers.First().Id);
+                    userId = Convert.ToInt64(message.MentionedUsers.FirstOrDefault().Id);
                 }
                 else
                 {
@@ -282,7 +282,7 @@ namespace LunaBot.Commands
 
                 if (message.MentionedUsers.Count > 0)
                 {
-                    userId = Convert.ToInt64(message.MentionedUsers.First().Id);
+                    userId = Convert.ToInt64(message.MentionedUsers.FirstOrDefault().Id);
                 }
                 else
                 {
@@ -324,7 +324,7 @@ namespace LunaBot.Commands
 
                 if (message.MentionedUsers.Count > 0)
                 {
-                    userId = Convert.ToInt64(message.MentionedUsers.First().Id);
+                    userId = Convert.ToInt64(message.MentionedUsers.FirstOrDefault().Id);
                 }
                 else
                 {

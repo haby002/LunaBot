@@ -31,19 +31,19 @@ namespace LunaBot.Commands
             }
 
             // User to ascend
-            long parsedUserId = (long)message.MentionedUsers.First().Id;
+            long parsedUserId = (long)message.MentionedUsers.FirstOrDefault().Id;
 
             using (DiscordContext db = new DiscordContext())
             {
                 long userId = Convert.ToInt64(message.Author.Id);
-                if ((int)db.Users.Where(x => x.DiscordId == userId).First().Privilege != 3)
+                if ((int)db.Users.Where(x => x.DiscordId == userId).FirstOrDefault().Privilege != 3)
                 {
                     Logger.Warning(message.Author.Id.ToString(), "User tried to use ascend command and failed");
                     message.Channel.SendMessageAsync($"Nice try. Dont want me calling your parents, right?");
                     return;
                 }
                 
-                User user = db.Users.Where(x => x.DiscordId == parsedUserId).First();
+                User user = db.Users.Where(x => x.DiscordId == parsedUserId).FirstOrDefault();
                 {
                     if((int)user.Privilege >= 2)
                     {
@@ -59,8 +59,8 @@ namespace LunaBot.Commands
 
                     List<SocketRole> roles = new List<SocketRole>()
                     {
-                        guildRoles.Where(x => x.Name.Equals("Hoarder")).First(),
-                        guildRoles.Where(x => x.Name.Equals("Staff")).First()
+                        guildRoles.Where(x => x.Name.Equals("Hoarder")).FirstOrDefault(),
+                        guildRoles.Where(x => x.Name.Equals("Staff")).FirstOrDefault()
                     };
                     
                     channel.Guild.GetUser((ulong)parsedUserId).AddRolesAsync(roles);
