@@ -162,7 +162,7 @@ namespace LunaBot.Commands
                             discordUser = message.MentionedUsers.FirstOrDefault() as SocketGuildUser;
 
                             // Remove old role
-                            orientationFinder = (SocketRole sr) => { return sr.Name == user.Gender.ToString().ToLower(); };
+                            orientationFinder = (SocketRole sr) => { return sr.Name == user.orientation.ToString().ToLower(); };
                             orientation = roles.Find(orientationFinder);
                             discordUser.RemoveRoleAsync(orientation);
 
