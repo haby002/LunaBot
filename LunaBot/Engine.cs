@@ -21,7 +21,9 @@ namespace LunaBot
 
         public static OverwritePermissions removeAllPerm = new OverwritePermissions(PermValue.Deny, PermValue.Deny, PermValue.Deny, PermValue.Deny, PermValue.Deny, PermValue.Deny, PermValue.Deny, PermValue.Deny, PermValue.Deny, PermValue.Deny, PermValue.Deny, PermValue.Deny, PermValue.Deny, PermValue.Deny, PermValue.Deny, PermValue.Deny, PermValue.Deny, PermValue.Deny, PermValue.Deny, PermValue.Deny);
         public static OverwritePermissions userPerm = new OverwritePermissions(PermValue.Deny, PermValue.Deny, PermValue.Allow, PermValue.Allow, PermValue.Allow, PermValue.Deny, PermValue.Deny, PermValue.Deny, PermValue.Deny, PermValue.Allow, PermValue.Deny, PermValue.Deny, PermValue.Deny, PermValue.Deny, PermValue.Deny, PermValue.Deny, PermValue.Deny, PermValue.Deny, PermValue.Deny, PermValue.Deny);
+        public static OverwritePermissions lunaTutPerm = new OverwritePermissions(PermValue.Allow, PermValue.Allow, PermValue.Allow, PermValue.Allow, PermValue.Allow, PermValue.Allow, PermValue.Allow, PermValue.Allow, PermValue.Allow, PermValue.Allow, PermValue.Allow, PermValue.Allow, PermValue.Allow, PermValue.Allow, PermValue.Allow, PermValue.Allow, PermValue.Allow, PermValue.Allow, PermValue.Allow, PermValue.Allow);
 
+        public static SocketGuildUser luna;
 
         private readonly DiscordSocketClient client;
 
@@ -49,6 +51,7 @@ namespace LunaBot
             client.UserJoined += UserJoined;
             client.UserLeft += UserLeft;
             client.UserBanned += UserBanned;
+            client.Disconnected += Disconnected;
             
             this.RegisterCommands();
 
@@ -80,7 +83,9 @@ namespace LunaBot
             lobby = client.GetChannel(343193171431522304) as SocketTextChannel;
             roles = guild.Roles.ToList();
             report = new BotReporting(guild.GetChannel(328204763965423617));
+            luna = guild.GetUser(333285108402487297);
 
+            // Adding Haby as owner
             using (DiscordContext db = new DiscordContext())
             {
                 db.Database.EnsureCreated();
@@ -116,6 +121,9 @@ namespace LunaBot
 
             // Set Playing flavor text
             await client.SetGameAsync("!help");
+
+            // Remove all mute from muted users
+            
         }
 
         private async Task UserJoined(SocketUser user)
@@ -164,6 +172,14 @@ namespace LunaBot
         {
             await lobby.SendMessageAsync($"My :banhammer: to your face!");
             Logger.Info("System", $"User {user.Username}<@{user.Id}> has been banned from the server.");
+        }
+
+        private async Task Disconnected(Exception e)
+        {
+            e.Log();
+
+            await client.StopAsync();
+            await client.StartAsync();
         }
 
         private async Task MessageReceived(SocketMessage message)
@@ -347,7 +363,7 @@ namespace LunaBot
 
             if(messageTimestamps.TryGetValue(user, out cachedTimestamp))
             {
-                if (userTimestamp.Subtract(cachedTimestamp) < TimeSpan.FromSeconds(2))
+                if (userTimestamp.Subtract(cachedTimestamp) < TimeSpan.FromSeconds(1))
                 {
                     Logger.Info("System", $"User {message.Author.Username}<{message.Author.Id}> is talking too fast. Deleting latest message.");
                     await message.DeleteAsync();
@@ -375,7 +391,7 @@ namespace LunaBot
         /// <returns></returns>
         private async Task<bool> StartTutorial(SocketGuildUser user)
         {
-            Predicate<SocketRole> newbieFinder = (SocketRole sr) => { return sr.Name == "newbie"; };
+            Predicate<SocketRole> newbieFinder = (SocketRole sr) => { return sr.Name == "Newbie"; };
             Predicate<SocketRole> everyoneFinder = (SocketRole sr) => { return sr.Name == "@everyone"; };
             SocketRole newbie = roles.Find(newbieFinder);
             SocketRole everyone = roles.Find(everyoneFinder);
@@ -388,6 +404,7 @@ namespace LunaBot
             // Make room only visible to new user and admins
             await introRoom.AddPermissionOverwriteAsync(user, userPerm);
             await introRoom.AddPermissionOverwriteAsync(everyone, removeAllPerm);
+            await introRoom.AddPermissionOverwriteAsync(luna, lunaTutPerm);
 
             // Register user in database
             RegisterCommand registerCommand = new RegisterCommand();

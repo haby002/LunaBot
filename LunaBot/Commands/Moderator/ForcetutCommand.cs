@@ -58,20 +58,22 @@ namespace LunaBot.Commands
                     SocketGuildChannel channel = message.Channel as SocketGuildChannel;
                     IReadOnlyCollection<SocketRole> guildRoles = channel.Guild.Roles;
 
-                    SocketRole role = guildRoles.Where(x => x.Name.Equals("newbie")).FirstOrDefault();
+                    SocketRole role = guildRoles.Where(x => x.Name.Equals("Newbie")).FirstOrDefault();
 
                     channel.Guild.GetUser((ulong)parsedUserId).AddRoleAsync(role);
 
                     // Creat intro room
                     RestTextChannel introRoom = channel.Guild.CreateTextChannelAsync($"intro-{parsedUserId}").Result;
 
-                    // Make room only visible to new user and admins
+                    // Make room only visible to new user, staff, and Luna
                     introRoom.AddPermissionOverwriteAsync(message.MentionedUsers.FirstOrDefault(), Engine.userPerm);
                     introRoom.AddPermissionOverwriteAsync(guildRoles.Where(x => x.Name.Equals("@everyone")).FirstOrDefault(), Engine.removeAllPerm);
-                    
+                    introRoom.AddPermissionOverwriteAsync(guildRoles.Where(x => x.Name.Equals("Staff")).FirstOrDefault(), Engine.userPerm);
+                    introRoom.AddPermissionOverwriteAsync(channel.Guild.GetUser(333285108402487297), Engine.lunaTutPerm);
+
                     // Start interaction with user. Sleeps are for humanizing the bot.
                     introRoom.SendMessageAsync("Welcome to the server! Lets get you settled, alright?");
-                    Thread.Sleep(2000);
+                    Thread.Sleep(1000);
                     introRoom.SendMessageAsync("Firstly, what should we call you?");
                 }
             }
