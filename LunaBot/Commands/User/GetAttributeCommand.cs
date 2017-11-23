@@ -182,7 +182,7 @@ namespace LunaBot.Commands
                 if (user != null)
                 {
                     Logger.Warning(message.Author.Username, $"looking for user @<{userId}> gender.");
-                    message.Channel.SendMessageAsync($"<@{userId}> is `{user.Gender.ToString()}`");
+                    message.Channel.SendMessageAsync($"<@{userId}> is {user.Gender.ToString().ToLower()}");
 
                     return;
                 }
@@ -216,7 +216,7 @@ namespace LunaBot.Commands
                 if (user != null)
                 {
                     Logger.Warning(message.Author.Username, $"looking for user @<{userId}> orientation.");
-                    message.Channel.SendMessageAsync($"<@{userId}> is {user.orientation.ToString()}");
+                    message.Channel.SendMessageAsync($"<@{userId}> is {user.orientation.ToString().ToLower()}");
 
                     return;
                 }

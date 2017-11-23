@@ -27,7 +27,7 @@ namespace LunaBot.Commands
                     user.Description = parameters[0];
                     db.SaveChanges();
 
-                    message.Channel.SendMessageAsync($"Changed <@{userId}> description to: {user.Description}");
+                    message.Channel.SendMessageAsync($"Changed <@{userId}>'s description to: {user.Description}");
 
                     return;
                 }
@@ -118,7 +118,7 @@ namespace LunaBot.Commands
                     user.Gender = gender;
                     db.SaveChanges();
 
-                    message.Channel.SendMessageAsync($"Changed <@{userId}> gender to `{gender.ToString()}`");
+                    message.Channel.SendMessageAsync($"Changed <@{userId}>'s gender to {gender.ToString().ToLower()}");
 
                     return;
                 }
@@ -174,7 +174,7 @@ namespace LunaBot.Commands
                     user.orientation = orientation;
                     db.SaveChanges();
 
-                    message.Channel.SendMessageAsync($"<@{userId}> orientation is now {user.orientation.ToString()}");
+                    message.Channel.SendMessageAsync($"<@{userId}> orientation is now {user.orientation.ToString().ToLower()}");
 
                     return;
                 }
@@ -199,12 +199,12 @@ namespace LunaBot.Commands
                 User user = db.Users.FirstOrDefault(x => x.DiscordId == userId);
                 if (user != null)
                 {
-                    Logger.Warning(message.Author.Username, $"user <@{userId}> fur set to: {parameters[0]}");
+                    Logger.Warning(message.Author.Username, $"user <@{userId}>'s fur set to: {parameters[0]}");
 
                     user.Fur = parameters[0];
                     db.SaveChanges();
 
-                    message.Channel.SendMessageAsync($"<@{userId}>'s fur set to {parameters[0]}");  
+                    message.Channel.SendMessageAsync($"<@{userId}> fur set to {parameters[0]}");  
 
                     return;
                 }
@@ -229,12 +229,12 @@ namespace LunaBot.Commands
                 User user = db.Users.FirstOrDefault(x => x.DiscordId == userId);
                 if (user != null)
                 {
-                    Logger.Warning(message.Author.Username, $"Setting <@{userId}> ref to {parameters[0]}");
+                    Logger.Warning(message.Author.Username, $"Setting <@{userId}>'s ref to {parameters[0]}");
 
                     user.Ref = parameters[0];
                     db.SaveChanges();
 
-                    message.Channel.SendMessageAsync($"<@{userId}> ref has been set to {parameters[0]}");
+                    message.Channel.SendMessageAsync($"<@{userId}>'s ref has been set to {parameters[0]}");
 
                     return;
                 }
