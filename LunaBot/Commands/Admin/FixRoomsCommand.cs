@@ -74,10 +74,9 @@ namespace LunaBot.Commands
                                 break;
                             default:
                                 Logger.Warning("system", $"Found room {ch.Name}");
-                                ch.DeleteAsync();
+                                // ch.DeleteAsync();
                                 break;
                         }
-                        Logger.Warning("system", $"Found room {ch.Name}");
                     }
                 }
 
