@@ -184,53 +184,59 @@ namespace LunaBot
 
         private async Task MessageReceived(SocketMessage message)
         {
-            // Handle commands within the public text channels.
-            try
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+            Task.Run(async () =>
             {
-                // Log Message
-                await message.Log();
-
-                // ignore your own message if you ever manage to do this.
-                if (message.Author.IsBot)
+                // Handle commands within the public text channels.
+                try
                 {
-                    return;
-                }
+                    // Log Message
+                    await message.Log();
 
-                //Anti-raid system
-                if (await ProcessMessage(message))
-                    return;
+                    // ignore your own message if you ever manage to do this.
+                    if (message.Author.IsBot)
+                    {
+                        return;
+                    }
 
-                // Tutorial messages that cannot run commands.
-                if(message.Channel.Name.Contains("intro"))
-                {
-                    await ProcessTutorialMessaage(message);
-                    return;
-                }
+                    //Anti-raid system
+                    if (await ProcessMessage(message))
+                        return;
+
+                    // Tutorial messages that cannot run commands.
+                    if(message.Channel.Name.Contains("intro"))
+                    {
+                        await ProcessTutorialMessaage(message);
+                        return;
+                    }
             
-                // Commands
-                string messageText = message.Content;
-                if (messageText.StartsWith("!"))
-                {
-                    this.ProcessCommand(message);
+                    // Commands
+                    string messageText = message.Content;
+                    if (messageText.StartsWith("!"))
+                    {
+                        this.ProcessCommand(message);
+                    }
+                    else if (messageText.StartsWith("+"))
+                    {
+                        this.ProcessSetAttribute(message);
+                    }
+                    else if (messageText.StartsWith("?"))
+                    {
+                        this.ProcessGetAttribute(message);
+                    }
+                    else
+                    {
+                        await ProcessXpAsync(message);
+                    }
+
                 }
-                else if (messageText.StartsWith("+"))
+                catch(Exception e)
                 {
-                    this.ProcessSetAttribute(message);
-                }
-                else if (messageText.StartsWith("?"))
-                {
-                    this.ProcessGetAttribute(message);
-                }
-                else
-                {
-                    await ProcessXpAsync(message);
+                    e.Log(message);
                 }
 
-            }
-            catch(Exception e)
-            {
-                e.Log(message);
-            }
+            });
+#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
 
         }
 
