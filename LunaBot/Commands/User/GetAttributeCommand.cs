@@ -334,9 +334,9 @@ namespace LunaBot.Commands
                 if (user != null)
                 {
                     Logger.Verbose(message.Author.Username, $"Looking for {userId} privilege.");
-                    if(user.Privilege == User.Privileges.Admin || user.Privilege == User.Privileges.User)
+                    if(user.Privilege == User.Privileges.Admin || user.Privilege == User.Privileges.Owner)
                     {
-                        message.Channel.SendMessageAsync($"<@{userId}> is a `{user.Privilege.ToString()}`");
+                        message.Channel.SendMessageAsync($"<@{userId}> is an `{user.Privilege.ToString()}`");
 
                         return;
                     }
