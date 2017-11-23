@@ -79,10 +79,10 @@ namespace LunaBot
         private async Task Ready()
 #pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
         {
-            guild = client.GetGuild(324967746465169410);
-            lobby = client.GetChannel(343193171431522304) as SocketTextChannel;
+            guild = client.GetGuild(195198580724727810);
+            lobby = client.GetChannel(308306400717832192) as SocketTextChannel;
             roles = guild.Roles.ToList();
-            report = new BotReporting(guild.GetChannel(328204763965423617));
+            report = new BotReporting(guild.GetChannel(379784655370584074));
             luna = guild.GetUser(333285108402487297);
 
             // Adding Haby as owner
@@ -403,8 +403,8 @@ namespace LunaBot
 
             // Make room only visible to new user and admins
             await introRoom.AddPermissionOverwriteAsync(user, userPerm);
-            await introRoom.AddPermissionOverwriteAsync(everyone, removeAllPerm);
-            await introRoom.AddPermissionOverwriteAsync(luna, lunaTutPerm);
+            //await introRoom.AddPermissionOverwriteAsync(everyone, removeAllPerm);
+            //await introRoom.AddPermissionOverwriteAsync(luna, lunaTutPerm);
 
             // Register user in database
             RegisterCommand registerCommand = new RegisterCommand();
@@ -734,7 +734,7 @@ namespace LunaBot
                             $"You can always type `!help` for any issues or talk with the staff, most of us don't bite :)");
                         Thread.Sleep(1000);
 
-                        Predicate<SocketRole> newbieFinder = (SocketRole sr) => { return sr.Name == "newbie"; };
+                        Predicate<SocketRole> newbieFinder = (SocketRole sr) => { return sr.Name == "Newbie"; };
                         SocketRole newbie = roles.Find(newbieFinder);
 
                         await user.RemoveRoleAsync(newbie);

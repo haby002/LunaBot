@@ -65,16 +65,19 @@ namespace LunaBot.Commands
                     // Creat intro room
                     RestTextChannel introRoom = channel.Guild.CreateTextChannelAsync($"intro-{parsedUserId}").Result;
 
-                    // Make room only visible to new user, staff, and Luna
-                    introRoom.AddPermissionOverwriteAsync(message.MentionedUsers.FirstOrDefault(), Engine.userPerm);
-                    introRoom.AddPermissionOverwriteAsync(guildRoles.Where(x => x.Name.Equals("@everyone")).FirstOrDefault(), Engine.removeAllPerm);
-                    introRoom.AddPermissionOverwriteAsync(guildRoles.Where(x => x.Name.Equals("Staff")).FirstOrDefault(), Engine.userPerm);
-                    introRoom.AddPermissionOverwriteAsync(channel.Guild.GetUser(333285108402487297), Engine.lunaTutPerm);
+                    Task.Run(async () =>
+                    {
+                        // Make room only visible to new user, staff, and Luna
+                        await introRoom.AddPermissionOverwriteAsync(message.MentionedUsers.FirstOrDefault(), Engine.userPerm);
+                        // await introRoom.AddPermissionOverwriteAsync(guildRoles.Where(x => x.Name.Equals("@everyone")).FirstOrDefault(), Engine.removeAllPerm);
+                        // await introRoom.AddPermissionOverwriteAsync(guildRoles.Where(x => x.Name.Equals("Staff")).FirstOrDefault(), Engine.lunaTutPerm);
+                        // await introRoom.AddPermissionOverwriteAsync(channel.Guild.GetUser(333285108402487297), Engine.lunaTutPerm);
 
-                    // Start interaction with user. Sleeps are for humanizing the bot.
-                    introRoom.SendMessageAsync("Welcome to the server! Lets get you settled, alright?");
-                    Thread.Sleep(1000);
-                    introRoom.SendMessageAsync("Firstly, what should we call you?");
+                        // Start interaction with user. Sleeps are for humanizing the bot.
+                        await introRoom.SendMessageAsync("Welcome to the server! Lets get you settled, alright?");
+                        Thread.Sleep(1000);
+                        await introRoom.SendMessageAsync("Firstly, what should we call you?");
+                    });
                 }
             }
         }
