@@ -240,7 +240,7 @@ namespace LunaBot
 
         }
 
-        private async Task ProcessXpAsync(SocketMessage message)
+        private void ProcessXpAsync(SocketMessage message)
         {
             using (DiscordContext db = new DiscordContext())
             {
@@ -258,7 +258,7 @@ namespace LunaBot
                 {
                     if (user.Level % 5 == 0)
                     {
-                        await message.Channel.SendMessageAsync($"Congrats <@{user.DiscordId}>! You leveled up to {user.Level}! :confetti_ball:");
+                        message.Channel.SendMessageAsync($"Congrats <@{user.DiscordId}>! You leveled up to {user.Level}! :confetti_ball:");
                     }
                 }
 
