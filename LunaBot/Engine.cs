@@ -226,7 +226,7 @@ namespace LunaBot
                     }
                     else
                     {
-                        await ProcessXpAsync(message);
+                        ProcessXpAsync(message);
                     }
 
                 }

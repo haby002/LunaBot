@@ -23,10 +23,10 @@ namespace LunaBot
 
         public static void Log(this Exception e, SocketMessage message = null)
         {
-            if(message != null)
-            {
-                message.Channel.SendMessageAsync(string.Format("An error occured: {0}", e.Message));
-            }
+            //if(message != null)
+            //{
+            //    message.Channel.SendMessageAsync(string.Format("An error occured: {0}", e.Message));
+            //}
             Logger.Error("System", e.ToString());
         }
     }
