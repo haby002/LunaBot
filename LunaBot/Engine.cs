@@ -291,12 +291,14 @@ namespace LunaBot
                 }
                 catch (Exception e)
                 {
-                    message.Channel.SendMessageAsync(string.Format("Command failed: {0}", e.Message));
+                    Logger.Error("system", string.Format("Command failed: {0}", e.Message));
                     while (e.InnerException != null)
                     {
                         e = e.InnerException;
-                        message.Channel.SendMessageAsync(string.Format("Command failed: {0}", e.Message));
+                        Logger.Error("system", string.Format("Command failed: {0}", e.Message));
                     }
+
+                    message.Channel.SendMessageAsync("Command failed. Try using !help for more info.`");
                 }
 
                 return;
@@ -324,8 +326,21 @@ namespace LunaBot
                 message.Channel.SendMessageAsync("I can't set something as nothing, try `+Attribute <Content>`");
                 return;
             }
-            
-            this.commandDictionary["set_" + command].Process(message, new[] { content });
+
+            try
+            {
+                this.commandDictionary["set_" + command].Process(message, new[] { content });
+            }
+            catch (Exception e)
+            {
+                Logger.Error("system", string.Format("Command failed: {0}", e.Message));
+                while (e.InnerException != null)
+                {
+                    e = e.InnerException;
+                    Logger.Error("system", string.Format("Command failed: {0}", e.Message));
+                }
+                message.Channel.SendMessageAsync("Command failed. Try using !help for more info.`");
+            }
         }
 
         private void ProcessGetAttribute(SocketMessage message)
@@ -341,8 +356,20 @@ namespace LunaBot
             {
                 user = mentionedUser.Id.ToString();
             }
-
-            this.commandDictionary["get_" + command].Process(message, new[] { command, user });
+            try
+            {
+                this.commandDictionary["get_" + command].Process(message, new[] { command, user });
+            }
+            catch (Exception e)
+            {
+                Logger.Error("system", string.Format("Command failed: {0}", e.Message));
+                while (e.InnerException != null)
+                {
+                    e = e.InnerException;
+                    Logger.Error("system", string.Format("Command failed: {0}", e.Message));
+                }
+                message.Channel.SendMessageAsync("Command failed. Try using !help for more info.`");
+            }
         }
 
         /// <summary>
