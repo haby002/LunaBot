@@ -726,7 +726,7 @@ namespace LunaBot
                     else if (message.Content.ToLower().Equals("no"))
                     {
                         Logger.Verbose(user.Username, $"Disabling NSFW.");
-                        Predicate<SocketRole> sfwFinder = (SocketRole sr) => { return sr.Name == "sfw"; };
+                        Predicate<SocketRole> sfwFinder = (SocketRole sr) => { return sr.Name == "SFW"; };
                         SocketRole sfw = roles.Find(sfwFinder);
 
                         await user.AddRoleAsync(sfw);
