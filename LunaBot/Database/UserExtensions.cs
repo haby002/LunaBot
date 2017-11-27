@@ -45,7 +45,7 @@ namespace LunaBot.Database
         {
             user.Xp += words;
 
-            if (user.Xp > (user.Level * 250))
+            if (user.Xp > (user.Level * 1500))
             {
                 user.Level++;
                 return true;
