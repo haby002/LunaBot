@@ -29,7 +29,7 @@ namespace LunaBot.ServerUtilities
             await user.SendMessageAsync("You have been kicked from the server from inactivity.\n" +
                 "You can join again but once you get kicked 3 times you are banned.\n" +
                 "Hint: Prevent getting kicked by being part of the community.\n" +
-                "https://discord.gg/3sGtSSj");
+                "https://discord.gg/J4c8wKg");
 
             Random r = new Random();
             
