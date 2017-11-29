@@ -50,7 +50,7 @@ namespace LunaBot.Commands
         }
     }
 
-    [LunaBotCommand("get_Age")]
+    [LunaBotCommand("get_a")]
     class GetAgeCommand : BaseCommand
     {
         public override void Process(SocketMessage message, string[] parameters)
