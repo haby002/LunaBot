@@ -228,7 +228,7 @@ namespace LunaBot.Commands
         }
     }
 
-    [LunaBotCommand("get_Fur")]
+    [LunaBotCommand("get_f")]
     class GetFurCommand : BaseCommand
     {
         public override void Process(SocketMessage message, string[] parameters)
