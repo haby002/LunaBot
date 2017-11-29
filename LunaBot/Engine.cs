@@ -647,7 +647,6 @@ namespace LunaBot
                 }
                 else if (databaseUser.Description == null)
                 {
-                    databaseUser.Fur = message.Content;
                     Logger.Verbose(user.Username, $"Setting description to {message.Content}");
 
                     databaseUser.Description = message.Content;
