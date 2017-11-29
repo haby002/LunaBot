@@ -61,6 +61,7 @@ namespace LunaBot.Commands
                             {
                                 Logger.Info(message.Author.Username, $"Changed user {parameters[0]}'s level from {user.Level} to {parameters[2]}");
                                 user.Level = Convert.ToInt32(parameters[2]);
+                                user.Xp = 0;
                                 message.Channel.SendMessageAsync($"Success: {parameters[0]}'s level set to `{user.Level}`");
                             }
                             else
