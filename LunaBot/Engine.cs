@@ -182,9 +182,8 @@ namespace LunaBot
             await client.StartAsync();
         }
 
-        private async Task MessageReceived(SocketMessage message)
+        private void MessageReceived(SocketMessage message)
         {
-#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
             Task.Run(async () =>
             {
                 // Handle commands within the public text channels.
@@ -236,7 +235,6 @@ namespace LunaBot
                 }
 
             });
-#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
 
         }
 
