@@ -148,7 +148,7 @@ namespace LunaBot.Commands
                 if (user != null)
                 {
                     Logger.Warning(message.Author.Username, $"looking for user <@{userId}> xp.");
-                    message.Channel.SendMessageAsync($"<@{userId}> has {user.Xp}xp");
+                    message.Channel.SendMessageAsync($"<@{userId}> has {user.Xp}/{user.Level * 150} xp");
 
                     return;
                 }
