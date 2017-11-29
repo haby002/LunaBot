@@ -575,7 +575,7 @@ namespace LunaBot
                             break;
                         case "bisexual":
                         case "bi":
-                            orientationFinder = (SocketRole sr) => { return sr.Name == "bisexual"; };
+                            orientationFinder = (SocketRole sr) => { return sr.Name == "bi"; };
                             orientation = roles.Find(orientationFinder);
                             await user.AddRoleAsync(orientation);
                             databaseUser.orientation = User.Orientation.Bi;
