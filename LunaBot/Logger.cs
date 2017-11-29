@@ -39,7 +39,7 @@ namespace LunaBot
 
             using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"log.txt"))
             {
-                file.WriteLine(@"log.txt", $"{DateTime.Now,-19} [{message.Severity,8}] {message.Source}: {message.Message}\n");
+                file.WriteLine($"{DateTime.Now,-19} [{message.Severity,8}] {message.Source}: {message.Message}\n");
             }
 
             return Task.CompletedTask;
