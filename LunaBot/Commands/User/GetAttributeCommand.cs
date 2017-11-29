@@ -113,8 +113,22 @@ namespace LunaBot.Commands
                 User user = db.Users.FirstOrDefault(x => x.DiscordId == userId);
                 if (user != null)
                 {
+                    double percentage = user.Xp / (user.Level * 15);
+                    string progressbar = "";
+
+                    for (int i = 0; i < percentage; i++)
+                    {
+                        progressbar += ("▰");
+                    }
+
+                    while (progressbar.Count() < 10)
+                    {
+                        progressbar += "▱";
+                    }
+
                     Logger.Warning(message.Author.Username, $"looking for user <@{userId}> level.");
-                    message.Channel.SendMessageAsync($"<@{userId}> is level {user.Level}");
+                    message.Channel.SendMessageAsync($"<@{userId}> is level {user.Level}\n" +
+                        progressbar + " " + (percentage * 10) + "%");
                     
                     return;
                 }
@@ -147,8 +161,22 @@ namespace LunaBot.Commands
                 User user = db.Users.FirstOrDefault(x => x.DiscordId == userId);
                 if (user != null)
                 {
+                    double percentage = user.Xp / (user.Level * 15);
+                    string progressbar = "";
+
+                    for(int i = 0; i < percentage; i++)
+                    {
+                        progressbar += ("▰");
+                    }
+
+                    while (progressbar.Count() < 10)
+                    {
+                        progressbar += "▱";
+                    }
+
                     Logger.Warning(message.Author.Username, $"looking for user <@{userId}> xp.");
-                    message.Channel.SendMessageAsync($"<@{userId}> has {user.Xp}/{user.Level * 150} xp");
+                    message.Channel.SendMessageAsync($"<@{userId}> has {user.Xp}/{user.Level * 150} xp\n" +
+                        progressbar + " " + (percentage * 10) + "%");
 
                     return;
                 }
