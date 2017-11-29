@@ -34,11 +34,11 @@ namespace LunaBot.Commands
                 commands.Add("**User Commands**");
 
                 commands.Add("See your own attributes:\n" +
-                    "```?<desc, gender, orientation, age, fur, ref>```");
+                    "```?<desc, g, o, a, f, ref>```");
                 commands.Add("See others attributes:\n" +
-                    "```?<desc, gender, orientation, age, fur, ref> <user>```");
+                    "```?<desc, g, o, a, f, ref> <user>```");
                 commands.Add("Set your attributes:\n" +
-                    "```+<desc, gender, orientation, age, fur, ref>```");
+                    "```+<desc, g, o, a, f, ref>```");
                 commands.Add("Get Help:\n" +
                     "```!help```");
                 commands.Add("Roll:\n" +
