@@ -37,7 +37,10 @@ namespace LunaBot
             Console.WriteLine($"{DateTime.Now,-19} [{message.Severity,8}] {message.Source}: {message.Message}");
             Console.ForegroundColor = cc;
 
-            System.IO.File.WriteAllText(@"log.txt", $"{DateTime.Now,-19} [{message.Severity,8}] {message.Source}: {message.Message}\n");
+            using (System.IO.StreamWriter file = new System.IO.StreamWriter(@"log.txt"))
+            {
+                file.WriteLine(@"log.txt", $"{DateTime.Now,-19} [{message.Severity,8}] {message.Source}: {message.Message}\n");
+            }
 
             return Task.CompletedTask;
         }
