@@ -182,7 +182,7 @@ namespace LunaBot
             await client.StartAsync();
         }
 
-        private void MessageReceived(SocketMessage message)
+        private async Task MessageReceived(SocketMessage message)
         {
             Task.Run(async () =>
             {
@@ -190,7 +190,7 @@ namespace LunaBot
                 try
                 {
                     // Log Message
-                    await message.Log();
+                    await message.Log(LogSeverity.Verbose);
 
                     // ignore your own message if you ever manage to do this.
                     if (message.Author.IsBot)

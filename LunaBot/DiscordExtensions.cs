@@ -18,7 +18,7 @@ namespace LunaBot
         /// <returns>the logging task</returns>
         public static Task Log(this SocketMessage message, LogSeverity sev = LogSeverity.Verbose)
         {
-            return Logger.Log(new LogMessage(sev, message.Author.ToString(), message.Content));
+            return Logger.Log(new LogMessage(sev, message.Channel.Name + " - " + message.Author.ToString(), message.Content));
         }
 
         public static void Log(this Exception e, SocketMessage message = null)
