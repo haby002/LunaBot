@@ -22,6 +22,7 @@ namespace LunaBot.Database
             if (user.Xp > (user.Level * 150))
             {
                 user.Level++;
+                user.Xp = 0;
                 return true;
             }
 
