@@ -246,15 +246,16 @@ namespace LunaBot
             {
                 long userId = Convert.ToInt64(message.Author.Id);
                 User user = db.Users.Where(x => x.DiscordId == userId).SingleOrDefault();
-                
+
                 // No XP gain if you only say 2 words or less.
                 int words = (message.Content.Split(' ').Count<string>());
 
                 if (words < 3)
                     return;
-                
+
+                int xp = message.Content.Split(' ').Select(x => x.Trim()).Where((s) => s.Count() > 2).Sum(x => x.Count());
                 // Adds characters (no whitespace) as XP. Returns true if user leveled up.
-                if (user.AddXP(message.Content.Count(c => !Char.IsWhiteSpace(c))))
+                if (user.AddXP(xp))
                 {
                     if (user.Level % 5 == 0)
                     {
