@@ -31,11 +31,11 @@ namespace LunaBot.Commands
             }
 
             // User to ascend
-            long parsedUserId = (long)message.MentionedUsers.FirstOrDefault().Id;
+            ulong parsedUserId = message.MentionedUsers.FirstOrDefault().Id;
 
             using (DiscordContext db = new DiscordContext())
             {
-                long userId = Convert.ToInt64(message.Author.Id);
+                ulong userId = message.Author.Id;
                 if ((int)db.Users.Where(x => x.DiscordId == userId).FirstOrDefault().Privilege != 3)
                 {
                     Logger.Warning(message.Author.Id.ToString(), "User tried to use ascend command and failed");

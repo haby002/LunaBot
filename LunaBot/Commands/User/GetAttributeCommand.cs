@@ -16,15 +16,15 @@ namespace LunaBot.Commands
             
             using (DiscordContext db = new DiscordContext())
             {
-                long userId;
+                ulong userId;
 
                 if (message.MentionedUsers.Count > 0)
                 {
-                    userId = Convert.ToInt64(message.MentionedUsers.FirstOrDefault().Id);
+                    userId = message.MentionedUsers.FirstOrDefault().Id;
                 }
                 else
                 {
-                    userId = Convert.ToInt64(parameters[1]);
+                    userId = ulong.Parse(parameters[1]);
                 }
                 User user = db.Users.FirstOrDefault(x => x.DiscordId == userId);
                 if (user != null)
@@ -57,15 +57,15 @@ namespace LunaBot.Commands
         {
             using (DiscordContext db = new DiscordContext())
             {
-                long userId;
+                ulong userId;
 
                 if (message.MentionedUsers.Count > 0)
                 {
-                    userId = Convert.ToInt64(message.MentionedUsers.FirstOrDefault().Id);
+                    userId = message.MentionedUsers.FirstOrDefault().Id;
                 }
                 else
                 {
-                    userId = Convert.ToInt64(parameters[1]);
+                    userId = ulong.Parse(parameters[1]);
                 }
 
                 User user = db.Users.FirstOrDefault(x => x.DiscordId == userId);
@@ -100,15 +100,15 @@ namespace LunaBot.Commands
 
             using (DiscordContext db = new DiscordContext())
             {
-                long userId;
+                ulong userId;
 
                 if (message.MentionedUsers.Count > 0)
                 {
-                    userId = Convert.ToInt64(message.MentionedUsers.FirstOrDefault().Id);
+                    userId = message.MentionedUsers.FirstOrDefault().Id;
                 }
                 else
                 {
-                    userId = Convert.ToInt64(parameters[1]);
+                    userId = ulong.Parse(parameters[1]);
                 }
                 User user = db.Users.FirstOrDefault(x => x.DiscordId == userId);
                 if (user != null)
@@ -148,15 +148,15 @@ namespace LunaBot.Commands
 
             using (DiscordContext db = new DiscordContext())
             {
-                long userId;
+                ulong userId;
 
                 if (message.MentionedUsers.Count > 0)
                 {
-                    userId = Convert.ToInt64(message.MentionedUsers.FirstOrDefault().Id);
+                    userId = message.MentionedUsers.FirstOrDefault().Id;
                 }
                 else
                 {
-                    userId = Convert.ToInt64(parameters[1]);
+                    userId = ulong.Parse(parameters[1]);
                 }
                 User user = db.Users.FirstOrDefault(x => x.DiscordId == userId);
                 if (user != null)
@@ -196,15 +196,15 @@ namespace LunaBot.Commands
 
             using (DiscordContext db = new DiscordContext())
             {
-                long userId;
+                ulong userId;
 
                 if (message.MentionedUsers.Count > 0)
                 {
-                    userId = Convert.ToInt64(message.MentionedUsers.FirstOrDefault().Id);
+                    userId = message.MentionedUsers.FirstOrDefault().Id;
                 }
                 else
                 {
-                    userId = Convert.ToInt64(parameters[1]);
+                    userId = ulong.Parse(parameters[1]);
                 }
                 User user = db.Users.FirstOrDefault(x => x.DiscordId == userId);
                 if (user != null)
@@ -230,15 +230,15 @@ namespace LunaBot.Commands
 
             using (DiscordContext db = new DiscordContext())
             {
-                long userId;
+                ulong userId;
 
                 if (message.MentionedUsers.Count > 0)
                 {
-                    userId = Convert.ToInt64(message.MentionedUsers.FirstOrDefault().Id);
+                    userId = message.MentionedUsers.FirstOrDefault().Id;
                 }
                 else
                 {
-                    userId = Convert.ToInt64(parameters[1]);
+                    userId = ulong.Parse(parameters[1]);
                 }
                 User user = db.Users.FirstOrDefault(x => x.DiscordId == userId);
                 if (user != null)
@@ -264,15 +264,15 @@ namespace LunaBot.Commands
 
             using (DiscordContext db = new DiscordContext())
             {
-                long userId;
+                ulong userId;
 
                 if (message.MentionedUsers.Count > 0)
                 {
-                    userId = Convert.ToInt64(message.MentionedUsers.FirstOrDefault().Id);
+                    userId = message.MentionedUsers.FirstOrDefault().Id;
                 }
                 else
                 {
-                    userId = Convert.ToInt64(parameters[1]);
+                    userId = ulong.Parse(parameters[1]);
                 }
                 User user = db.Users.FirstOrDefault(x => x.DiscordId == userId);
                 if (user != null)
@@ -306,15 +306,15 @@ namespace LunaBot.Commands
 
             using (DiscordContext db = new DiscordContext())
             {
-                long userId;
+                ulong userId;
 
                 if (message.MentionedUsers.Count > 0)
                 {
-                    userId = Convert.ToInt64(message.MentionedUsers.FirstOrDefault().Id);
+                    userId = message.MentionedUsers.FirstOrDefault().Id;
                 }
                 else
                 {
-                    userId = Convert.ToInt64(parameters[1]);
+                    userId = ulong.Parse(parameters[1]);
                 }
                 User user = db.Users.FirstOrDefault(x => x.DiscordId == userId);
                 if (user != null)
@@ -348,15 +348,15 @@ namespace LunaBot.Commands
 
             using (DiscordContext db = new DiscordContext())
             {
-                long userId;
+                ulong userId;
 
                 if (message.MentionedUsers.Count > 0)
                 {
-                    userId = Convert.ToInt64(message.MentionedUsers.FirstOrDefault().Id);
+                    userId = message.MentionedUsers.FirstOrDefault().Id;
                 }
                 else
                 {
-                    userId = Convert.ToInt64(parameters[1]);
+                    userId = ulong.Parse(parameters[1]);
                 }
                 User user = db.Users.FirstOrDefault(x => x.DiscordId == userId);
                 if (user != null)

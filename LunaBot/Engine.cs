@@ -74,48 +74,48 @@ namespace LunaBot
                 this.commandDictionary[commandAttribute.Name] = Activator.CreateInstance(command) as BaseCommand;
             }
         }
-
-#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
+        
         private async Task Ready()
-#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
         {
-            guild = client.GetGuild(195198580724727810);
-            lobby = client.GetChannel(308306400717832192) as SocketTextChannel;
+            guild = client.GetGuild(Guilds.Guild);
+            await guild.DownloadUsersAsync();
+            lobby = client.GetChannel(Channels.Lobby) as SocketTextChannel;
             roles = guild.Roles.ToList();
-            report = new BotReporting(guild.GetChannel(379784655370584074));
-            luna = guild.GetUser(333285108402487297);
+            report = new BotReporting(guild.GetChannel(Channels.BotLogs));
+            luna = guild.GetUser(UserIds.Luna);
 
             // Adding Haby as owner
             using (DiscordContext db = new DiscordContext())
             {
                 db.Database.EnsureCreated();
-
-                long userId = 123470919535427584;
-                User haby = db.Users.Where(x => x.DiscordId == userId).FirstOrDefault();
-                if (haby == null)
+                foreach (ulong userId in UserIds.Owners)
                 {
-                    Logger.Warning("System", "Haby001 not found, adding as Admin.");
+                    User owner = db.Users.Where(x => x.DiscordId == userId).FirstOrDefault();
+                    if (owner == null)
+                    {
+                        Logger.Warning("System", "Haby001 not found, adding as Admin.");
 
-                    User newUser = new User();
-                    newUser.DiscordId = userId;
-                    newUser.Level = 1;
-                    newUser.Privilege = User.Privileges.Owner;
-                    newUser.TutorialFinished = true;
-                    newUser.Gender = User.Genders.Male;
+                        User newUser = new User();
+                        newUser.DiscordId = userId;
+                        newUser.Level = 1;
+                        newUser.Privilege = User.Privileges.Owner;
+                        newUser.TutorialFinished = true;
+                        newUser.Gender = User.Genders.Male;
 
-                    db.Users.Add(newUser);
-                    db.SaveChanges();
+                        db.Users.Add(newUser);
+                        db.SaveChanges();
 
-                    Logger.Verbose("System", "Created admin Haby");
-                    return;
-                }
-                else if(haby.Privilege != User.Privileges.Owner)
-                {
-                    haby.Privilege = User.Privileges.Owner;
-                    
-                    db.SaveChanges();
+                        Logger.Verbose("System", "Created admin Haby");
+                        return;
+                    }
+                    else if (owner.Privilege != User.Privileges.Owner)
+                    {
+                        owner.Privilege = User.Privileges.Owner;
 
-                    Logger.Verbose("System", "Updated Haby's priviledges to Owner");
+                        db.SaveChanges();
+
+                        Logger.Verbose("System", "Updated Haby's priviledges to Owner");
+                    }
                 }
             }
 
@@ -137,7 +137,7 @@ namespace LunaBot
             registerCommand.manualRegister(user as SocketGuildUser);
             using (DiscordContext db = new DiscordContext())
             {
-                long userId = Convert.ToInt64(user.Id);
+                ulong userId = user.Id;
                 if (db.Users.Where(x => x.DiscordId == userId).FirstOrDefault().TutorialFinished)
                 {
                     Logger.Info("System", $"{user.Username}<@{user.Id}> already finished the tutorial. Announcing in lobby.");
@@ -159,7 +159,7 @@ namespace LunaBot
         {
             using (DiscordContext db = new DiscordContext())
             {
-                long userId = Convert.ToInt64(user.Id);
+                ulong userId = user.Id;
                 if (db.Users.Where(x => x.DiscordId == userId).FirstOrDefault().TutorialFinished)
                 {
                     Logger.Info("System", $"User {user.Username}<@{user.Id}> has left the server.");
@@ -178,63 +178,60 @@ namespace LunaBot
         {
             e.Log();
 
+            await client.LogoutAsync();
             await client.StopAsync();
             await client.StartAsync();
         }
 
         private async Task MessageReceived(SocketMessage message)
         {
-            Task.Run(async () =>
+            // Handle commands within the public text channels.
+            try
             {
-                // Handle commands within the public text channels.
-                try
+                // Log Message
+                await message.Log(LogSeverity.Verbose);
+
+                // ignore your own message if you ever manage to do this.
+                if (message.Author.IsBot)
                 {
-                    // Log Message
-                    await message.Log(LogSeverity.Verbose);
+                    return;
+                }
 
-                    // ignore your own message if you ever manage to do this.
-                    if (message.Author.IsBot)
-                    {
-                        return;
-                    }
+                //Anti-raid system
+                if (await ProcessMessage(message))
+                    return;
 
-                    //Anti-raid system
-                    if (await ProcessMessage(message))
-                        return;
-
-                    // Tutorial messages that cannot run commands.
-                    if(message.Channel.Name.Contains("intro"))
-                    {
-                        await ProcessTutorialMessaage(message);
-                        return;
-                    }
+                // Tutorial messages that cannot run commands.
+                if(message.Channel.Name.Contains("intro"))
+                {
+                    await ProcessTutorialMessaage(message);
+                    return;
+                }
             
-                    // Commands
-                    string messageText = message.Content;
-                    if (messageText.StartsWith("!"))
-                    {
-                        this.ProcessCommand(message);
-                    }
-                    else if (messageText.StartsWith("+"))
-                    {
-                        this.ProcessSetAttribute(message);
-                    }
-                    else if (messageText.StartsWith("?"))
-                    {
-                        this.ProcessGetAttribute(message);
-                    }
-                    else
-                    {
-                        ProcessXpAsync(message);
-                    }
-
-                }
-                catch(Exception e)
+                // Commands
+                string messageText = message.Content;
+                if (messageText.StartsWith("!"))
                 {
-                    e.Log(message);
+                    this.ProcessCommand(message);
+                }
+                else if (messageText.StartsWith("+"))
+                {
+                    this.ProcessSetAttribute(message);
+                }
+                else if (messageText.StartsWith("?"))
+                {
+                    this.ProcessGetAttribute(message);
+                }
+                else
+                {
+                    ProcessXpAsync(message);
                 }
 
-            });
+            }
+            catch(Exception e)
+            {
+                e.Log(message);
+            }
 
         }
 
@@ -242,7 +239,7 @@ namespace LunaBot
         {
             using (DiscordContext db = new DiscordContext())
             {
-                long userId = Convert.ToInt64(message.Author.Id);
+                ulong userId = message.Author.Id;
                 User user = db.Users.Where(x => x.DiscordId == userId).SingleOrDefault();
 
                 // No XP gain if you only say 2 words or less.
@@ -387,7 +384,7 @@ namespace LunaBot
                 return false;
             using (DiscordContext db = new DiscordContext())
             {
-                long userId = Convert.ToInt64(message.Author.Id);
+                ulong userId = message.Author.Id;
                 User databaseUser = db.Users.Where(x => x.DiscordId == userId).FirstOrDefault();
                 if ((int)databaseUser.Privilege >= 1)
                     return false;
@@ -466,7 +463,7 @@ namespace LunaBot
             using (DiscordContext db = new DiscordContext())
             {
                 SocketGuildUser user = message.Author as SocketGuildUser;
-                long userId = Convert.ToInt64(user.Id);
+                ulong userId = user.Id;
                 User databaseUser = db.Users.Where(x => x.DiscordId == userId).FirstOrDefault();
 
                 if (databaseUser.TutorialFinished)
@@ -502,39 +499,39 @@ namespace LunaBot
                     {
                         case "male":
                         case "m":
-                            genderFinder = (SocketRole sr) => { return sr.Name == "male"; };
+                            genderFinder = (SocketRole sr) => { return sr.Name == Roles.Male; };
                             gender = roles.Find(genderFinder);
                             await user.AddRoleAsync(gender);
                             databaseUser.Gender = User.Genders.Male;
                             break;
                         case "female":
                         case "f":
-                            genderFinder = (SocketRole sr) => { return sr.Name == "female"; };
+                            genderFinder = (SocketRole sr) => { return sr.Name == Roles.Female; };
                             gender = roles.Find(genderFinder);
                             await user.AddRoleAsync(gender);
                             databaseUser.Gender = User.Genders.Female;
                             break;
                         case "other":
                         case "o":
-                            genderFinder = (SocketRole sr) => { return sr.Name == "other"; };
+                            genderFinder = (SocketRole sr) => { return sr.Name == Roles.Other; };
                             gender = roles.Find(genderFinder);
                             await user.AddRoleAsync(gender);
                             databaseUser.Gender = User.Genders.Other;
                             break;
                         case "trans-male":
-                            genderFinder = (SocketRole sr) => { return sr.Name == "trans-male"; };
+                            genderFinder = (SocketRole sr) => { return sr.Name == Roles.TransMale; };
                             gender = roles.Find(genderFinder);
                             await user.AddRoleAsync(gender);
                             databaseUser.Gender = User.Genders.TransM;
                             break;
                         case "trans-female":
-                            genderFinder = (SocketRole sr) => { return sr.Name == "trans-female"; };
+                            genderFinder = (SocketRole sr) => { return sr.Name == Roles.TransFemale; };
                             gender = roles.Find(genderFinder);
                             await user.AddRoleAsync(gender);
                             databaseUser.Gender = User.Genders.TransF;
                             break;
                         default:
-                            await message.Channel.SendMessageAsync("I'm sorry I couldn't understand your message. Make sure it's either male, female, trans-male, trans-female, or other.");
+                            await message.Channel.SendMessageAsync("I'm sorry I couldn't understand your message. Make sure it's either `male`, `female`, `trans-male`, `trans-female`, or `other`.");
                             return;
                     }
 

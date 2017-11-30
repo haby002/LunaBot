@@ -16,7 +16,7 @@ namespace LunaBot.Commands
 
             using (DiscordContext db = new DiscordContext())
             {
-                long userId = Convert.ToInt64(message.Author.Id);
+                ulong userId = message.Author.Id;
 
                 User user = db.Users.FirstOrDefault(x => x.DiscordId == userId);
 
@@ -52,7 +52,7 @@ namespace LunaBot.Commands
             }
             using (DiscordContext db = new DiscordContext())
             {
-                long userId = Convert.ToInt64(message.Author.Id);
+                ulong userId = message.Author.Id;
 
                 User user = db.Users.FirstOrDefault(x => x.DiscordId == userId);
                 if (user != null)
@@ -96,7 +96,7 @@ namespace LunaBot.Commands
 
             using (DiscordContext db = new DiscordContext())
             {
-                long userId = Convert.ToInt64(message.Author.Id);
+                ulong userId = message.Author.Id;
 
                 User user = db.Users.FirstOrDefault(x => x.DiscordId == userId);
                 if (user != null)
@@ -152,7 +152,7 @@ namespace LunaBot.Commands
 
             using (DiscordContext db = new DiscordContext())
             {
-                long userId = Convert.ToInt64(message.Author.Id);
+                ulong userId = message.Author.Id;
 
                 User user = db.Users.FirstOrDefault(x => x.DiscordId == userId);
                 if (user != null)
@@ -194,7 +194,7 @@ namespace LunaBot.Commands
 
             using (DiscordContext db = new DiscordContext())
             {
-                long userId = Convert.ToInt64(message.Author.Id);
+                ulong userId = message.Author.Id;
 
                 User user = db.Users.FirstOrDefault(x => x.DiscordId == userId);
                 if (user != null)
@@ -224,7 +224,7 @@ namespace LunaBot.Commands
 
             using (DiscordContext db = new DiscordContext())
             {
-                long userId = Convert.ToInt64(message.Author.Id);
+                ulong userId = message.Author.Id;
 
                 User user = db.Users.FirstOrDefault(x => x.DiscordId == userId);
                 if (user != null)

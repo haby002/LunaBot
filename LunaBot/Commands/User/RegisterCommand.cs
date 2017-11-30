@@ -12,7 +12,7 @@ namespace LunaBot.Commands
         {
             using (DiscordContext db = new DiscordContext())
             {
-                long userId = Convert.ToInt64(message.Author.Id);
+                ulong userId = message.Author.Id;
                 if (db.Users.Where(x => x.DiscordId == userId).Count() != 0)
                 {
                     Logger.Verbose(message.Author.Username, "User already registered");
@@ -45,7 +45,7 @@ namespace LunaBot.Commands
         {
             using (DiscordContext db = new DiscordContext())
             {
-                long userId = Convert.ToInt64(user.Id);
+                ulong userId = user.Id;
                 if (db.Users.Where(x => x.DiscordId == userId).Count() != 0)
                 {
                     Logger.Verbose("System", $"User {user.Username} already registered");

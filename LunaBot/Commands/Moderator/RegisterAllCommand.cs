@@ -13,7 +13,7 @@ namespace LunaBot.Commands
         {
             using (DiscordContext db = new DiscordContext())
             {
-                long userId = Convert.ToInt64(message.Author.Id);
+                ulong userId = message.Author.Id;
                 if (db.Users.Where(x => x.DiscordId == userId).FirstOrDefault().Privilege == 0)
                 {
                     Logger.Warning(message.Author.Username, "Failed RegisterAll command");
@@ -30,12 +30,12 @@ namespace LunaBot.Commands
 
                 foreach(SocketGuildUser u in users)
                 {
-                    if(db.Users.Where(x => x.DiscordId == (long)u.Id).Count() == 0)
+                    if(db.Users.Where(x => x.DiscordId == u.Id).Count() == 0)
                     {
                         Logger.Verbose(message.Author.Username, $"Creating User Data for {u.Username}");
 
                         User newUser = new User();
-                        newUser.DiscordId = (long)u.Id;
+                        newUser.DiscordId = u.Id;
                         newUser.Level = 1;
                         newUser.Privilege = 0;
                         newUser.TutorialFinished = false;

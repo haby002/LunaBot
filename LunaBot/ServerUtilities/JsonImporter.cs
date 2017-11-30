@@ -29,7 +29,7 @@ namespace LunaBot.ServerUtilities
                 {
                     if (toplevel.ContainsKey(u.Id.ToString()))
                     {
-                        User user = db.Users.Where(x => x.DiscordId == (long)u.Id).FirstOrDefault();
+                        User user = db.Users.Where(x => x.DiscordId == u.Id).FirstOrDefault();
 
                         JObject secondLevel = (JObject)toplevel[u.Id.ToString()];
 

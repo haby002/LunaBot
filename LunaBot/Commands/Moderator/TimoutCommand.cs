@@ -14,7 +14,7 @@ namespace LunaBot.Commands
         {
             using (DiscordContext db = new DiscordContext())
             {
-                long userId = Convert.ToInt64(message.Author.Id);
+                ulong userId = message.Author.Id;
                 if (db.Users.Where(x => x.DiscordId == userId).FirstOrDefault().Privilege == 0)
                 {
                     Logger.Warning(message.Author.Username, "Failed timout command. Not enough privileges.");

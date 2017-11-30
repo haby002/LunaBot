@@ -11,7 +11,7 @@ namespace LunaBot.Database
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ID { get; set; }
         
-        public long DiscordId { get; set; }
+        public ulong DiscordId { get; set; }
 
         public Privileges Privilege { get; set; }
 

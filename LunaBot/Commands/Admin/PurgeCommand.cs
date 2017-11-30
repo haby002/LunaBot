@@ -16,7 +16,7 @@ namespace LunaBot.Commands
         {
             using (DiscordContext db = new DiscordContext())
             {
-                if (db.Users.Where(x => x.DiscordId == (long)message.Author.Id).FirstOrDefault().Privilege < User.Privileges.Admin)
+                if (db.Users.Where(x => x.DiscordId == message.Author.Id).FirstOrDefault().Privilege < User.Privileges.Admin)
                 {
                     Logger.Debug(message.Author.Username, "User attempted pruge command");
                     message.Channel.SendMessageAsync("Do you want to start a riot? ");
@@ -31,7 +31,7 @@ namespace LunaBot.Commands
 
                 foreach (SocketGuildUser u in users)
                 {
-                    User databaseUser = db.Users.Where(x => x.DiscordId == (long)u.Id).FirstOrDefault();
+                    User databaseUser = db.Users.Where(x => x.DiscordId == u.Id).FirstOrDefault();
                     // check if user has messaged in the past 2 weeks. Kick if false
                     if (databaseUser.LastMessage.Subtract(twoWeeksAgo).TotalDays < 0)
                     {

@@ -14,22 +14,11 @@ namespace LunaBot.Commands
     {
         public override void Process(SocketMessage message, string[] parameters)
         {
-            //IDictionary<string, BaseCommand> commandDictionary = new Dictionary<string, BaseCommand>();
-
             List<string> commands = new List<string>();
             
             using (DiscordContext db = new DiscordContext())
             {
-                User user = db.Users.FirstOrDefault(x => x.DiscordId == (long)message.Author.Id);
-
-                //Type[] commands = Assembly.GetExecutingAssembly().GetTypes().Where(t => String.Equals(t.Namespace, "LunaBot.Commands", StringComparison.Ordinal)).ToArray();
-                //commands = commands.Where(x => x.GetCustomAttributes(typeof(LunaBotCommandAttribute)).Any()).ToArray();
-
-                //foreach (Type command in commands)
-                //{
-                //    LunaBotCommandAttribute commandAttribute = command.GetCustomAttribute(typeof(LunaBotCommandAttribute)) as LunaBotCommandAttribute;
-                //    commandDictionary[commandAttribute.Name] = Activator.CreateInstance(command) as BaseCommand;
-                //}
+                User user = db.Users.FirstOrDefault(x => x.DiscordId == message.Author.Id);
 
                 commands.Add("**User Commands**");
 
