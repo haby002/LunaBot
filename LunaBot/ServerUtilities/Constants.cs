@@ -1,0 +1,95 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+
+/// <summary>
+/// Stores constant like user, channel, and guild IDs
+/// </summary>
+namespace LunaBot.ServerUtilities
+{
+    internal static class UserIds
+    {
+        /// <summary>
+        /// Owners of the FR server
+        /// </summary>
+        internal static ulong[] Owners =
+        {
+            123470919535427584,
+            201934665961963520,
+            196558107520794624
+        };
+
+        /// <summary>
+        /// The bot's ID
+        /// </summary>
+        internal static ulong Luna = 333285108402487297;
+
+    }
+
+    internal static class Channels
+    {
+        /// <summary>
+        /// FR lobby channel. Main channel
+        /// </summary>
+        internal static ulong Lobby = 308306400717832192;
+
+        /// <summary>
+        /// Channel for error reporting and status reports
+        /// </summary>
+        internal static ulong BotLogs = 379784655370584074;
+
+    }
+
+    internal static class Guilds
+    {
+        /// <summary>
+        /// FR guild
+        /// </summary>
+        internal static ulong Guild = 195198580724727810;
+
+    }
+
+    internal static class Roles
+    {
+        //Permission Roles
+        internal static string Owner = "Owner";
+
+        internal static string Admin = "Admin";
+
+        internal static string Moddlet = "Moddlet";
+
+        internal static string Staff = "Staff";
+
+        internal static string SFW = "SFW";
+
+        internal static string Monk = "Monk";
+
+        // Orientation Roles
+        internal static string Gay = "gay";
+
+        internal static string Straight = "straight";
+
+        internal static string Asexual = "asexual";
+
+        internal static string Bi = "bi";
+
+        internal static string Pan = "pan";
+
+        internal static string GrayA = "grey-a";
+
+        // Gender Roles
+        internal static string Male = "male";
+
+        internal static string Female = "female";
+
+        internal static string TransMale = "trans-male";
+
+        internal static string TransFemale = "trans-female";
+
+        internal static string Other = "other";
+
+        // Moderation Roles
+        internal static string Mute = "Mute";
+
+    }
+}
