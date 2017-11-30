@@ -203,9 +203,16 @@ namespace LunaBot.Commands
                                     discordUser.AddRoleAsync(orientation);
                                     user.orientation = User.Orientation.Gray;
                                     break;
+                                case "pansexual":
+                                case "pan":
+                                    orientationFinder = (SocketRole sr) => { return sr.Name == "pan"; };
+                                    orientation = roles.Find(orientationFinder);
+                                    discordUser.AddRoleAsync(orientation);
+                                    user.orientation = User.Orientation.Pansexual;
+                                    break;
                                 default:
                                     message.Channel.SendMessageAsync("Hmm... That's not an orientation I can undestand.\n" +
-                                        "Make sure it's either straight, gay, bisexaul, asexual, or gray-a.");
+                                        "Make sure it's either straight, gay, bisexaul, asexual, pansexual, or gray-a.");
                                     return;
                             }
                             Logger.Info(message.Author.Username, $"Changed user {parameters[0]}'s orientation to {user.orientation.ToString()}");
