@@ -144,7 +144,9 @@ namespace LunaBot.Commands
                     "- Straight\n" +
                     "- Gay\n" +
                     "- Bisexual\n" +
-                    "- Gray-a (if you'd rather it not be shown)\n"+
+                    "- Asexual\n" +
+                    "- Pansexual\n" +
+                    "- Gray-a (if you'd rather it not be shown)\n" +
                     "```");
 
                 return;
@@ -157,19 +159,21 @@ namespace LunaBot.Commands
                 User user = db.Users.FirstOrDefault(x => x.DiscordId == userId);
                 if (user != null)
                 {
-                    Logger.Warning(message.Author.Username, $"Changing @<{userId}> orientation to {orientation.ToString()}.");
+                    Logger.Info(message.Author.Username, $"Changing @<{userId}> orientation to {orientation.ToString()}.");
 
-                    // Adding role to user
                     SocketGuildChannel guildChannel = message.Channel as SocketGuildChannel;
                     List<SocketRole> roles = guildChannel.Guild.Roles.ToList();
-                    Predicate<SocketRole> orientationFinder = (SocketRole sr) => { return sr.Name == orientation.ToString().ToLower(); };
-                    SocketRole orientationRole = roles.Find(orientationFinder);
-                    guildChannel.GetUser((ulong)userId).AddRoleAsync(orientationRole);
 
                     // Remove old role
-                    orientationFinder = (SocketRole sr) => { return sr.Name == user.orientation.ToString().ToLower(); };
+                    Predicate<SocketRole> orientationFinder = (SocketRole sr) => { return sr.Name == user.orientation.ToString().ToLower(); };
+                    SocketRole orientationRole = roles.Find(orientationFinder);
+                    guildChannel.GetUser(userId).RemoveRoleAsync(orientationRole);
+
+                    // Adding role to user
+                    orientationFinder = (SocketRole sr) => { return sr.Name == orientation.ToString().ToLower(); };
                     orientationRole = roles.Find(orientationFinder);
-                    guildChannel.GetUser((ulong)userId).RemoveRoleAsync(orientationRole);
+                    guildChannel.GetUser(userId).AddRoleAsync(orientationRole);
+
 
                     user.orientation = orientation;
                     db.SaveChanges();
