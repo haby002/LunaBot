@@ -660,7 +660,10 @@ namespace LunaBot
 
                     Logger.Verbose(user.Username, $"Setting ref to {message.Content}");
 
-                    await message.Channel.GetMessagesAsync().ForEachAsync((x) => { foreach (var f in x) { f.DeleteAsync(); } });
+                    await message.Channel.GetMessagesAsync(10).ForEachAsync((x) => { foreach (var f in x) {
+                            f.DeleteAsync();
+                            Thread.Sleep(50);
+                        } });
                     await message.Channel.SendMessageAsync($"How about `RP`? Do you want to be able to see rp rooms? `yes` or `no`\n" +
                         $"This can be changed later on if you change your mind.");
                 }
@@ -760,9 +763,9 @@ namespace LunaBot
 
                         await lobby.SendMessageAsync($"Please welcome <@{user.Id}> to the server!");
 
-                        await message.Channel.SendMessageAsync("This channel will self-destruct in 10 seconds");
+                        await message.Channel.SendMessageAsync("This channel will self-destruct in 2 minutes");
 
-                        Thread.Sleep(10000);
+                        Thread.Sleep(120000);
 
                         await (message.Channel as SocketTextChannel).DeleteAsync();
                         

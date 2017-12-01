@@ -150,3 +150,15 @@
 11/30/2017 1:00:08 AM [    Info] Gateway: Ready
 11/30/2017 1:00:18 AM [ Verbose] lobby - Haby001#3065: +o s
 11/30/2017 1:00:18 AM [    Info] Haby001: Changing @<123470919535427584> orientation to Straight.
+11/30/2017 9:08:14 PM [    Info] Discord: Discord.Net v1.0.2 (API v6)
+11/30/2017 9:08:15 PM [    Info] Gateway: Connecting
+11/30/2017 9:08:15 PM [    Info] Gateway: Connected
+11/30/2017 9:08:17 PM [    Info] Gateway: Ready
+11/30/2017 9:08:21 PM [ Verbose] intro-353709749184757760 - Haby003#4508: no
+11/30/2017 9:08:21 PM [   Error] System: System.NullReferenceException: Object reference not set to an instance of an object.
+   at LunaBot.Engine.<ProcessMessage>d__23.MoveNext() in C:\Users\Javier\documents\visual studio 2017\Projects\LunaBot\LunaBot\Engine.cs:line 379
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw()
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()
+   at LunaBot.Engine.<MessageReceived>d__18.MoveNext() in C:\Users\Javier\documents\visual studio 2017\Projects\LunaBot\LunaBot\Engine.cs:line 191
