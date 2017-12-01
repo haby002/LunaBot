@@ -335,6 +335,9 @@ namespace LunaBot
             string messageText = message.Content;
             string[] commandPts = messageText.Substring(1).Split(new Char[] { ' ' }, 2);
             string command = commandPts[0].ToLower();
+            
+            if (command.Equals("?")
+               return;
 
             string user = message.Author.Id.ToString();
             SocketUser mentionedUser = message.MentionedUsers.FirstOrDefault();
