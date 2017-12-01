@@ -547,40 +547,40 @@ namespace LunaBot
                     {
                         case "straight":
                         case "s":
-                            orientationFinder = (SocketRole sr) => { return sr.Name == "straight"; };
+                            orientationFinder = (SocketRole sr) => { return sr.Name == Roles.Straight; };
                             orientation = roles.Find(orientationFinder);
                             await user.AddRoleAsync(orientation);
                             databaseUser.orientation = User.Orientation.Straight;
                             break;
                         case "gay":
                         case "g":
-                            orientationFinder = (SocketRole sr) => { return sr.Name == "gay"; };
+                            orientationFinder = (SocketRole sr) => { return sr.Name == Roles.Gay; };
                             orientation = roles.Find(orientationFinder);
                             await user.AddRoleAsync(orientation);
                             databaseUser.orientation = User.Orientation.Gay;
                             break;
                         case "bisexual":
                         case "bi":
-                            orientationFinder = (SocketRole sr) => { return sr.Name == "bi"; };
+                            orientationFinder = (SocketRole sr) => { return sr.Name == Roles.Bi; };
                             orientation = roles.Find(orientationFinder);
                             await user.AddRoleAsync(orientation);
                             databaseUser.orientation = User.Orientation.Bi;
                             break;
                         case "asexual":
-                            orientationFinder = (SocketRole sr) => { return sr.Name == "asexual"; };
+                            orientationFinder = (SocketRole sr) => { return sr.Name == Roles.Asexual; };
                             orientation = roles.Find(orientationFinder);
                             await user.AddRoleAsync(orientation);
                             databaseUser.orientation = User.Orientation.Asexual;
                             break;
                         case "gray-a":
-                            orientationFinder = (SocketRole sr) => { return sr.Name == "gray-a"; };
+                            orientationFinder = (SocketRole sr) => { return sr.Name == Roles.GrayA; };
                             orientation = roles.Find(orientationFinder);
                             await user.AddRoleAsync(orientation);
                             databaseUser.orientation = User.Orientation.Gray;
                             break;
                         case "pansexual":
                         case "pan":
-                            orientationFinder = (SocketRole sr) => { return sr.Name == "pan"; };
+                            orientationFinder = (SocketRole sr) => { return sr.Name == Roles.Pan; };
                             orientation = roles.Find(orientationFinder);
                             await user.AddRoleAsync(orientation);
                             databaseUser.orientation = User.Orientation.Pansexual;
@@ -669,7 +669,7 @@ namespace LunaBot
                     if (message.Content.ToLower().Equals("no"))
                     {
                         Logger.Verbose(user.Username, $"Disabling RP.");
-                        Predicate<SocketRole> monkFinder = (SocketRole sr) => { return sr.Name == "monk"; };
+                        Predicate<SocketRole> monkFinder = (SocketRole sr) => { return sr.Name == Roles.Monk; };
                         SocketRole monk = roles.Find(monkFinder);
 
                         await user.AddRoleAsync(monk);
@@ -711,7 +711,7 @@ namespace LunaBot
                     else if (message.Content.ToLower().Equals("no"))
                     {
                         Logger.Verbose(user.Username, $"Disabling NSFW.");
-                        Predicate<SocketRole> sfwFinder = (SocketRole sr) => { return sr.Name == "SFW"; };
+                        Predicate<SocketRole> sfwFinder = (SocketRole sr) => { return sr.Name == Roles.SFW; };
                         SocketRole sfw = roles.Find(sfwFinder);
 
                         await user.AddRoleAsync(sfw);
