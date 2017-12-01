@@ -5,7 +5,6 @@ using LunaBot.Database;
 
 namespace LunaBot.Commands
 {
-    [LunaBotCommand("Register")]
     class RegisterCommand : BaseCommand
     {
         public override void Process(SocketMessage message, string[] parameters)

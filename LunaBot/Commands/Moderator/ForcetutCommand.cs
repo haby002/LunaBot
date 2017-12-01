@@ -39,6 +39,8 @@ namespace LunaBot.Commands
             using (DiscordContext db = new DiscordContext())
             {
                 ulong userId = message.Author.Id;
+                SocketGuildUser discordUser = message.MentionedUsers.FirstOrDefault() as SocketGuildUser;
+
                 if (db.Users.Where(x => x.DiscordId == userId).FirstOrDefault().Privilege == User.Privileges.User)
                 {
                     Logger.Warning(message.Author.Id.ToString(), "User tried to use forcetut command and failed");
@@ -46,39 +48,35 @@ namespace LunaBot.Commands
                     return;
                 }
 
-                // Register user in database
                 RegisterCommand registerCommand = new RegisterCommand();
-                registerCommand.manualRegister(message.MentionedUsers.FirstOrDefault() as SocketGuildUser);
-
                 User user = db.Users.Where(x => x.DiscordId == parsedUserId).FirstOrDefault();
+
+                //Reset database entry for user
+                user.ResetUser();
+
+                // Register user in database
+                registerCommand.manualRegister(discordUser);
+                
+                SocketGuildChannel channel = message.Channel as SocketGuildChannel;
+                IReadOnlyCollection<SocketRole> guildRoles = channel.Guild.Roles;
+
+                SocketRole role = guildRoles.Where(x => x.Name.Equals("Newbie")).FirstOrDefault();
+
+                channel.Guild.GetUser((ulong)parsedUserId).AddRoleAsync(role);
+
+                // Creat intro room
+                RestTextChannel introRoom = channel.Guild.CreateTextChannelAsync($"intro-{parsedUserId}").Result;
+
+                Task.Run(async () =>
                 {
-                    user.TutorialFinished = false;
-                    db.SaveChanges();
+                    // Make room only visible to new user, staff, and Luna
+                    await introRoom.AddPermissionOverwriteAsync(discordUser, Engine.userPerm);
 
-                    SocketGuildChannel channel = message.Channel as SocketGuildChannel;
-                    IReadOnlyCollection<SocketRole> guildRoles = channel.Guild.Roles;
-
-                    SocketRole role = guildRoles.Where(x => x.Name.Equals("Newbie")).FirstOrDefault();
-
-                    channel.Guild.GetUser((ulong)parsedUserId).AddRoleAsync(role);
-
-                    // Creat intro room
-                    RestTextChannel introRoom = channel.Guild.CreateTextChannelAsync($"intro-{parsedUserId}").Result;
-
-                    Task.Run(async () =>
-                    {
-                        // Make room only visible to new user, staff, and Luna
-                        await introRoom.AddPermissionOverwriteAsync(message.MentionedUsers.FirstOrDefault(), Engine.userPerm);
-                        // await introRoom.AddPermissionOverwriteAsync(guildRoles.Where(x => x.Name.Equals("@everyone")).FirstOrDefault(), Engine.removeAllPerm);
-                        // await introRoom.AddPermissionOverwriteAsync(guildRoles.Where(x => x.Name.Equals("Staff")).FirstOrDefault(), Engine.lunaTutPerm);
-                        // await introRoom.AddPermissionOverwriteAsync(channel.Guild.GetUser(333285108402487297), Engine.lunaTutPerm);
-
-                        // Start interaction with user. Sleeps are for humanizing the bot.
-                        await introRoom.SendMessageAsync("Welcome to the server! Lets get you settled, alright?");
-                        Thread.Sleep(1000);
-                        await introRoom.SendMessageAsync("Firstly, what should we call you?");
-                    });
-                }
+                    // Start interaction with user. Sleeps are for humanizing the bot.
+                    await introRoom.SendMessageAsync("Welcome to the server! Lets get you settled, alright?");
+                    Thread.Sleep(1000);
+                    await introRoom.SendMessageAsync("Firstly, what should we call you?");
+                }); 
             }
         }
     }

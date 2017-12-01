@@ -28,5 +28,29 @@ namespace LunaBot.Database
 
             return false;
         }
+
+        public static bool ResetUser(this User user)
+        {
+            try
+            {
+                user.Age = 0;
+                user.Description = null;
+                user.Fur = null;
+                user.Gender = User.Genders.None;
+                user.Monk = false;
+                user.Nsfw = false;
+                user.orientation = User.Orientation.None;
+                user.Ref = null;
+                user.TutorialFinished = false;
+            }
+            catch (Exception e)
+            {
+                e.Log();
+
+                return false;
+            }
+
+            return true;
+        }
     }
 }
