@@ -336,7 +336,7 @@ namespace LunaBot
             string[] commandPts = messageText.Substring(1).Split(new Char[] { ' ' }, 2);
             string command = commandPts[0].ToLower();
             
-            if (command.Equals("?")
+            if (command.Equals("?"))
                return;
 
             string user = message.Author.Id.ToString();
