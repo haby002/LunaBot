@@ -51,7 +51,6 @@ namespace LunaBot
             client.UserJoined += UserJoined;
             client.UserLeft += UserLeft;
             client.UserBanned += UserBanned;
-            client.Disconnected += Disconnected;
             
             this.RegisterCommands();
 
@@ -147,12 +146,12 @@ namespace LunaBot
                 {
                     Logger.Info("System", $"Placing {user.Username}<@{user.Id}> through tutorial...");
                     if (!await StartTutorial(user as SocketGuildUser))
+                    {
                         Logger.Warning("System", $"User {user.Username} already registered.");
+                    }
                 }
             }
-            // make this skip tutorial and announce return
             
-            // await lobby.SendMessageAsync($"Welcome {user.Mention} to the server!");
         }
 
         private async Task UserLeft(SocketUser user)
@@ -172,15 +171,6 @@ namespace LunaBot
         {
             await lobby.SendMessageAsync($"My :banhammer: to your face!");
             Logger.Info("System", $"User {user.Username}<@{user.Id}> has been banned from the server.");
-        }
-
-        private async Task Disconnected(Exception e)
-        {
-            e.Log();
-
-            await client.LogoutAsync();
-            await client.StopAsync();
-            await client.StartAsync();
         }
 
         private async Task MessageReceived(SocketMessage message)
