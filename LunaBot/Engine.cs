@@ -17,6 +17,7 @@ namespace LunaBot
     class Engine
     {
         private IDictionary<string, BaseCommand> commandDictionary;
+        private IDictionary<string, string> aliasDictionary;
         private IDictionary<ulong, DateTime> messageTimestamps;
 
         public static OverwritePermissions removeAllPerm = new OverwritePermissions(PermValue.Deny, PermValue.Deny, PermValue.Deny, PermValue.Deny, PermValue.Deny, PermValue.Deny, PermValue.Deny, PermValue.Deny, PermValue.Deny, PermValue.Deny, PermValue.Deny, PermValue.Deny, PermValue.Deny, PermValue.Deny, PermValue.Deny, PermValue.Deny, PermValue.Deny, PermValue.Deny, PermValue.Deny, PermValue.Deny);
@@ -36,6 +37,7 @@ namespace LunaBot
         {
             this.client = new DiscordSocketClient();
             this.commandDictionary = new Dictionary<string, BaseCommand>();
+            this.aliasDictionary = new Dictionary<string, string>();
             this.messageTimestamps = new Dictionary<ulong, DateTime>();
         }
 
@@ -71,6 +73,11 @@ namespace LunaBot
             {
                 LunaBotCommandAttribute commandAttribute = command.GetCustomAttribute(typeof(LunaBotCommandAttribute)) as LunaBotCommandAttribute;
                 this.commandDictionary[commandAttribute.Name] = Activator.CreateInstance(command) as BaseCommand;
+                
+                foreach(string alias in commandAttribute.Aliases)
+                {
+                    this.aliasDictionary[alias] = commandAttribute.Name;
+                }
             }
         }
         
@@ -159,10 +166,11 @@ namespace LunaBot
             using (DiscordContext db = new DiscordContext())
             {
                 ulong userId = user.Id;
-                if (db.Users.Where(x => x.DiscordId == userId).FirstOrDefault().TutorialFinished)
+                User u = db.Users.Where(x => x.DiscordId == userId).FirstOrDefault();
+                if (u.TutorialFinished)
                 {
                     Logger.Info("System", $"User {user.Username}<@{user.Id}> has left the server.");
-                    await lobby.SendMessageAsync($"<@{user.Id}> has left the server :wave:");
+                    lobby.SendMessageAsync($"<@{user.Id}> has left the server :wave:");
                 }
             }
         }
@@ -266,6 +274,11 @@ namespace LunaBot
             commandParamsList.RemoveAt(0);
             string[] commandParams = commandParamsList.ToArray();
 
+            if(this.aliasDictionary.ContainsKey(command))
+            {
+                command = this.aliasDictionary[command];
+            }
+
             if (this.commandDictionary.ContainsKey(command))
             {
                 Logger.Verbose(
@@ -302,6 +315,11 @@ namespace LunaBot
             string[] commandPts = messageText.Substring(1).Split(new Char[] {' '}, 2);
             string command = commandPts[0].ToLower();
 
+            if (this.aliasDictionary.ContainsKey(command))
+            {
+                command = this.aliasDictionary[command];
+            }
+
             string content = string.Empty;
             if(commandPts.Count() > 1)
             {
@@ -334,10 +352,15 @@ namespace LunaBot
             // Cut up the message with the relevent parts
             string messageText = message.Content;
             string[] commandPts = messageText.Substring(1).Split(new Char[] { ' ' }, 2);
-            string command = commandPts[0].ToLower();
+            string command = "get_" + commandPts[0].ToLower();
             
             if (command.Equals("?"))
                return;
+
+            if (this.aliasDictionary.ContainsKey(command))
+            {
+                command = this.aliasDictionary[command];
+            }
 
             string user = message.Author.Id.ToString();
             SocketUser mentionedUser = message.MentionedUsers.FirstOrDefault();
@@ -347,7 +370,7 @@ namespace LunaBot
             }
             try
             {
-                this.commandDictionary["get_" + command].Process(message, new[] { command, user });
+                this.commandDictionary[command].Process(message, new[] { command, user });
             }
             catch (Exception e)
             {
