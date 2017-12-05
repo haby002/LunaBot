@@ -8,7 +8,7 @@ using LunaBot.Database;
 
 namespace LunaBot.Commands
 {
-    [LunaBotCommand("get_Desc")]
+    [LunaBotCommand("get_Desc", "get_D")]
     class GetDescCommand : BaseCommand
     {
         public override void Process(SocketMessage message, string[] parameters)
