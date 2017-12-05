@@ -22,7 +22,7 @@ namespace LunaBot.Commands
                     return;
                 }
                 
-                Logger.Verbose(message.Author.Username, "Fixing Registrations");
+                Logger.Info(message.Author.Username, "Fixing Registrations");
                 message.Channel.SendMessageAsync("Fixing registrations...");
 
                 SocketGuildChannel channel = message.Channel as SocketGuildChannel;
@@ -49,6 +49,10 @@ namespace LunaBot.Commands
                 }
 
                 db.SaveChanges();
+
+                message.Channel.SendMessageAsync("Finished registering users.");
+                Logger.Info(message.Author.Username, "Finished registering users.");
+                
             }
         }
     }
