@@ -1,21 +1,21 @@
 ﻿using Discord.WebSocket;
 using LunaBot.Database;
-using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace LunaBot.Commands
 {
     [LunaBotCommand("Ascend")]
     class AscendCommand :BaseCommand
     {
-        public override void Process(SocketMessage message, string[] parameters)
+        public override async Task Process(SocketMessage message, string[] parameters)
         {
             // Check if command params are correct.
             if (parameters.Length != 1)
             {
                 Logger.Verbose(message.Author.Username, "Failed ascend command");
-                message.Channel.SendMessageAsync("Error: Wrong syntax, try !ascend `user`.");
+                await message.Channel.SendMessageAsync("Error: Wrong syntax, try !ascend `user`.");
 
                 return;
             }
@@ -25,7 +25,7 @@ namespace LunaBot.Commands
             if (message.MentionedUsers.Count == 0)
             {
                 Logger.Verbose(message.Author.Username, "Failed ascend command");
-                message.Channel.SendMessageAsync("Error: Command requires an attached `user` to command. Forgot the '@'?");
+                await message.Channel.SendMessageAsync("Error: Command requires an attached `user` to command. Forgot the '@'?");
 
                 return;
             }
@@ -39,7 +39,7 @@ namespace LunaBot.Commands
                 if ((int)db.Users.Where(x => x.DiscordId == userId).FirstOrDefault().Privilege != 3)
                 {
                     Logger.Warning(message.Author.Id.ToString(), "User tried to use ascend command and failed");
-                    message.Channel.SendMessageAsync($"Nice try. Dont want me calling your parents, right?");
+                    await message.Channel.SendMessageAsync($"Nice try. Dont want me calling your parents, right?");
                     return;
                 }
                 
@@ -48,7 +48,7 @@ namespace LunaBot.Commands
                     if((int)user.Privilege >= 2)
                     {
                         Logger.Info(message.Author.Id.ToString(), $"User {parameters[0]} already admin.");
-                        message.Channel.SendMessageAsync($"{parameters[0]} is already `admin` or above.");
+                        await message.Channel.SendMessageAsync($"{parameters[0]} is already `admin` or above.");
 
                         return;
                     }
@@ -62,11 +62,11 @@ namespace LunaBot.Commands
                         guildRoles.Where(x => x.Name.Equals("Hoarder")).FirstOrDefault(),
                         guildRoles.Where(x => x.Name.Equals("Staff")).FirstOrDefault()
                     };
-                    
-                    channel.Guild.GetUser((ulong)parsedUserId).AddRolesAsync(roles);
+
+                    await channel.Guild.GetUser(parsedUserId).AddRolesAsync(roles);
 
                     Logger.Info(message.Author.Id.ToString(), $"Made {parameters[0]} admin and moderator");
-                    message.Channel.SendMessageAsync($"SHAPOW! {parameters[0]} has been made `admin`!");
+                    await message.Channel.SendMessageAsync($"SHAPOW! {parameters[0]} has been made `admin`!");
                 }
 
                 db.SaveChanges();

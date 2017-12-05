@@ -1,6 +1,7 @@
 ﻿using Discord.Rest;
 using Discord.WebSocket;
 using LunaBot.Database;
+using LunaBot.ServerUtilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,13 +13,13 @@ namespace LunaBot.Commands
     [LunaBotCommand("forcetut")]
     class ForceTutCommand : BaseCommand
     {
-        public override void Process(SocketMessage message, string[] parameters)
+        public override async Task Process(SocketMessage message, string[] parameters)
         {
             // Check if command params are correct.
             if (parameters.Length != 1)
             {
                 Logger.Verbose(message.Author.Username, "Failed forcetut command");
-                message.Channel.SendMessageAsync("Error: Wrong syntax, try !forcetut `user`.");
+                await message.Channel.SendMessageAsync("Error: Wrong syntax, try !forcetut `user`.");
 
                 return;
             }
@@ -27,7 +28,7 @@ namespace LunaBot.Commands
             if (message.MentionedUsers.Count() == 0)
             {
                 Logger.Verbose(message.Author.Username, "Failed forcetut command");
-                message.Channel.SendMessageAsync("Error: Command requires an attached `user` to command.\n" +
+                await message.Channel.SendMessageAsync("Error: Command requires an attached `user` to command.\n" +
                     "Dropped this '@'?");
 
                 return;
@@ -44,7 +45,7 @@ namespace LunaBot.Commands
                 if (db.Users.Where(x => x.DiscordId == userId).FirstOrDefault().Privilege == User.Privileges.User)
                 {
                     Logger.Warning(message.Author.Id.ToString(), "User tried to use forcetut command and failed");
-                    message.Channel.SendMessageAsync($"Nice try. Dont want me calling your parents, right?");
+                    await message.Channel.SendMessageAsync($"Nice try. Dont want me calling your parents, right?");
                     return;
                 }
 
@@ -62,21 +63,23 @@ namespace LunaBot.Commands
 
                 SocketRole role = guildRoles.Where(x => x.Name.Equals("Newbie")).FirstOrDefault();
 
-                channel.Guild.GetUser((ulong)parsedUserId).AddRoleAsync(role);
+                await channel.Guild.GetUser((ulong)parsedUserId).AddRoleAsync(role);
 
                 // Creat intro room
                 RestTextChannel introRoom = channel.Guild.CreateTextChannelAsync($"intro-{parsedUserId}").Result;
 
-                Task.Run(async () =>
+                await Task.Run(async () =>
                 {
                     // Make room only visible to new user, staff, and Luna
-                    await introRoom.AddPermissionOverwriteAsync(discordUser, Engine.userPerm);
+                    await introRoom.AddPermissionOverwriteAsync(discordUser, Permissions.userPerm);
 
                     // Start interaction with user. Sleeps are for humanizing the bot.
                     await introRoom.SendMessageAsync("Welcome to the server! Lets get you settled, alright?");
                     Thread.Sleep(1000);
                     await introRoom.SendMessageAsync("Firstly, what should we call you?");
-                }); 
+                }).ConfigureAwait(false);
+
+                db.SaveChanges();
             }
         }
     }

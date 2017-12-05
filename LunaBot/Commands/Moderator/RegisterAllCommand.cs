@@ -1,15 +1,15 @@
 ﻿using Discord.WebSocket;
 using LunaBot.Database;
-using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace LunaBot.Commands
 {
     [LunaBotCommand("RegisterAll")]
     class RegisterAllCommand : BaseCommand
     {
-        public override void Process(SocketMessage message, string[] parameters)
+        public override async Task Process(SocketMessage message, string[] parameters)
         {
             using (DiscordContext db = new DiscordContext())
             {
@@ -17,13 +17,13 @@ namespace LunaBot.Commands
                 if (db.Users.Where(x => x.DiscordId == userId).FirstOrDefault().Privilege == 0)
                 {
                     Logger.Warning(message.Author.Username, "Failed RegisterAll command");
-                    message.Channel.SendMessageAsync("You're not a moderator, go away.");
+                    await message.Channel.SendMessageAsync("You're not a moderator, go away.");
 
                     return;
                 }
                 
                 Logger.Info(message.Author.Username, "Fixing Registrations");
-                message.Channel.SendMessageAsync("Fixing registrations...");
+                await message.Channel.SendMessageAsync("Fixing registrations...");
 
                 SocketGuildChannel channel = message.Channel as SocketGuildChannel;
                 List<SocketGuildUser> users = channel.Guild.Users.ToList();
@@ -50,7 +50,7 @@ namespace LunaBot.Commands
 
                 db.SaveChanges();
 
-                message.Channel.SendMessageAsync("Finished registering users.");
+                await message.Channel.SendMessageAsync("Finished registering users.");
                 Logger.Info(message.Author.Username, "Finished registering users.");
                 
             }

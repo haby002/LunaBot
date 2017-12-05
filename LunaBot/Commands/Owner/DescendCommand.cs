@@ -10,13 +10,13 @@ namespace LunaBot.Commands
     [LunaBotCommand("Descend")]
     class DescendCommand : BaseCommand
     {
-        public override void Process(SocketMessage message, string[] parameters)
+        public override async Task Process(SocketMessage message, string[] parameters)
         {
             // Check if command params are correct.
             if (parameters.Length != 1)
             {
                 Logger.Verbose(message.Author.Username, "Failed descend command");
-                message.Channel.SendMessageAsync("Error: Wrong syntax, try !descend `user`.");
+                await message.Channel.SendMessageAsync("Error: Wrong syntax, try !descend `user`.");
 
                 return;
             }
@@ -25,7 +25,7 @@ namespace LunaBot.Commands
             if (message.MentionedUsers.Count == 0)
             {
                 Logger.Verbose(message.Author.Username, "Failed descend command");
-                message.Channel.SendMessageAsync("Error: Command requires an attached `user` to command. Forgot the '@'?");
+                await message.Channel.SendMessageAsync("Error: Command requires an attached `user` to command. Forgot the '@'?");
 
                 return;
             }
@@ -39,7 +39,7 @@ namespace LunaBot.Commands
                 if (db.Users.Where(x => x.DiscordId == userId).FirstOrDefault().Privilege != User.Privileges.Owner)
                 {
                     Logger.Warning(message.Author.Id.ToString(), "User tried to use descend command and failed");
-                    message.Channel.SendMessageAsync($"Nice try. Dont want me calling your parents, right?");
+                    await message.Channel.SendMessageAsync($"Nice try. Dont want me calling your parents, right?");
                     return;
                 }
 
@@ -48,17 +48,17 @@ namespace LunaBot.Commands
                     if (user.Privilege == User.Privileges.User)
                     {
                         Logger.Info(message.Author.Id.ToString(), $"User {parameters[0]} not admin.");
-                        message.Channel.SendMessageAsync($"{parameters[0]} is not an `admin` or `moderator`.");
+                        await message.Channel.SendMessageAsync($"{parameters[0]} is not an `admin` or `moderator`.");
                     }
                     else if(user.Privilege == User.Privileges.Moderator)
                     {
                         Logger.Info(message.Author.Id.ToString(), $"Removed moderator from {parameters[0]}");
-                        message.Channel.SendMessageAsync($"{parameters[0]} is no longer `moderator`");
+                        await message.Channel.SendMessageAsync($"{parameters[0]} is no longer `moderator`");
                     }
                     else
                     {
                         Logger.Info(message.Author.Id.ToString(), $"Removed admin  and moderator from {parameters[0]}");
-                        message.Channel.SendMessageAsync($"{parameters[0]} is no longer `admin` or `moderator`");
+                        await message.Channel.SendMessageAsync($"{parameters[0]} is no longer `admin` or `moderator`");
                     }
 
                     user.Privilege = User.Privileges.User;
@@ -73,7 +73,7 @@ namespace LunaBot.Commands
                         guildRoles.Where(x => x.Name.Equals("Moddlet")).FirstOrDefault()
                     };
 
-                    channel.Guild.GetUser((ulong)parsedUserId).RemoveRolesAsync(roles);
+                    await channel.Guild.GetUser(parsedUserId).RemoveRolesAsync(roles);
                 }
 
                 db.SaveChanges();

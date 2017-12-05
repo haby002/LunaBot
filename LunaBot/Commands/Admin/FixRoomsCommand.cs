@@ -5,13 +5,14 @@ using LunaBot.Database;
 using System.Collections.Generic;
 using Discord.Rest;
 using Discord.Rpc;
+using System.Threading.Tasks;
 
 namespace LunaBot.Commands
 {
     [LunaBotCommand("FixRooms")]
     class FixRoomsCommand : BaseCommand
     {
-        public override void Process(SocketMessage message, string[] parameters)
+        public override async Task Process(SocketMessage message, string[] parameters)
         {
             using (DiscordContext db = new DiscordContext())
             {
@@ -27,7 +28,7 @@ namespace LunaBot.Commands
                     if (/*ch.Name.Contains("room-") || */ch.Name.Contains("void-") || ch.Name.Contains("intro-"))
                     {
                         Logger.Verbose("system", $"Found: {ch.Name}");
-                        ch.DeleteAsync();
+                        await ch.DeleteAsync();
                     }
                     else
                     {
@@ -80,24 +81,8 @@ namespace LunaBot.Commands
                     }
                 }
 
-                /*foreach(SocketGuildUser rgu in channel.Guild.Users)
-                {
-                    RestTextChannel rtc = await channel.Guild.CreateTextChannelAsync($"room-{rgu.Id}");
-                    var addChannel = channel.Guild.GetChannel(rtc.Id);
-                    
-                    Discord.OverwritePermissions op = addChannel.GetPermissionOverwrite(rgu).Value;
-                    op.ToAllowList();
-                    op.Modify(readMessages: 0);
-                    await addChannel.AddPermissionOverwriteAsync(rgu, op);
-
-                    op = addChannel.GetPermissionOverwrite(channel.Guild.EveryoneRole).Value;
-                    op.ToDenyList();
-                    op.Modify(readMessages: (Discord.PermValue)1);
-                    await addChannel.AddPermissionOverwriteAsync(channel.Guild.EveryoneRole, op);
-
-                }*/
                 Logger.Verbose(message.Author.Username, $"{guildChannels.Count} Rooms Fixed!");
-                message.Channel.SendMessageAsync("Rooms Fixed!");
+                await message.Channel.SendMessageAsync("Rooms Fixed!");
             }
         }
     }

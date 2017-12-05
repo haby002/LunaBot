@@ -1,16 +1,15 @@
 ﻿using Discord.WebSocket;
 using LunaBot.Database;
 using LunaBot.ServerUtilities;
-using System;
-using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace LunaBot.Commands
 {
     [LunaBotCommand("Timeout")]
     class TimeoutAllCommand : BaseCommand
     {
-        public async override void Process(SocketMessage message, string[] parameters)
+        public override async Task Process(SocketMessage message, string[] parameters)
         {
             using (DiscordContext db = new DiscordContext())
             {

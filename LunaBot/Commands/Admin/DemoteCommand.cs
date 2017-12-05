@@ -1,21 +1,21 @@
 ﻿using Discord.WebSocket;
 using LunaBot.Database;
-using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace LunaBot.Commands
 {
     [LunaBotCommand("Demote")]
     class DemoteCommand :BaseCommand
     {
-        public override void Process(SocketMessage message, string[] parameters)
+        public override async Task Process(SocketMessage message, string[] parameters)
         {
             // Check if command params are correct.
             if (parameters.Length != 1)
             {
                 Logger.Verbose(message.Author.Username, "Failed demote command");
-                message.Channel.SendMessageAsync("Error: Wrong syntax, try !demote `user`.");
+                await message.Channel.SendMessageAsync("Error: Wrong syntax, try !demote `user`.");
 
                 return;
             }
@@ -25,7 +25,7 @@ namespace LunaBot.Commands
             if (message.MentionedUsers.Count == 0)
             {
                 Logger.Verbose(message.Author.Username, "Failed demote command");
-                message.Channel.SendMessageAsync("Error: Command requires an attached `user` to command. Forgot the '@'?");
+                await message.Channel.SendMessageAsync("Error: Command requires an attached `user` to command. Forgot the '@'?");
 
                 return;
             }
@@ -39,7 +39,7 @@ namespace LunaBot.Commands
                 if ((int)db.Users.Where(x => x.DiscordId == userId).FirstOrDefault().Privilege < (int)User.Privileges.Admin)
                 {
                     Logger.Warning(message.Author.Id.ToString(), "User tried to use demote command and failed");
-                    message.Channel.SendMessageAsync($"Nice try. Dont want me calling your parents, right?");
+                    await message.Channel.SendMessageAsync($"Nice try. Dont want me calling your parents, right?");
                     return;
                 }
                 
@@ -48,7 +48,7 @@ namespace LunaBot.Commands
                     if((int)user.Privilege == (int)User.Privileges.User)
                     {
                         Logger.Info(message.Author.Id.ToString(), $"User {parameters[0]} isn't a mod.");
-                        message.Channel.SendMessageAsync($"{parameters[0]} isn't a `moddlet`.");
+                        await message.Channel.SendMessageAsync($"{parameters[0]} isn't a `moddlet`.");
 
                         return;
                     }
@@ -63,11 +63,11 @@ namespace LunaBot.Commands
                         guildRoles.Where(x => x.Name.Equals("Moddlet")).FirstOrDefault(),
                         guildRoles.Where(x => x.Name.Equals("Staff")).FirstOrDefault()
                     };
-                    
-                    channel.Guild.GetUser((ulong)parsedUserId).RemoveRolesAsync(roles);
+
+                    await channel.Guild.GetUser((ulong)parsedUserId).RemoveRolesAsync(roles);
 
                     Logger.Info(message.Author.Id.ToString(), $"Demoted {parameters[0]} from moderator");
-                    message.Channel.SendMessageAsync($"{parameters[0]} is no longer `moddlet`!");
+                    await message.Channel.SendMessageAsync($"{parameters[0]} is no longer `moddlet`!");
                 }
 
                 db.SaveChanges();

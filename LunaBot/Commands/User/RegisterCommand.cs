@@ -2,12 +2,13 @@
 using System.Linq;
 using Discord.WebSocket;
 using LunaBot.Database;
+using System.Threading.Tasks;
 
 namespace LunaBot.Commands
 {
     class RegisterCommand : BaseCommand
     {
-        public override void Process(SocketMessage message, string[] parameters)
+        public override async Task Process(SocketMessage message, string[] parameters)
         {
             using (DiscordContext db = new DiscordContext())
             {
@@ -15,13 +16,13 @@ namespace LunaBot.Commands
                 if (db.Users.Where(x => x.DiscordId == userId).Count() != 0)
                 {
                     Logger.Verbose(message.Author.Username, "User already registered");
-                    message.Channel.SendMessageAsync("You're already registered you goon.");
+                    await message.Channel.SendMessageAsync("You're already registered you goon.");
 
                     return;
                 }
 
                 Logger.Verbose(message.Author.Username, "Creating User Data");
-                message.Channel.SendMessageAsync("Creating User Data");
+                await message.Channel.SendMessageAsync("Creating User Data");
 
                 User newUser = new User(); 
                 newUser.DiscordId = userId;
@@ -34,7 +35,7 @@ namespace LunaBot.Commands
                 db.SaveChanges();
 
                 Logger.Verbose(message.Author.Username, "Created User");
-                message.Channel.SendMessageAsync("Created User");
+                await message.Channel.SendMessageAsync("Created User");
 
                 Logger.Verbose("",newUser.ID.ToString());
             }

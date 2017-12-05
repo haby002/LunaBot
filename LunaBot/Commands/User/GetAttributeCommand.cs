@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Discord.WebSocket;
 using LunaBot.Database;
@@ -11,7 +8,7 @@ namespace LunaBot.Commands
     [LunaBotCommand("get_Desc", "get_D")]
     class GetDescCommand : BaseCommand
     {
-        public override void Process(SocketMessage message, string[] parameters)
+        public override async Task Process(SocketMessage message, string[] parameters)
         {
             
             using (DiscordContext db = new DiscordContext())
@@ -32,28 +29,28 @@ namespace LunaBot.Commands
                     if (user.Description == null)
                     {
                         Logger.Warning(message.Author.Username, $"user <@{userId}> description not found.");
-                        message.Channel.SendMessageAsync($"<@{userId}> has no description. *Mysterious...*");
+                        await message.Channel.SendMessageAsync($"<@{userId}> has no description. *Mysterious...*");
 
                         return;
                     }
 
                     Logger.Verbose(message.Author.Username, $"Looking for {userId} description.");
-                    message.Channel.SendMessageAsync($"<@{userId}> describes themselve as: {user.Description}");
+                    await message.Channel.SendMessageAsync($"<@{userId}> describes themselve as: {user.Description}");
 
                     return;
                 }
 
                 Logger.Verbose(message.Author.Username, $"Failed to find user: {userId}");
-                message.Channel.SendMessageAsync($"Failed to find user: `{message.Author}`");
+                await message.Channel.SendMessageAsync($"Failed to find user: `{message.Author}`");
 
             }
         }
     }
 
-    [LunaBotCommand("get_a")]
+    [LunaBotCommand("get_a", "get_age")]
     class GetAgeCommand : BaseCommand
     {
-        public override void Process(SocketMessage message, string[] parameters)
+        public override async Task Process(SocketMessage message, string[] parameters)
         {
             using (DiscordContext db = new DiscordContext())
             {
@@ -74,28 +71,28 @@ namespace LunaBot.Commands
                     if (user.Age == 0)
                     {
                         Logger.Warning(message.Author.Username, $"user <@{userId}> age not set.");
-                        message.Channel.SendMessageAsync($"<@{userId}> is ageless");
+                        await message.Channel.SendMessageAsync($"<@{userId}> is ageless");
 
                         return;
                     }
 
                     Logger.Verbose(message.Author.Username, $"Looking for {userId} description.");
-                    message.Channel.SendMessageAsync($"<@{userId}> is {user.Age} years old.");
+                    await message.Channel.SendMessageAsync($"<@{userId}> is {user.Age} years old.");
 
                     return;
                 }
 
                 Logger.Verbose(message.Author.Username, $"Failed to find user: {userId}");
-                message.Channel.SendMessageAsync($"Failed to find user: `{message.Author}`");
+                await message.Channel.SendMessageAsync($"Failed to find user: `{message.Author}`");
 
             }
         }
     }
 
-    [LunaBotCommand("get_Lvl")]
+    [LunaBotCommand("get_Lvl", "get_level")]
     class GetLvlCommand : BaseCommand
     {
-        public override void Process(SocketMessage message, string[] parameters)
+        public override async Task Process(SocketMessage message, string[] parameters)
         {
 
             using (DiscordContext db = new DiscordContext())
@@ -127,14 +124,14 @@ namespace LunaBot.Commands
                     }
 
                     Logger.Warning(message.Author.Username, $"looking for user <@{userId}> level.");
-                    message.Channel.SendMessageAsync($"<@{userId}> is level {user.Level}\n" +
+                    await message.Channel.SendMessageAsync($"<@{userId}> is level {user.Level}\n" +
                         progressbar + " " + (percentage * 10) + "%");
                     
                     return;
                 }
 
                 Logger.Verbose(message.Author.Username, $"Failed to find user: {userId}");
-                message.Channel.SendMessageAsync($"Failed to find user: `{message.Author}`");
+                await message.Channel.SendMessageAsync($"Failed to find user: `{message.Author}`");
 
             }
         }
@@ -143,7 +140,7 @@ namespace LunaBot.Commands
     [LunaBotCommand("get_xp")]
     class GetXpCommand : BaseCommand
     {
-        public override void Process(SocketMessage message, string[] parameters)
+        public override async Task Process(SocketMessage message, string[] parameters)
         {
 
             using (DiscordContext db = new DiscordContext())
@@ -175,23 +172,23 @@ namespace LunaBot.Commands
                     }
 
                     Logger.Warning(message.Author.Username, $"looking for user <@{userId}> xp.");
-                    message.Channel.SendMessageAsync($"<@{userId}> has {user.Xp}/{user.Level * 150} xp\n" +
+                    await message.Channel.SendMessageAsync($"<@{userId}> has {user.Xp}/{user.Level * 150} xp\n" +
                         progressbar + " " + (percentage * 10) + "%");
 
                     return;
                 }
 
                 Logger.Verbose(message.Author.Username, $"Failed to find user: {userId}");
-                message.Channel.SendMessageAsync($"Failed to find user: `{message.Author}`");
+                await message.Channel.SendMessageAsync($"Failed to find user: `{message.Author}`");
 
             }
         }
     }
 
-    [LunaBotCommand("get_g")]
+    [LunaBotCommand("get_G", "get_Gender")]
     class GetGenderCommand : BaseCommand
     {
-        public override void Process(SocketMessage message, string[] parameters)
+        public override async Task Process(SocketMessage message, string[] parameters)
         {
 
             using (DiscordContext db = new DiscordContext())
@@ -210,22 +207,22 @@ namespace LunaBot.Commands
                 if (user != null)
                 {
                     Logger.Warning(message.Author.Username, $"looking for user @<{userId}> gender.");
-                    message.Channel.SendMessageAsync($"<@{userId}> is {user.Gender.ToString().ToLower()}");
+                    await message.Channel.SendMessageAsync($"<@{userId}> is {user.Gender.ToString().ToLower()}");
 
                     return;
                 }
 
                 Logger.Verbose(message.Author.Username, $"Failed to find user: {userId}");
-                message.Channel.SendMessageAsync($"Failed to find user: `{message.Author}`");
+                await message.Channel.SendMessageAsync($"Failed to find user: `{message.Author}`");
 
             }
         }
     }
 
-    [LunaBotCommand("get_o")]
+    [LunaBotCommand("get_o", "get_Orientation")]
     class GetOrientationCommand : BaseCommand
     {
-        public override void Process(SocketMessage message, string[] parameters)
+        public override async Task Process(SocketMessage message, string[] parameters)
         {
 
             using (DiscordContext db = new DiscordContext())
@@ -244,13 +241,13 @@ namespace LunaBot.Commands
                 if (user != null)
                 {
                     Logger.Warning(message.Author.Username, $"looking for user @<{userId}> orientation.");
-                    message.Channel.SendMessageAsync($"<@{userId}> is {user.orientation.ToString().ToLower()}");
+                    await message.Channel.SendMessageAsync($"<@{userId}> is {user.orientation.ToString().ToLower()}");
 
                     return;
                 }
 
                 Logger.Verbose(message.Author.Username, $"Failed to find user: {userId}");
-                message.Channel.SendMessageAsync($"Failed to find user: `{message.Author}`");
+                await message.Channel.SendMessageAsync($"Failed to find user: `{message.Author}`");
 
             }
         }
@@ -259,7 +256,7 @@ namespace LunaBot.Commands
     [LunaBotCommand("get_f")]
     class GetFurCommand : BaseCommand
     {
-        public override void Process(SocketMessage message, string[] parameters)
+        public override async Task Process(SocketMessage message, string[] parameters)
         {
 
             using (DiscordContext db = new DiscordContext())
@@ -280,19 +277,19 @@ namespace LunaBot.Commands
                     if (user.Description == null)
                     {
                         Logger.Warning(message.Author.Username, $"user <@{userId}> fur not found.");
-                        message.Channel.SendMessageAsync($"<@{userId}> has no fur. Maybe they're invisible...");
+                        await message.Channel.SendMessageAsync($"<@{userId}> has no fur. Maybe they're invisible...");
 
                         return;
                     }
 
                     Logger.Verbose(message.Author.Username, $"Looking for {userId} fur.");
-                    message.Channel.SendMessageAsync($"<@{userId}> is a {user.Fur}");
+                    await message.Channel.SendMessageAsync($"<@{userId}> is a {user.Fur}");
 
                     return;
                 }
 
                 Logger.Verbose(message.Author.Username, $"Failed to find user: {userId}");
-                message.Channel.SendMessageAsync($"Failed to find user: `{message.Author}`");
+                await message.Channel.SendMessageAsync($"Failed to find user: `{message.Author}`");
 
             }
         }
@@ -301,7 +298,7 @@ namespace LunaBot.Commands
     [LunaBotCommand("get_Ref")]
     class GetRefCommand : BaseCommand
     {
-        public override void Process(SocketMessage message, string[] parameters)
+        public override async Task Process(SocketMessage message, string[] parameters)
         {
 
             using (DiscordContext db = new DiscordContext())
@@ -322,19 +319,19 @@ namespace LunaBot.Commands
                     if (user.Description == null)
                     {
                         Logger.Warning(message.Author.Username, $"user <@{userId}> ref not found.");
-                        message.Channel.SendMessageAsync($"<@{userId}> has no ref. use this one instead -> :wolf:");
+                        await message.Channel.SendMessageAsync($"<@{userId}> has no ref. use this one instead -> :wolf:");
 
                         return;
                     }
 
                     Logger.Verbose(message.Author.Username, $"Looking for {userId} ref.");
-                    message.Channel.SendMessageAsync($"<@{userId}> ref: {user.Ref}");
+                    await message.Channel.SendMessageAsync($"<@{userId}> ref: {user.Ref}");
 
                     return;
                 }
 
                 Logger.Verbose(message.Author.Username, $"Failed to find user: {userId}");
-                message.Channel.SendMessageAsync($"Failed to find user: `{message.Author}`");
+                await message.Channel.SendMessageAsync($"Failed to find user: `{message.Author}`");
 
             }
         }
@@ -343,7 +340,7 @@ namespace LunaBot.Commands
     [LunaBotCommand("get_priv")]
     class GetPrivilegeCommand : BaseCommand
     {
-        public override void Process(SocketMessage message, string[] parameters)
+        public override async Task Process(SocketMessage message, string[] parameters)
         {
 
             using (DiscordContext db = new DiscordContext())
@@ -364,18 +361,18 @@ namespace LunaBot.Commands
                     Logger.Verbose(message.Author.Username, $"Looking for {userId} privilege.");
                     if(user.Privilege == User.Privileges.Admin || user.Privilege == User.Privileges.Owner)
                     {
-                        message.Channel.SendMessageAsync($"<@{userId}> is an `{user.Privilege.ToString()}`");
+                        await message.Channel.SendMessageAsync($"<@{userId}> is an `{user.Privilege.ToString()}`");
 
                         return;
                     }
 
-                    message.Channel.SendMessageAsync($"<@{userId}> is a `{user.Privilege.ToString()}`");
+                    await message.Channel.SendMessageAsync($"<@{userId}> is a `{user.Privilege.ToString()}`");
 
                     return;
                 }
 
                 Logger.Verbose(message.Author.Username, $"Failed to find user: {userId}");
-                message.Channel.SendMessageAsync($"Failed to find user: `{message.Author}`");
+                await message.Channel.SendMessageAsync($"Failed to find user: `{message.Author}`");
 
             }
         }

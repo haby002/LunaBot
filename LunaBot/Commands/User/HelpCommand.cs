@@ -2,13 +2,14 @@
 using System.Linq;
 using Discord.WebSocket;
 using LunaBot.Database;
+using System.Threading.Tasks;
 
 namespace LunaBot.Commands
 {
     [LunaBotCommand("Help")]
     class HelpCommand : BaseCommand
     {
-        public override void Process(SocketMessage message, string[] parameters)
+        public override async Task Process(SocketMessage message, string[] parameters)
         {
             List<string> commands = new List<string>();
             
@@ -60,7 +61,7 @@ namespace LunaBot.Commands
                         "```!descend <user>```");
                 }
 
-                message.Channel.SendMessageAsync(string.Join('\n', commands));
+                await message.Channel.SendMessageAsync(string.Join('\n', commands));
             }
         }
     }

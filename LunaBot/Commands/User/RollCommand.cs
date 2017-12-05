@@ -10,7 +10,7 @@ namespace LunaBot.Commands
     [LunaBotCommand("Roll")]
     class RollCommand : BaseCommand
     {
-        public override void Process(SocketMessage message, string[] parameters)
+        public override async Task Process(SocketMessage message, string[] parameters)
         {
             foreach(string p in parameters)
             {
@@ -29,7 +29,7 @@ namespace LunaBot.Commands
                     sum += (rand.Next() % diceType) + 1;
                 }
 
-                message.Channel.SendMessageAsync(string.Format("I rolled {0} and got {1}", p, sum));
+                await message.Channel.SendMessageAsync(string.Format("I rolled {0} and got {1}", p, sum));
             }
         }
     }

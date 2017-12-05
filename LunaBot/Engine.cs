@@ -20,10 +20,7 @@ namespace LunaBot
         private IDictionary<string, string> aliasDictionary;
         private IDictionary<ulong, DateTime> messageTimestamps;
 
-        public static OverwritePermissions removeAllPerm = new OverwritePermissions(PermValue.Deny, PermValue.Deny, PermValue.Deny, PermValue.Deny, PermValue.Deny, PermValue.Deny, PermValue.Deny, PermValue.Deny, PermValue.Deny, PermValue.Deny, PermValue.Deny, PermValue.Deny, PermValue.Deny, PermValue.Deny, PermValue.Deny, PermValue.Deny, PermValue.Deny, PermValue.Deny, PermValue.Deny, PermValue.Deny);
-        public static OverwritePermissions userPerm = new OverwritePermissions(PermValue.Deny, PermValue.Deny, PermValue.Allow, PermValue.Allow, PermValue.Allow, PermValue.Deny, PermValue.Deny, PermValue.Deny, PermValue.Deny, PermValue.Allow, PermValue.Deny, PermValue.Deny, PermValue.Deny, PermValue.Deny, PermValue.Deny, PermValue.Deny, PermValue.Deny, PermValue.Deny, PermValue.Deny, PermValue.Deny);
-        public static OverwritePermissions lunaTutPerm = new OverwritePermissions(PermValue.Allow, PermValue.Allow, PermValue.Allow, PermValue.Allow, PermValue.Allow, PermValue.Allow, PermValue.Allow, PermValue.Allow, PermValue.Allow, PermValue.Allow, PermValue.Allow, PermValue.Allow, PermValue.Allow, PermValue.Allow, PermValue.Allow, PermValue.Allow, PermValue.Allow, PermValue.Allow, PermValue.Allow, PermValue.Allow);
-
+        
         public static SocketGuildUser luna;
 
         private readonly DiscordSocketClient client;
@@ -170,7 +167,7 @@ namespace LunaBot
                 if (u.TutorialFinished)
                 {
                     Logger.Info("System", $"User {user.Username}<@{user.Id}> has left the server.");
-                    lobby.SendMessageAsync($"<@{user.Id}> has left the server :wave:");
+                    await lobby.SendMessageAsync($"<@{user.Id}> has left the server :wave:").ConfigureAwait(false);
                 }
             }
         }
@@ -187,7 +184,7 @@ namespace LunaBot
             try
             {
                 // Log Message
-                await message.Log(LogSeverity.Verbose);
+                await message.Log(LogSeverity.Verbose).ConfigureAwait(false);
 
                 // ignore your own message if you ever manage to do this.
                 if (message.Author.IsBot)
@@ -202,7 +199,8 @@ namespace LunaBot
                 // Tutorial messages that cannot run commands.
                 if(message.Channel.Name.Contains("intro"))
                 {
-                    await ProcessTutorialMessaage(message);
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+                    ProcessTutorialMessaage(message).ConfigureAwait(false);
                     return;
                 }
             
@@ -210,19 +208,20 @@ namespace LunaBot
                 string messageText = message.Content;
                 if (messageText.StartsWith("!"))
                 {
-                    this.ProcessCommand(message);
+                    this.ProcessCommand(message).ConfigureAwait(false);
                 }
                 else if (messageText.StartsWith("+"))
                 {
-                    this.ProcessSetAttribute(message);
+                    this.ProcessSetAttribute(message).ConfigureAwait(false);
                 }
                 else if (messageText.StartsWith("?"))
                 {
-                    this.ProcessGetAttribute(message);
+                    this.ProcessGetAttribute(message).ConfigureAwait(false);
                 }
                 else
                 {
-                    ProcessXpAsync(message);
+                    ProcessXpAsync(message).ConfigureAwait(false);
+#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
                 }
 
             }
@@ -233,7 +232,7 @@ namespace LunaBot
 
         }
 
-        private void ProcessXpAsync(SocketMessage message)
+        private async Task ProcessXpAsync(SocketMessage message)
         {
             using (DiscordContext db = new DiscordContext())
             {
@@ -252,7 +251,7 @@ namespace LunaBot
                 {
                     if (user.Level % 5 == 0)
                     {
-                        message.Channel.SendMessageAsync($"Congrats <@{user.DiscordId}>! You leveled up to {user.Level}! :confetti_ball:");
+                        await message.Channel.SendMessageAsync($"Congrats <@{user.DiscordId}>! You leveled up to {user.Level}! :confetti_ball:");
                     }
                 }
 
@@ -264,7 +263,7 @@ namespace LunaBot
             }
         }
 
-        private void ProcessCommand(SocketMessage message)
+        private async Task ProcessCommand(SocketMessage message)
         {
             // Cut up the message with the relevent parts
             string messageText = message.Content;
@@ -286,7 +285,7 @@ namespace LunaBot
                     string.Format(StringTable.RecognizedCommand, command, string.Join(",", commandParams)));
                 try
                 {
-                    this.commandDictionary[command].Process(message, commandParams);
+                    await this.commandDictionary[command].Process(message, commandParams);
                 }
                 catch (Exception e)
                 {
@@ -297,7 +296,7 @@ namespace LunaBot
                         Logger.Error("system", string.Format("Command failed: {0}", e.Message));
                     }
 
-                    message.Channel.SendMessageAsync("Command failed. Try using !help for more info.`");
+                    await message.Channel.SendMessageAsync("Command failed. Try using !help for more info.`");
                 }
 
                 return;
@@ -308,7 +307,7 @@ namespace LunaBot
             }
         }
 
-        private void ProcessSetAttribute(SocketMessage message)
+        private async Task ProcessSetAttribute(SocketMessage message)
         {
             // Cut up the message with the relevent parts
             string messageText = message.Content;
@@ -327,13 +326,13 @@ namespace LunaBot
             }
             else
             {
-                message.Channel.SendMessageAsync("I can't set something as nothing, try `+Attribute <Content>`");
+                await message.Channel.SendMessageAsync("I can't set something as nothing, try `+Attribute <Content>`");
                 return;
             }
 
             try
             {
-                this.commandDictionary["set_" + command].Process(message, new[] { content });
+                await this.commandDictionary["set_" + command].Process(message, new[] { content });
             }
             catch (Exception e)
             {
@@ -343,11 +342,11 @@ namespace LunaBot
                     e = e.InnerException;
                     Logger.Error("system", string.Format("Command failed: {0}", e.Message));
                 }
-                message.Channel.SendMessageAsync("Command failed. Try using !help for more info.`");
+                await message.Channel.SendMessageAsync("Command failed. Try using !help for more info.`");
             }
         }
 
-        private void ProcessGetAttribute(SocketMessage message)
+        private async Task ProcessGetAttribute(SocketMessage message)
         {
             // Cut up the message with the relevent parts
             string messageText = message.Content;
@@ -370,7 +369,7 @@ namespace LunaBot
             }
             try
             {
-                this.commandDictionary[command].Process(message, new[] { command, user });
+                await this.commandDictionary[command].Process(message, new[] { command, user });
             }
             catch (Exception e)
             {
@@ -380,7 +379,7 @@ namespace LunaBot
                     e = e.InnerException;
                     Logger.Error("system", string.Format("Command failed: {0}", e.Message));
                 }
-                message.Channel.SendMessageAsync("Command failed. Try using !help for more info.`");
+                await message.Channel.SendMessageAsync("Command failed. Try using !help for more info.`");
             }
         }
 
@@ -447,7 +446,7 @@ namespace LunaBot
             RestTextChannel introRoom = await guild.CreateTextChannelAsync($"intro-{user.Id}");
 
             // Make room only visible to new user and admins
-            await introRoom.AddPermissionOverwriteAsync(user, userPerm);
+            await introRoom.AddPermissionOverwriteAsync(user, Permissions.userPerm);
             //await introRoom.AddPermissionOverwriteAsync(everyone, removeAllPerm);
             //await introRoom.AddPermissionOverwriteAsync(luna, lunaTutPerm);
 
@@ -760,17 +759,21 @@ namespace LunaBot
                     Logger.Verbose(user.Username, $"No more data for user. Checking for agreement: {message.Content}");
                     if(message.Content.ToLower() == "yes" || message.Content.ToLower() == "y")
                     {
+                        databaseUser.TutorialFinished = true;
+
+                        await (message.Channel as SocketGuildChannel).AddPermissionOverwriteAsync(user, Permissions.mutePerm);
+
                         await message.Channel.SendMessageAsync($"Awesome! Let me create your `room` and set up your permissions...");
                         
                         Predicate<SocketRole> everyoneFinder = (SocketRole sr) => { return sr.Name == "@everyone"; };
                         SocketRole everyone = roles.Find(everyoneFinder);
 
                         // Creat personal room
-                        RestTextChannel introRoom = await guild.CreateTextChannelAsync($"room-{user.Id}");
+                        RestTextChannel personalRoom = await guild.CreateTextChannelAsync($"room-{user.Id}");
 
                         // Make room only visible to new user and admins
-                        await introRoom.AddPermissionOverwriteAsync(user, userPerm);
-                        await introRoom.AddPermissionOverwriteAsync(everyone, removeAllPerm);
+                        await personalRoom.AddPermissionOverwriteAsync(user, Permissions.roomPerm);
+                        await personalRoom.AddPermissionOverwriteAsync(everyone, Permissions.removeAllPerm);
 
                         Thread.Sleep(500);
                         await message.Channel.SendMessageAsync($"Adding sparkles...");
@@ -785,7 +788,6 @@ namespace LunaBot
                         SocketRole newbie = roles.Find(newbieFinder);
 
                         await user.RemoveRoleAsync(newbie);
-                        databaseUser.TutorialFinished = true;
 
                         await lobby.SendMessageAsync($"Please welcome <@{user.Id}> to the server!");
 
@@ -807,8 +809,7 @@ namespace LunaBot
                     }
 
                 }
-
-                db.Users.Attach(databaseUser);
+                
                 db.SaveChanges();
             }
             return;

@@ -1,14 +1,10 @@
 ﻿using Discord.WebSocket;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace LunaBot.Commands
 {
     public abstract class BaseCommand
     {
-        public abstract void Process(SocketMessage message, string[] parameters);
+        public abstract Task Process(SocketMessage message, string[] parameters);
     }
 }
