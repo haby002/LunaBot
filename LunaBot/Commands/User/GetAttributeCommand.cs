@@ -253,7 +253,7 @@ namespace LunaBot.Commands
         }
     }
 
-    [LunaBotCommand("get_f")]
+    [LunaBotCommand("get_f", "get_fur")]
     class GetFurCommand : BaseCommand
     {
         public override async Task Process(SocketMessage message, string[] parameters)

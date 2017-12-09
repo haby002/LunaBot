@@ -149,10 +149,7 @@ namespace LunaBot
                 else
                 {
                     Logger.Info("System", $"Placing {user.Username}<@{user.Id}> through tutorial...");
-                    if (!await StartTutorial(user as SocketGuildUser))
-                    {
-                        Logger.Warning("System", $"User {user.Username} already registered.");
-                    }
+                    StartTutorial(user as SocketGuildUser);
                 }
             }
             
