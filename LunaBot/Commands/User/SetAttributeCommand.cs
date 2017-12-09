@@ -102,18 +102,27 @@ namespace LunaBot.Commands
                 if (user != null)
                 {
                     Logger.Warning(message.Author.Username, $"Setting @<{userId}>'s gender to {gender.ToString()}.");
-
-                    // Adding role to user
+                    
                     SocketGuildChannel guildChannel = message.Channel as SocketGuildChannel;
                     List<SocketRole> roles = guildChannel.Guild.Roles.ToList();
-                    Predicate<SocketRole> genderFinder = (SocketRole sr) => { return sr.Name == gender.ToString().ToLower(); };
-                    SocketRole genderRole = roles.Find(genderFinder);
-                    await guildChannel.GetUser((ulong)userId).AddRoleAsync(genderRole);
 
                     // Remove old role
-                    genderFinder = (SocketRole sr) => { return sr.Name == user.Gender.ToString().ToLower(); };
+                    Predicate<SocketRole> genderFinder = (SocketRole sr) => { return sr.Name == user.Gender.ToString().ToLower(); };
+                    SocketRole genderRole = roles.Find(genderFinder);
                     genderRole = roles.Find(genderFinder);
-                    await guildChannel.GetUser((ulong)userId).RemoveRoleAsync(genderRole);
+                    if (genderRole != null)
+                    {
+                        await guildChannel.GetUser((ulong)userId).RemoveRoleAsync(genderRole);
+                        Logger.Verbose("System", $"found role {genderRole.Name} and removed it.");
+                    }
+                    else
+                    {
+                        Logger.Warning("System", $"Couldn't find role {genderRole.Name}.");
+                    }
+
+                    genderFinder = (SocketRole sr) => { return sr.Name == gender.ToString().ToLower(); };
+                    genderRole = roles.Find(genderFinder);
+                    await guildChannel.GetUser((ulong)userId).AddRoleAsync(genderRole);
 
                     user.Gender = gender;
                     db.SaveChanges();
