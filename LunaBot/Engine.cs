@@ -420,12 +420,10 @@ namespace LunaBot
                     return false;
                 }
             }
-            else
-            {
-                messageTimestamps.Add(user, DateTime.Now);
 
-                return false;
-            }
+            messageTimestamps.Add(user, DateTime.Now);
+
+            return false;
         }
 
         /// <summary>
