@@ -117,7 +117,7 @@ namespace LunaBot.Commands
                     }
                     else
                     {
-                        Logger.Warning("System", $"Couldn't find role {genderRole.Name}.");
+                        Logger.Warning("System", $"Couldn't find role {user.Gender.ToString().ToLower()}.");
                     }
 
                     genderFinder = (SocketRole sr) => { return sr.Name == gender.ToString().ToLower(); };
