@@ -176,7 +176,15 @@ namespace LunaBot.Commands
                     // Remove old role
                     Predicate<SocketRole> orientationFinder = (SocketRole sr) => { return sr.Name == user.orientation.ToString().ToLower(); };
                     SocketRole orientationRole = roles.Find(orientationFinder);
-                    await guildChannel.GetUser(userId).RemoveRoleAsync(orientationRole);
+                    if (orientationRole != null)
+                    {
+                        await guildChannel.GetUser(userId).RemoveRoleAsync(orientationRole);
+                        Logger.Verbose("System", $"found role {orientationRole.Name} and removed it.");
+                    }
+                    else
+                    {
+                        Logger.Warning("System", $"Couldn't find role {user.orientation.ToString().ToLower()}.");
+                    }
 
                     // Adding role to user
                     orientationFinder = (SocketRole sr) => { return sr.Name == orientation.ToString().ToLower(); };
