@@ -56,6 +56,12 @@ namespace LunaBot.Commands
                             user.Description = parameters[2];
                             await message.Channel.SendMessageAsync($"Success: {parameters[0]}'s description updated to {parameters[2]}");
                             break;
+                        case "fur":
+                        case "f":
+                            Logger.Info(message.Author.Username, $"Changed user {parameters[0]}'s fur from {user.Fur} to {parameters[2]}");
+                            user.Description = parameters[2];
+                            await message.Channel.SendMessageAsync($"Success: {parameters[0]}'s fur updated to {parameters[2]}");
+                            break;
                         case "level":
                         case "lvl":
                             if(int.TryParse(parameters[2], out int n))
