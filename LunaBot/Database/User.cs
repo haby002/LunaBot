@@ -41,6 +41,10 @@ namespace LunaBot.Database
 
         public bool Monk { get; set; }
 
+        public int SnugR { get; set; }
+
+        public int SnugG { get; set; }
+
         public enum Genders
         {
             None,
