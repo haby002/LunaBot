@@ -87,7 +87,7 @@ namespace LunaBot
             report = new BotReporting(guild.GetChannel(Channels.BotLogs));
             luna = guild.GetUser(UserIds.Luna);
 
-            // Adding Haby as owner
+            // Adding owners
             using (DiscordContext db = new DiscordContext())
             {
                 db.Database.EnsureCreated();
@@ -398,7 +398,7 @@ namespace LunaBot
             {
                 ulong userId = message.Author.Id;
                 User databaseUser = db.Users.Where(x => x.DiscordId == userId).FirstOrDefault();
-                if ((int)databaseUser.Privilege >= 1)
+                if (databaseUser.Privilege >= User.Privileges.Moderator)
                     return false;
             }
 
