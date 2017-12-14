@@ -31,6 +31,8 @@ namespace LunaBot.Commands
                 newUser.Privilege = 0;
                 newUser.TutorialFinished = false;
                 newUser.Gender = User.Genders.None;
+                newUser.SnugG = 0;
+                newUser.SnugR = 0;
                 db.Users.Add(newUser);
                 db.SaveChanges();
 
@@ -62,6 +64,8 @@ namespace LunaBot.Commands
                 newUser.Privilege = 0;
                 newUser.TutorialFinished = false;
                 newUser.Gender = User.Genders.None;
+                newUser.SnugG = 0;
+                newUser.SnugR = 0;
                 db.Users.Add(newUser);
 
                 db.SaveChanges();
