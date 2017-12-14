@@ -29,8 +29,8 @@ namespace LunaBot.Commands
                     "```!help```");
                 commands.Add("Roll:\n" +
                     "```!roll <number>d<size> <number>d<size> ...etc```");
-                commands.Add("Snug:\n" +
-                    "```!Snug <user>```");
+                commands.Add("snug:\n" +
+                    "```!snug <user>```");
 
                 if (user.Privilege > User.Privileges.User)
                 {

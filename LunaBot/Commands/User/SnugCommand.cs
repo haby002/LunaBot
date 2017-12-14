@@ -8,7 +8,7 @@ using LunaBot.Database;
 
 namespace LunaBot.Commands
 {
-    [LunaBotCommand("Snug","snug")]
+    [LunaBotCommand("snug", "s")]
     class SnugCommand : BaseCommand
     {
         public override async Task Process(SocketMessage message, string[] parameters)
@@ -54,13 +54,13 @@ namespace LunaBot.Commands
                         }
                         else
                         {
-                            Logger.Warning(message.Author.Username, "REEEEEEEEEE, THIS WAS NOT SUPPOSTED TO HAPPEN AAAAAAAAAA");
+                            Logger.Warning(message.Author.Username, "Tried to snug with someone and it failed somehow.");
                         }
                     }
                 }
                 else
                 {
-                    await message.Channel.SendMessageAsync($"The command goes like this; \n `!Snug <user>`");
+                    await message.Channel.SendMessageAsync($"The command goes like this: \n `!Snug <user>`");
                 }
             }
 

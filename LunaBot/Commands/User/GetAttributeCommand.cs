@@ -378,7 +378,7 @@ namespace LunaBot.Commands
         }
     }
 
-    [LunaBotCommand("get_snug")]
+    [LunaBotCommand("get_snug", "get_s")]
     class GetSnugCommand : BaseCommand
     {
         public override async Task Process(SocketMessage message, string[] parameters)
@@ -406,7 +406,7 @@ namespace LunaBot.Commands
                     return;
                 }
 
-                Logger.Verbose(message.Author.Username, $"Failed to find user: {userId}");
+                Logger.Warning(message.Author.Username, $"Failed to find user: {userId}");
                 await message.Channel.SendMessageAsync($"Failed to find user: `{message.Author}`");
 
             }
