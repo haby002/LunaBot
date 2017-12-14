@@ -49,6 +49,9 @@ namespace LunaBot
                 case "a":
                     return User.Orientation.Asexual;
                 case "gray-a":
+                case "gray":
+                case "grey-a":
+                case "grey":
                     return User.Orientation.Gray;
                 case "pansexual":
                 case "pan":
