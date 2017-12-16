@@ -755,6 +755,7 @@ namespace LunaBot
                     if(message.Content.ToLower() == "yes" || message.Content.ToLower() == "y")
                     {
                         databaseUser.TutorialFinished = true;
+                        db.SaveChanges();
 
                         await (message.Channel as SocketGuildChannel).AddPermissionOverwriteAsync(user, Permissions.mutePerm);
 
