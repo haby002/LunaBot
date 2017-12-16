@@ -43,7 +43,12 @@ namespace LunaBot.Commands
 
                     if(databaseUser.Privilege >= User.Privileges.Moderator)
                     {
-                        Logger.Info("System", $"Skipping: {u.Username}, user is moderator or higher.")
+                        Logger.Info("System", $"Skipping: {u.Username}, user is moderator or higher.");
+                    }
+
+                    if(u.Id == 155149108183695360)
+                    {
+                        Logger.Info("System", $"Skipping: {u.Username}, Dyno bot");
                     }
 
                     // check if user has messaged in the past 2 weeks. Kick if false
