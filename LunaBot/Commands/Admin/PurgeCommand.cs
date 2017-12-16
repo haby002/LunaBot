@@ -5,6 +5,7 @@ using System.Linq;
 using LunaBot.Database;
 using System.Threading;
 using System.Threading.Tasks;
+using LunaBot.ServerUtilities;
 
 namespace LunaBot.Commands
 {
@@ -23,6 +24,7 @@ namespace LunaBot.Commands
 
                 SocketGuildChannel channel = message.Channel as SocketGuildChannel;
                 List<SocketGuildUser> users = channel.Guild.Users.ToList();
+                users.Remove(users.FirstOrDefault((x) => x.Id == UserIds.Luna));
 
                 await message.Channel.SendMessageAsync("Let the purge begin! :trumpet: ");
                 Logger.Debug(message.Author.Username, "Purging the server!");
@@ -39,12 +41,17 @@ namespace LunaBot.Commands
                         continue;
                     }
 
+                    if(databaseUser.Privilege >= User.Privileges.Moderator)
+                    {
+                        Logger.Info("System", $"Skipping: {u.Username}, user is moderator or higher.")
+                    }
+
                     // check if user has messaged in the past 2 weeks. Kick if false
-                    if (databaseUser.LastMessage.Subtract(twoWeeksAgo).TotalDays < 0 && databaseUser.TutorialFinished == true)
+                    if (databaseUser.LastMessage.Subtract(twoWeeksAgo).TotalDays < 0)//&& databaseUser.TutorialFinished == true)
                     {
                         Thread.Sleep(500);
                         Logger.Info("System", $"Purging:  {u.Username} for inactivity.");
-                        //ServerUtilities.KickUserHelper.kick(channel as SocketTextChannel, u);
+                        //KickUserHelper.kick(channel as SocketTextChannel, u);
                     }
                     else if(databaseUser.TutorialFinished == false)
                     {
@@ -55,6 +62,8 @@ namespace LunaBot.Commands
                         Logger.Verbose("System", $"Skipping: {u.Username}, active user.");
                     }
                 }
+
+                await message.Channel.SendMessageAsync("Purging finished. You all, are the lucky few...");
             }
 
         }
