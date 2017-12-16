@@ -392,7 +392,7 @@ namespace LunaBot
             DateTime cachedTimestamp;
 
             // Ignore Luna
-            if (message.Author.Id == 333285108402487297)
+            if (message.Author.Id == UserIds.Luna)
                 return false;
             using (DiscordContext db = new DiscordContext())
             {

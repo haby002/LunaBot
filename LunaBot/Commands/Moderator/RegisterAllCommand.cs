@@ -14,7 +14,7 @@ namespace LunaBot.Commands
             using (DiscordContext db = new DiscordContext())
             {
                 ulong userId = message.Author.Id;
-                if (db.Users.Where(x => x.DiscordId == userId).FirstOrDefault().Privilege == 0)
+                if (db.Users.Where(x => x.DiscordId == userId).FirstOrDefault().Privilege == User.Privileges.User)
                 {
                     Logger.Warning(message.Author.Username, "Failed RegisterAll command");
                     await message.Channel.SendMessageAsync("You're not a moderator, go away.");
