@@ -1,4 +1,5 @@
 ﻿using Discord;
+using Discord.Net;
 using Discord.WebSocket;
 using System;
 using System.Collections.Generic;
@@ -25,12 +26,18 @@ namespace LunaBot.ServerUtilities
                 return;
 
             Logger.Info("System", $"Kicking {user.Username}");
-            
-            await user.SendMessageAsync("You have been kicked from the server from inactivity.\n" +
-                "You can join again but once you get kicked 3 times will be banned.\n" +
-                "*Hint: Prevent getting kicked by being part of the community.*\n" +
-                "https://discord.gg/J4c8wKg");
 
+            try
+            {
+                await user.SendMessageAsync("You have been kicked from the server from inactivity.\n" +
+                    "You can join again but once you get kicked 3 times will be banned.\n" +
+                    "*Hint: Prevent getting kicked by being part of the community.*\n" +
+                    "https://discord.gg/J4c8wKg");
+            }
+            catch(HttpException e)
+            {
+                Logger.Info("System", $"{user.Username} blocks DMs.");
+            }
             Random r = new Random();
             
             await user.KickAsync("Purged for inactivity");
