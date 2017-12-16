@@ -24,7 +24,6 @@ namespace LunaBot.Commands
 
                 SocketGuildChannel channel = message.Channel as SocketGuildChannel;
                 List<SocketGuildUser> users = channel.Guild.Users.ToList();
-                users.Remove(users.FirstOrDefault((x) => x.Id == UserIds.Luna));
 
                 await message.Channel.SendMessageAsync("Let the purge begin! :trumpet: ");
                 Logger.Debug(message.Author.Username, "Purging the server!");
@@ -44,11 +43,13 @@ namespace LunaBot.Commands
                     if(databaseUser.Privilege >= User.Privileges.Moderator)
                     {
                         Logger.Info("System", $"Skipping: {u.Username}, user is moderator or higher.");
+                        continue;
                     }
 
-                    if(u.Id == 155149108183695360)
+                    if(u.Id == 155149108183695360 || u.Id == UserIds.Luna)
                     {
-                        Logger.Info("System", $"Skipping: {u.Username}, Dyno bot");
+                        Logger.Info("System", $"Skipping: {u.Username}, bot");
+                        continue;
                     }
 
                     // check if user has messaged in the past 2 weeks. Kick if false
