@@ -166,60 +166,44 @@ namespace LunaBot.Commands
                             // Remove old role
                             orientationFinder = (SocketRole sr) => { return sr.Name == user.orientation.ToString().ToLower(); };
                             orientation = roles.Find(orientationFinder);
-                            await discordUser.RemoveRoleAsync(orientation);
+                            if(orientation == null)
+                            {
+                                Logger.Error("System", $"Could not find user orientation {user.orientation.ToString().ToString()}");
+                            }
+                            else
+                            {
+                                await discordUser.RemoveRoleAsync(orientation);
+                            }
 
                             // Add new role
-                            switch (parameters[2])
+                            User.Orientation orientationEnum = Utilities.StringToOrientation(parameters[2]);
+                            if (orientationEnum == User.Orientation.None)
                             {
-                                case "straight":
-                                case "s":
-                                    orientationFinder = (SocketRole sr) => { return sr.Name == "straight"; };
-                                    orientation = roles.Find(orientationFinder);
-                                    await discordUser.AddRoleAsync(orientation);
-                                    user.orientation = User.Orientation.Straight;
-                                    break;
-                                case "gay":
-                                case "g":
-                                    orientationFinder = (SocketRole sr) => { return sr.Name == "gay"; };
-                                    orientation = roles.Find(orientationFinder);
-                                    await discordUser.AddRoleAsync(orientation);
-                                    user.orientation = User.Orientation.Gay;
-                                    break;
-                                case "bisexual":
-                                case "bi":
-                                    orientationFinder = (SocketRole sr) => { return sr.Name == "bisexual"; };
-                                    orientation = roles.Find(orientationFinder);
-                                    await discordUser.AddRoleAsync(orientation);
-                                    user.orientation = User.Orientation.Bi;
-                                    break;
-                                case "asexual":
-                                    orientationFinder = (SocketRole sr) => { return sr.Name == "asexual"; };
-                                    orientation = roles.Find(orientationFinder);
-                                    await discordUser.AddRoleAsync(orientation);
-                                    user.orientation = User.Orientation.Asexual;
-                                    break;
-                                case "gray-a":
-                                    orientationFinder = (SocketRole sr) => { return sr.Name == "gray-a"; };
-                                    orientation = roles.Find(orientationFinder);
-                                    await discordUser.AddRoleAsync(orientation);
-                                    user.orientation = User.Orientation.Gray;
-                                    break;
-                                case "pansexual":
-                                case "pan":
-                                    orientationFinder = (SocketRole sr) => { return sr.Name == "pan"; };
-                                    orientation = roles.Find(orientationFinder);
-                                    await discordUser.AddRoleAsync(orientation);
-                                    user.orientation = User.Orientation.Pansexual;
-                                    break;
-                                default:
-                                    await message.Channel.SendMessageAsync("Hmm... That's not an orientation I can undestand.\n" +
-                                        "Make sure it's either straight, gay, bisexaul, asexual, pansexual, or gray-a.");
-                                    return;
+                                await message.Channel.SendMessageAsync("Couldn't understand that gender... it can either be\n" +
+                                    "```\n" +
+                                    "- Male\n" +
+                                    "- Female\n" +
+                                    "- Trans-Female\n" +
+                                    "- Transe-Male\n" +
+                                    "- Other\n" +
+                                    "```");
+
+                                return;
                             }
+
+                            orientationFinder = (SocketRole sr) => { return sr.Name == orientationEnum.ToString().ToLower(); };
+                            orientation = roles.Find(orientationFinder);
+                            await discordUser.AddRoleAsync(orientation);
+
+                            user.orientation = orientationEnum;
+                            db.SaveChanges();
+                            
                             Logger.Info(message.Author.Username, $"Changed user {parameters[0]}'s orientation to {user.orientation.ToString()}");
                             await message.Channel.SendMessageAsync($"Success: {parameters[0]}'s orientation set to `{user.orientation.ToString()}`");
                             break;
+
                         case "ref":
+                        case "r":
                             if (Uri.TryCreate(parameters[2], UriKind.Absolute, out var uriResult) && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps))
                             {
                                 Logger.Info(message.Author.Username, $"Changed user {parameters[0]}'s ref from {user.Ref} to {parameters[2]}");

@@ -101,7 +101,7 @@ namespace LunaBot.Commands
                 User user = db.Users.FirstOrDefault(x => x.DiscordId == userId);
                 if (user != null)
                 {
-                    Logger.Warning(message.Author.Username, $"Setting @<{userId}>'s gender to {gender.ToString()}.");
+                    Logger.Warning("AdminSetCmd", $"Setting @<{userId}>'s gender to {gender.ToString()}.");
                     
                     SocketGuildChannel guildChannel = message.Channel as SocketGuildChannel;
                     List<SocketRole> roles = guildChannel.Guild.Roles.ToList();
@@ -120,6 +120,7 @@ namespace LunaBot.Commands
                         Logger.Warning("System", $"Couldn't find role {user.Gender.ToString().ToLower()}.");
                     }
 
+                    // Add new role
                     genderFinder = (SocketRole sr) => { return sr.Name == gender.ToString().ToLower(); };
                     genderRole = roles.Find(genderFinder);
                     await guildChannel.GetUser((ulong)userId).AddRoleAsync(genderRole);
