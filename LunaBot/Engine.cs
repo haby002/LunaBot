@@ -96,19 +96,18 @@ namespace LunaBot
                     User owner = db.Users.Where(x => x.DiscordId == userId).FirstOrDefault();
                     if (owner == null)
                     {
-                        Logger.Warning("System", "Haby001 not found, adding as Admin.");
+                        Logger.Warning("System", "An owner not found in the database, adding as Owner.");
 
                         User newUser = new User();
                         newUser.DiscordId = userId;
                         newUser.Level = 1;
                         newUser.Privilege = User.Privileges.Owner;
                         newUser.TutorialFinished = true;
-                        newUser.Gender = User.Genders.Male;
 
                         db.Users.Add(newUser);
                         db.SaveChanges();
 
-                        Logger.Verbose("System", "Created admin Haby");
+                        Logger.Verbose("System", "Created Owner: " + newUser.DiscordId);
                         return;
                     }
                     else if (owner.Privilege != User.Privileges.Owner)
@@ -124,6 +123,8 @@ namespace LunaBot
 
             // Set Playing flavor text
             await client.SetGameAsync("!help");
+
+            await LobbyAnnouncements.startupConfirmation(lobby);
 
             // Remove all mute from muted users
             
@@ -177,7 +178,6 @@ namespace LunaBot
 
         private async Task MessageReceived(SocketMessage message)
         {
-            // Handle commands within the public text channels.
             try
             {
                 // Log Message
@@ -196,8 +196,7 @@ namespace LunaBot
                 // Tutorial messages that cannot run commands.
                 if(message.Channel.Name.Contains("intro"))
                 {
-#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
-                    ProcessTutorialMessaage(message).ConfigureAwait(false);
+                    await ProcessTutorialMessaage(message).ConfigureAwait(false);
                     return;
                 }
             
@@ -205,15 +204,16 @@ namespace LunaBot
                 string messageText = message.Content;
                 if (messageText.StartsWith("!"))
                 {
-                    this.ProcessCommand(message).ConfigureAwait(false);
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+                    ProcessCommand(message).ConfigureAwait(false);
                 }
                 else if (messageText.StartsWith("+"))
                 {
-                    this.ProcessSetAttribute(message).ConfigureAwait(false);
+                    ProcessSetAttribute(message).ConfigureAwait(false);
                 }
                 else if (messageText.StartsWith("?"))
                 {
-                    this.ProcessGetAttribute(message).ConfigureAwait(false);
+                    ProcessGetAttribute(message).ConfigureAwait(false);
                 }
                 else
                 {
