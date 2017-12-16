@@ -20,6 +20,7 @@ namespace LunaBot.Commands
                     Logger.Debug(message.Author.Username, "User attempted pruge command");
                     await message.Channel.SendMessageAsync("Do you want to start a riot? ");
                 }
+
                 SocketGuildChannel channel = message.Channel as SocketGuildChannel;
                 List<SocketGuildUser> users = channel.Guild.Users.ToList();
 
@@ -31,11 +32,27 @@ namespace LunaBot.Commands
                 foreach (SocketGuildUser u in users)
                 {
                     User databaseUser = db.Users.Where(x => x.DiscordId == u.Id).FirstOrDefault();
+
+                    if(databaseUser == null)
+                    {
+                        Logger.Warning("System", $"{u.Username} not registered!");
+                        continue;
+                    }
+
                     // check if user has messaged in the past 2 weeks. Kick if false
-                    if (databaseUser.LastMessage.Subtract(twoWeeksAgo).TotalDays < 0)
+                    if (databaseUser.LastMessage.Subtract(twoWeeksAgo).TotalDays < 0 && databaseUser.TutorialFinished == true)
                     {
                         Thread.Sleep(500);
-                        ServerUtilities.KickUserHelper.kick(channel as SocketTextChannel, u);
+                        Logger.Info("System", $"Purging:  {u.Username} for inactivity.");
+                        //ServerUtilities.KickUserHelper.kick(channel as SocketTextChannel, u);
+                    }
+                    else if(databaseUser.TutorialFinished == false)
+                    {
+                        Logger.Verbose("System", $"Skipping: {u.Username}, tutorial not finished.");
+                    }
+                    else
+                    {
+                        Logger.Verbose("System", $"Skipping: {u.Username}, active user.");
                     }
                 }
             }
