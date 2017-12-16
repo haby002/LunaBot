@@ -377,4 +377,39 @@ namespace LunaBot.Commands
             }
         }
     }
+
+    [LunaBotCommand("get_snug", "get_s")]
+    class GetSnugCommand : BaseCommand
+    {
+        public override async Task Process(SocketMessage message, string[] parameters)
+        {
+
+            using (DiscordContext db = new DiscordContext())
+            {
+                ulong userId;
+
+                if (message.MentionedUsers.Count > 0)
+                {
+                    userId = message.MentionedUsers.FirstOrDefault().Id;
+                }
+                else
+                {
+                    userId = ulong.Parse(parameters[1]);
+                }
+                User user = db.Users.FirstOrDefault(x => x.DiscordId == userId);
+                if (user != null)
+                {
+                    Logger.Verbose(message.Author.Username, $"Looking for snug counts.");
+                    
+                    await message.Channel.SendMessageAsync($"<@{userId}> has given {user.SnugG} snugs and have recieved {user.SnugR} snugs.");
+
+                    return;
+                }
+
+                Logger.Warning(message.Author.Username, $"Failed to find user: {userId}");
+                await message.Channel.SendMessageAsync($"Failed to find user: `{message.Author}`");
+
+            }
+        }
+    }
 }

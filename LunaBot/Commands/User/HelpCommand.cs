@@ -20,15 +20,17 @@ namespace LunaBot.Commands
                 commands.Add("**User Commands**");
 
                 commands.Add("See your own attributes:\n" +
-                    "```?<desc, g, o, a, f, ref>```");
+                    "```?<desc, g, o, a, f, ref, snug>```");
                 commands.Add("See others attributes:\n" +
-                    "```?<desc, g, o, a, f, ref> <user>```");
+                    "```?<desc, g, o, a, f, ref, snug> <user>```");
                 commands.Add("Set your attributes:\n" +
                     "```+<desc, g, o, a, f, ref>```");
                 commands.Add("Get Help:\n" +
                     "```!help```");
                 commands.Add("Roll:\n" +
                     "```!roll <number>d<size> <number>d<size> ...etc```");
+                commands.Add("snug:\n" +
+                    "```!snug <user>```");
 
                 if (user.Privilege > User.Privileges.User)
                 {
