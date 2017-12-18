@@ -1,7 +1,5 @@
-﻿using System;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Discord.Commands;
-using MySql.Data.MySqlClient;
 
 namespace LunaBot
 {

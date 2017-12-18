@@ -5,7 +5,6 @@ using LunaBot.Commands;
 using LunaBot.Database;
 using LunaBot.ServerUtilities;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.VisualStudio.Shell;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -152,10 +151,12 @@ namespace LunaBot
                 else
                 {
                     Logger.Info("System", $"Placing {user.Username}<@{user.Id}> through tutorial...");
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
                     Task.Run(() =>
                     {
                         StartTutorialAsync(user as SocketGuildUser).ConfigureAwait(false);
                     });
+#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
                 }
             }
             
@@ -198,6 +199,7 @@ namespace LunaBot
                 if (await ProcessMessageAsync(message))
                     return;
 
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
                 Task.Run(() =>
                 {
                     // Commands
@@ -226,6 +228,7 @@ namespace LunaBot
                         ProcessXpAsync(message).ConfigureAwait(false);
                     }
                 }).ConfigureAwait(false);
+#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
 
             }
             catch (Exception e)
