@@ -11,7 +11,7 @@ namespace LunaBot.Commands
     [LunaBotCommand("snug", "s")]
     class SnugCommand : BaseCommand
     {
-        public override async Task Process(SocketMessage message, string[] parameters)
+        public override async Task ProcessAsync(SocketMessage message, string[] parameters)
         {
             using (DiscordContext db = new DiscordContext())
             {

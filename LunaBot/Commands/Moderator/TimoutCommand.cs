@@ -9,7 +9,7 @@ namespace LunaBot.Commands
     [LunaBotCommand("Timeout")]
     class TimeoutAllCommand : BaseCommand
     {
-        public override async Task Process(SocketMessage message, string[] parameters)
+        public override async Task ProcessAsync(SocketMessage message, string[] parameters)
         {
             using (DiscordContext db = new DiscordContext())
             {
@@ -47,7 +47,7 @@ namespace LunaBot.Commands
                     return;
                 }
 
-                MuteUserHelper.mute(message.Channel as SocketTextChannel, message.MentionedUsers.FirstOrDefault() as SocketGuildUser, seconds);
+                await MuteUserHelper.MuteAsync(message.Channel as SocketTextChannel, message.MentionedUsers.FirstOrDefault() as SocketGuildUser, seconds);
 
             }
         }

@@ -7,7 +7,7 @@ namespace LunaBot.Commands
     [LunaBotCommand("Ping")]
     class PingCommand : BaseCommand
     {
-        public override async Task Process(SocketMessage message, string[] parameters)
+        public override async Task ProcessAsync(SocketMessage message, string[] parameters)
         {
             await message.Channel.SendMessageAsync("Sleeping...");
             Thread.Sleep(10000);

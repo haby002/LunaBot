@@ -5,12 +5,14 @@ using LunaBot.Commands;
 using LunaBot.Database;
 using LunaBot.ServerUtilities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualStudio.Shell;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using Task = System.Threading.Tasks.Task;
 
 namespace LunaBot
 {
@@ -38,22 +40,22 @@ namespace LunaBot
             this.messageTimestamps = new Dictionary<ulong, DateTime>();
         }
 
-        public async Task Run()
+        public async Task RunAsync()
         {
-            client.Log += Logger.Log;
+            client.Log += Logger.LogAsync;
 
             string token = SecretStrings.token;
             await client.LoginAsync(TokenType.Bot, token);
             await client.StartAsync();
             
-            client.MessageReceived += MessageReceived;
-            client.UserJoined += UserJoined;
-            client.UserLeft += UserLeft;
-            client.UserBanned += UserBanned;
+            client.MessageReceived += MessageReceivedAsync;
+            client.UserJoined += UserJoinedAsync;
+            client.UserLeft += UserLeftAsync;
+            client.UserBanned += UserBannedAsync;
             
             this.RegisterCommands();
 
-            client.Ready += Ready;
+            client.Ready += ReadyAsync;
 
             await Task.Delay(-1);
         }
@@ -78,7 +80,7 @@ namespace LunaBot
             }
         }
         
-        private async Task Ready()
+        private async Task ReadyAsync()
         {
             guild = client.GetGuild(Guilds.Guild);
             await guild.DownloadUsersAsync();
@@ -124,13 +126,13 @@ namespace LunaBot
             // Set Playing flavor text
             await client.SetGameAsync("!help");
 
-            await LobbyAnnouncements.startupConfirmation(lobby);
+            await LobbyAnnouncements.StartupConfirmationAsync(lobby);
 
             // Remove all mute from muted users
             
         }
 
-        private async Task UserJoined(SocketUser user)
+        private async Task UserJoinedAsync(SocketUser user)
         {
             Logger.Info("System", $"User {user.Username}<{user.Id}> joined the server.");
             if (lobby == null)
@@ -150,13 +152,16 @@ namespace LunaBot
                 else
                 {
                     Logger.Info("System", $"Placing {user.Username}<@{user.Id}> through tutorial...");
-                    StartTutorial(user as SocketGuildUser);
+                    Task.Run(() =>
+                    {
+                        StartTutorialAsync(user as SocketGuildUser).ConfigureAwait(false);
+                    });
                 }
             }
             
         }
 
-        private async Task UserLeft(SocketUser user)
+        private async Task UserLeftAsync(SocketUser user)
         {
             using (DiscordContext db = new DiscordContext())
             {
@@ -170,18 +175,18 @@ namespace LunaBot
             }
         }
 
-        private async Task UserBanned(SocketUser user, SocketGuild guild)
+        private async Task UserBannedAsync(SocketUser user, SocketGuild guild)
         {
             await lobby.SendMessageAsync($"My :banhammer: to your face!");
             Logger.Info("System", $"User {user.Username}<@{user.Id}> has been banned from the server.");
         }
 
-        private async Task MessageReceived(SocketMessage message)
+        private async Task MessageReceivedAsync(SocketMessage message)
         {
             try
             {
                 // Log Message
-                await message.Log(LogSeverity.Verbose).ConfigureAwait(false);
+                await message.LogAsync(LogSeverity.Verbose).ConfigureAwait(false);
 
                 // ignore your own message if you ever manage to do this.
                 if (message.Author.IsBot)
@@ -190,39 +195,40 @@ namespace LunaBot
                 }
 
                 //Anti-raid system
-                if (await ProcessMessage(message))
+                if (await ProcessMessageAsync(message))
                     return;
 
-                // Tutorial messages that cannot run commands.
-                if(message.Channel.Name.Contains("intro"))
+                Task.Run(() =>
                 {
-                    await ProcessTutorialMessaage(message).ConfigureAwait(false);
-                    return;
-                }
-            
-                // Commands
-                string messageText = message.Content;
-                if (messageText.StartsWith("!"))
-                {
-#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
-                    ProcessCommand(message).ConfigureAwait(false);
-                }
-                else if (messageText.StartsWith("+"))
-                {
-                    ProcessSetAttribute(message).ConfigureAwait(false);
-                }
-                else if (messageText.StartsWith("?"))
-                {
-                    ProcessGetAttribute(message).ConfigureAwait(false);
-                }
-                else
-                {
-                    ProcessXpAsync(message).ConfigureAwait(false);
-#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
-                }
+                    // Commands
+                    string messageText = message.Content;
+
+                    // Tutorial messages that cannot run commands.
+                    if (message.Channel.Name.Contains("intro"))
+                    {
+                        ProcessTutorialMessaageAsync(message).ConfigureAwait(false);
+                        return;
+                    }
+                    else if (messageText.StartsWith("!"))
+                    {
+                        ProcessCommandAsync(message).ConfigureAwait(false);
+                    }
+                    else if (messageText.StartsWith("+"))
+                    {
+                        ProcessSetAttributeAsync(message).ConfigureAwait(false);
+                    }
+                    else if (messageText.StartsWith("?"))
+                    {
+                        ProcessGetAttributeAsync(message).ConfigureAwait(false);
+                    }
+                    else
+                    {
+                        ProcessXpAsync(message).ConfigureAwait(false);
+                    }
+                }).ConfigureAwait(false);
 
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 e.Log(message);
             }
@@ -260,7 +266,7 @@ namespace LunaBot
             }
         }
 
-        private async Task ProcessCommand(SocketMessage message)
+        private async Task ProcessCommandAsync(SocketMessage message)
         {
             // Cut up the message with the relevent parts
             string messageText = message.Content;
@@ -282,7 +288,7 @@ namespace LunaBot
                     string.Format(StringTable.RecognizedCommand, command, string.Join(",", commandParams)));
                 try
                 {
-                    await this.commandDictionary[command].Process(message, commandParams);
+                    await this.commandDictionary[command].ProcessAsync(message, commandParams);
                 }
                 catch (Exception e)
                 {
@@ -304,7 +310,7 @@ namespace LunaBot
             }
         }
 
-        private async Task ProcessSetAttribute(SocketMessage message)
+        private async Task ProcessSetAttributeAsync(SocketMessage message)
         {
             // Cut up the message with the relevent parts
             string messageText = message.Content;
@@ -329,7 +335,7 @@ namespace LunaBot
 
             try
             {
-                await this.commandDictionary["set_" + command].Process(message, new[] { content });
+                await this.commandDictionary["set_" + command].ProcessAsync(message, new[] { content });
             }
             catch (Exception e)
             {
@@ -343,7 +349,7 @@ namespace LunaBot
             }
         }
 
-        private async Task ProcessGetAttribute(SocketMessage message)
+        private async Task ProcessGetAttributeAsync(SocketMessage message)
         {
             // Cut up the message with the relevent parts
             string messageText = message.Content;
@@ -366,7 +372,7 @@ namespace LunaBot
             }
             try
             {
-                await this.commandDictionary[command].Process(message, new[] { command, user });
+                await this.commandDictionary[command].ProcessAsync(message, new[] { command, user });
             }
             catch (Exception e)
             {
@@ -385,7 +391,7 @@ namespace LunaBot
         /// </summary>
         /// <param name="message"></param>
         /// <returns>True if deleted, false otherwise.</returns>
-        private async Task<bool> ProcessMessage(SocketMessage message)
+        private async Task<bool> ProcessMessageAsync(SocketMessage message)
         {
             ulong user = message.Author.Id;
             DateTime userTimestamp = message.Timestamp.DateTime;
@@ -428,7 +434,7 @@ namespace LunaBot
         /// </summary>
         /// <param name="user"></param>
         /// <returns></returns>
-        private async Task<bool> StartTutorial(SocketGuildUser user)
+        private async Task<bool> StartTutorialAsync(SocketGuildUser user)
         {
             Predicate<SocketRole> newbieFinder = (SocketRole sr) => { return sr.Name == "Newbie"; };
             Predicate<SocketRole> everyoneFinder = (SocketRole sr) => { return sr.Name == "@everyone"; };
@@ -462,7 +468,7 @@ namespace LunaBot
             
         }
 
-        private async Task ProcessTutorialMessaage(SocketMessage message)
+        private async Task ProcessTutorialMessaageAsync(SocketMessage message)
         {
             // Ignore tutorial finished people -
             // Find what step they are on

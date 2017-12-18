@@ -9,7 +9,7 @@ namespace LunaBot.Commands
     [LunaBotCommand("Help")]
     class HelpCommand : BaseCommand
     {
-        public override async Task Process(SocketMessage message, string[] parameters)
+        public override async Task ProcessAsync(SocketMessage message, string[] parameters)
         {
             List<string> commands = new List<string>();
             

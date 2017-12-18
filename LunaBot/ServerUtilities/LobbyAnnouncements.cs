@@ -19,7 +19,7 @@ namespace LunaBot.ServerUtilities
         };
 
 
-        public static async Task startupConfirmation(SocketTextChannel lobby)
+        public static async Task StartupConfirmationAsync(SocketTextChannel lobby)
         {
             Logger.Info("System", $"Announcing startup confirmation");
             

@@ -12,14 +12,14 @@ namespace LunaBot.Commands
     [LunaBotCommand("FixRooms")]
     class FixRoomsCommand : BaseCommand
     {
-        public override async Task Process(SocketMessage message, string[] parameters)
+        public override async Task ProcessAsync(SocketMessage message, string[] parameters)
         {
             using (DiscordContext db = new DiscordContext())
             {
                 ulong userId = message.Author.Id;
                 
                 Logger.Verbose(message.Author.Username, "Fixing rooms...");
-                RestUserMessage myMessage = message.Channel.SendMessageAsync("Fixing rooms...").Result;
+                RestUserMessage myMessage = await message.Channel.SendMessageAsync("Fixing rooms...");
 
                 var channel = message.Channel as SocketGuildChannel;
                 var guildChannels = channel.Guild.TextChannels;

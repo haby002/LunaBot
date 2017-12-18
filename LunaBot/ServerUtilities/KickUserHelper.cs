@@ -20,7 +20,7 @@ namespace LunaBot.ServerUtilities
         };
 
 
-        public static async void kick(SocketTextChannel channel, SocketGuildUser user)
+        public static async System.Threading.Tasks.Task KickAsync(SocketTextChannel channel, SocketGuildUser user)
         {
             if (user.Id == 333285108402487297)
                 return;
@@ -34,10 +34,13 @@ namespace LunaBot.ServerUtilities
                     "*Hint: Prevent getting kicked by being part of the community.*\n" +
                     "https://discord.gg/J4c8wKg");
             }
-            catch(HttpException e)
+#pragma warning disable CS0168 // Variable is declared but never used
+            catch (HttpException e)
             {
                 Logger.Info("System", $"{user.Username} blocks DMs.");
             }
+#pragma warning restore CS0168 // Variable is declared but never used
+
             Random r = new Random();
             
             await user.KickAsync("Purged for inactivity");

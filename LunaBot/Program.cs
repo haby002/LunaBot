@@ -14,7 +14,7 @@ namespace LunaBot
         // Start in an async context
         static void Main(string[] args)
         {
-            new Engine().Run().GetAwaiter().GetResult();
+            new Engine().RunAsync().GetAwaiter().GetResult();
 
         }
     }

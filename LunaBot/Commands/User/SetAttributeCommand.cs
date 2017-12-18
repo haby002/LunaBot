@@ -11,7 +11,7 @@ namespace LunaBot.Commands
     [LunaBotCommand("set_Desc", "set_Description")]
     class SetDescCommand : BaseCommand
     {
-        public override async Task Process(SocketMessage message, string[] parameters)
+        public override async Task ProcessAsync(SocketMessage message, string[] parameters)
         {
 
             using (DiscordContext db = new DiscordContext())
@@ -42,7 +42,7 @@ namespace LunaBot.Commands
     [LunaBotCommand("set_Age", "set_a")]
     class SetAgeCommand : BaseCommand
     {
-        public override async Task Process(SocketMessage message, string[] parameters)
+        public override async Task ProcessAsync(SocketMessage message, string[] parameters)
         {
             if(!int.TryParse(parameters[0], out int age))
             {
@@ -77,7 +77,7 @@ namespace LunaBot.Commands
     [LunaBotCommand("set_g", "set_gender")]
     class SetGenderCommand : BaseCommand
     {
-        public override async Task Process(SocketMessage message, string[] parameters)
+        public override async Task ProcessAsync(SocketMessage message, string[] parameters)
         {
             User.Genders gender = Utilities.StringToGender(parameters[0]);
             if (gender == User.Genders.None)
@@ -143,7 +143,7 @@ namespace LunaBot.Commands
     [LunaBotCommand("set_o", "set_Orientation")]
     class SetOrientationCommand : BaseCommand
     {
-        public override async Task Process(SocketMessage message, string[] parameters)
+        public override async Task ProcessAsync(SocketMessage message, string[] parameters)
         {
             User.Orientation orientation = Utilities.StringToOrientation(parameters[0]);
 
@@ -211,7 +211,7 @@ namespace LunaBot.Commands
     [LunaBotCommand("set_Fur", "set_f")]
     class SetFurCommand : BaseCommand
     {
-        public override async Task Process(SocketMessage message, string[] parameters)
+        public override async Task ProcessAsync(SocketMessage message, string[] parameters)
         {
 
             using (DiscordContext db = new DiscordContext())
@@ -241,7 +241,7 @@ namespace LunaBot.Commands
     [LunaBotCommand("set_Ref", "set_f")]
     class SetRefCommand : BaseCommand
     {
-        public override async Task Process(SocketMessage message, string[] parameters)
+        public override async Task ProcessAsync(SocketMessage message, string[] parameters)
         {
 
             using (DiscordContext db = new DiscordContext())

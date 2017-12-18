@@ -10,7 +10,7 @@ namespace LunaBot.Commands
     [LunaBotCommand("Roll")]
     class RollCommand : BaseCommand
     {
-        public override async Task Process(SocketMessage message, string[] parameters)
+        public override async Task ProcessAsync(SocketMessage message, string[] parameters)
         {
             foreach(string p in parameters)
             {

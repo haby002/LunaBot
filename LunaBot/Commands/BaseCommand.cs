@@ -5,6 +5,6 @@ namespace LunaBot.Commands
 {
     public abstract class BaseCommand
     {
-        public abstract Task Process(SocketMessage message, string[] parameters);
+        public abstract Task ProcessAsync(SocketMessage message, string[] parameters);
     }
 }
