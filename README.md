@@ -1,5 +1,5 @@
 # LunaBot
-Discord bot made in C# with the use of Entity for a SQL database.
+Discord bot made in C# with the use of Entity Framework for a SQL database.
 
 The purpose of this bot will be:
 - Manage a custom profile for each user

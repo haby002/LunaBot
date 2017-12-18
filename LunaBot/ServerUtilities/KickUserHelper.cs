@@ -1,4 +1,5 @@
 ﻿using Discord;
+using Discord.Net;
 using Discord.WebSocket;
 using System;
 using System.Collections.Generic;
@@ -19,17 +20,26 @@ namespace LunaBot.ServerUtilities
         };
 
 
-        public static async void kick(SocketTextChannel channel, SocketGuildUser user)
+        public static async System.Threading.Tasks.Task KickAsync(SocketTextChannel channel, SocketGuildUser user)
         {
             if (user.Id == 333285108402487297)
                 return;
 
             Logger.Info("System", $"Kicking {user.Username}");
-            
-            await user.SendMessageAsync("You have been kicked from the server from inactivity.\n" +
-                "You can join again but once you get kicked 3 times you are banned.\n" +
-                "Hint: Prevent getting kicked by being part of the community.\n" +
-                "https://discord.gg/J4c8wKg");
+
+            try
+            {
+                await user.SendMessageAsync("You have been kicked from the server from inactivity.\n" +
+                    "You can join again but once you get kicked 3 times will be banned.\n" +
+                    "*Hint: Prevent getting kicked by being part of the community.*\n" +
+                    "https://discord.gg/J4c8wKg");
+            }
+#pragma warning disable CS0168 // Variable is declared but never used
+            catch (HttpException e)
+            {
+                Logger.Info("System", $"{user.Username} blocks DMs.");
+            }
+#pragma warning restore CS0168 // Variable is declared but never used
 
             Random r = new Random();
             

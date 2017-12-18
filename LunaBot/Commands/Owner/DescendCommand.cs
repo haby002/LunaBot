@@ -10,7 +10,7 @@ namespace LunaBot.Commands
     [LunaBotCommand("Descend")]
     class DescendCommand : BaseCommand
     {
-        public override async Task Process(SocketMessage message, string[] parameters)
+        public override async Task ProcessAsync(SocketMessage message, string[] parameters)
         {
             // Check if command params are correct.
             if (parameters.Length != 1)

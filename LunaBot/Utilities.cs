@@ -11,7 +11,7 @@ namespace LunaBot
     {
         public static User.Genders StringToGender(string gender)
         {
-            switch (gender)
+            switch (gender.ToLower())
             {
                 case "male":
                 case "m":
@@ -34,7 +34,7 @@ namespace LunaBot
 
         public static User.Orientation StringToOrientation(string orientation)
         {
-            switch (orientation)
+            switch (orientation.ToLower())
             {
                 case "straight":
                 case "s":
@@ -49,6 +49,9 @@ namespace LunaBot
                 case "a":
                     return User.Orientation.Asexual;
                 case "gray-a":
+                case "gray":
+                case "grey-a":
+                case "grey":
                     return User.Orientation.Gray;
                 case "pansexual":
                 case "pan":

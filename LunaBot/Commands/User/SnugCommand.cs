@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Discord.WebSocket;
 using LunaBot.Database;
@@ -9,7 +11,7 @@ namespace LunaBot.Commands
     [LunaBotCommand("snug", "s")]
     class SnugCommand : BaseCommand
     {
-        public override async Task Process(SocketMessage message, string[] parameters)
+        public override async Task ProcessAsync(SocketMessage message, string[] parameters)
         {
             using (DiscordContext db = new DiscordContext())
             {
@@ -34,7 +36,10 @@ namespace LunaBot.Commands
                     }
                     else
                     {
-
+                        user.SnugG = user.SnugG + 1;
+                        user2.SnugR = user.SnugR + 1;
+                        db.SaveChanges();
+                        
                         if (rand == 0)
                         {
                             await message.Channel.SendMessageAsync($"<@{userId}> is now snuggling with <@{userId2}>!");
@@ -51,10 +56,6 @@ namespace LunaBot.Commands
                         {
                             Logger.Warning(message.Author.Username, "Tried to snug with someone and it failed somehow.");
                         }
-
-                        user.SnugG = user.SnugG + 1;
-                        user2.SnugR = user.SnugR + 1;
-                        db.SaveChanges();
                     }
                 }
                 else

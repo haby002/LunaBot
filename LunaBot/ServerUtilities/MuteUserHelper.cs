@@ -22,7 +22,7 @@ namespace LunaBot.ServerUtilities
         };
 
 
-        public static async void mute(SocketTextChannel channel, SocketGuildUser user, int seconds)
+        public static async Task MuteAsync(SocketTextChannel channel, SocketGuildUser user, int seconds)
         {
             if (user.Id == 333285108402487297)
                 return;

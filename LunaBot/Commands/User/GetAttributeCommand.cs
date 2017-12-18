@@ -8,7 +8,7 @@ namespace LunaBot.Commands
     [LunaBotCommand("get_Desc", "get_D")]
     class GetDescCommand : BaseCommand
     {
-        public override async Task Process(SocketMessage message, string[] parameters)
+        public override async Task ProcessAsync(SocketMessage message, string[] parameters)
         {
             
             using (DiscordContext db = new DiscordContext())
@@ -50,7 +50,7 @@ namespace LunaBot.Commands
     [LunaBotCommand("get_a", "get_age")]
     class GetAgeCommand : BaseCommand
     {
-        public override async Task Process(SocketMessage message, string[] parameters)
+        public override async Task ProcessAsync(SocketMessage message, string[] parameters)
         {
             using (DiscordContext db = new DiscordContext())
             {
@@ -92,7 +92,7 @@ namespace LunaBot.Commands
     [LunaBotCommand("get_Lvl", "get_level")]
     class GetLvlCommand : BaseCommand
     {
-        public override async Task Process(SocketMessage message, string[] parameters)
+        public override async Task ProcessAsync(SocketMessage message, string[] parameters)
         {
 
             using (DiscordContext db = new DiscordContext())
@@ -140,7 +140,7 @@ namespace LunaBot.Commands
     [LunaBotCommand("get_xp")]
     class GetXpCommand : BaseCommand
     {
-        public override async Task Process(SocketMessage message, string[] parameters)
+        public override async Task ProcessAsync(SocketMessage message, string[] parameters)
         {
 
             using (DiscordContext db = new DiscordContext())
@@ -188,7 +188,7 @@ namespace LunaBot.Commands
     [LunaBotCommand("get_G", "get_Gender")]
     class GetGenderCommand : BaseCommand
     {
-        public override async Task Process(SocketMessage message, string[] parameters)
+        public override async Task ProcessAsync(SocketMessage message, string[] parameters)
         {
 
             using (DiscordContext db = new DiscordContext())
@@ -222,7 +222,7 @@ namespace LunaBot.Commands
     [LunaBotCommand("get_o", "get_Orientation")]
     class GetOrientationCommand : BaseCommand
     {
-        public override async Task Process(SocketMessage message, string[] parameters)
+        public override async Task ProcessAsync(SocketMessage message, string[] parameters)
         {
 
             using (DiscordContext db = new DiscordContext())
@@ -256,7 +256,7 @@ namespace LunaBot.Commands
     [LunaBotCommand("get_f", "get_fur")]
     class GetFurCommand : BaseCommand
     {
-        public override async Task Process(SocketMessage message, string[] parameters)
+        public override async Task ProcessAsync(SocketMessage message, string[] parameters)
         {
 
             using (DiscordContext db = new DiscordContext())
@@ -298,7 +298,7 @@ namespace LunaBot.Commands
     [LunaBotCommand("get_Ref")]
     class GetRefCommand : BaseCommand
     {
-        public override async Task Process(SocketMessage message, string[] parameters)
+        public override async Task ProcessAsync(SocketMessage message, string[] parameters)
         {
 
             using (DiscordContext db = new DiscordContext())
@@ -340,7 +340,7 @@ namespace LunaBot.Commands
     [LunaBotCommand("get_priv")]
     class GetPrivilegeCommand : BaseCommand
     {
-        public override async Task Process(SocketMessage message, string[] parameters)
+        public override async Task ProcessAsync(SocketMessage message, string[] parameters)
         {
 
             using (DiscordContext db = new DiscordContext())
@@ -381,7 +381,8 @@ namespace LunaBot.Commands
     [LunaBotCommand("get_snug", "get_s")]
     class GetSnugCommand : BaseCommand
     {
-        public override async Task Process(SocketMessage message, string[] parameters)
+        public override async Task ProcessAsync(SocketMessage message, string[] parameters)
+
         {
 
             using (DiscordContext db = new DiscordContext())

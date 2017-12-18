@@ -11,7 +11,7 @@ namespace LunaBot.Commands
     [LunaBotCommand("set_Desc", "set_Description")]
     class SetDescCommand : BaseCommand
     {
-        public override async Task Process(SocketMessage message, string[] parameters)
+        public override async Task ProcessAsync(SocketMessage message, string[] parameters)
         {
 
             using (DiscordContext db = new DiscordContext())
@@ -42,7 +42,7 @@ namespace LunaBot.Commands
     [LunaBotCommand("set_Age", "set_a")]
     class SetAgeCommand : BaseCommand
     {
-        public override async Task Process(SocketMessage message, string[] parameters)
+        public override async Task ProcessAsync(SocketMessage message, string[] parameters)
         {
             if(!int.TryParse(parameters[0], out int age))
             {
@@ -77,7 +77,7 @@ namespace LunaBot.Commands
     [LunaBotCommand("set_g", "set_gender")]
     class SetGenderCommand : BaseCommand
     {
-        public override async Task Process(SocketMessage message, string[] parameters)
+        public override async Task ProcessAsync(SocketMessage message, string[] parameters)
         {
             User.Genders gender = Utilities.StringToGender(parameters[0]);
             if (gender == User.Genders.None)
@@ -101,19 +101,29 @@ namespace LunaBot.Commands
                 User user = db.Users.FirstOrDefault(x => x.DiscordId == userId);
                 if (user != null)
                 {
-                    Logger.Warning(message.Author.Username, $"Setting @<{userId}>'s gender to {gender.ToString()}.");
-
-                    // Adding role to user
+                    Logger.Warning("AdminSetCmd", $"Setting @<{userId}>'s gender to {gender.ToString()}.");
+                    
                     SocketGuildChannel guildChannel = message.Channel as SocketGuildChannel;
                     List<SocketRole> roles = guildChannel.Guild.Roles.ToList();
-                    Predicate<SocketRole> genderFinder = (SocketRole sr) => { return sr.Name == gender.ToString().ToLower(); };
-                    SocketRole genderRole = roles.Find(genderFinder);
-                    await guildChannel.GetUser((ulong)userId).AddRoleAsync(genderRole);
 
                     // Remove old role
-                    genderFinder = (SocketRole sr) => { return sr.Name == user.Gender.ToString().ToLower(); };
+                    Predicate<SocketRole> genderFinder = (SocketRole sr) => { return sr.Name == user.Gender.ToString().ToLower(); };
+                    SocketRole genderRole = roles.Find(genderFinder);
                     genderRole = roles.Find(genderFinder);
-                    await guildChannel.GetUser((ulong)userId).RemoveRoleAsync(genderRole);
+                    if (genderRole != null)
+                    {
+                        await guildChannel.GetUser((ulong)userId).RemoveRoleAsync(genderRole);
+                        Logger.Verbose("System", $"found role {genderRole.Name} and removed it.");
+                    }
+                    else
+                    {
+                        Logger.Warning("System", $"Couldn't find role {user.Gender.ToString().ToLower()}.");
+                    }
+
+                    // Add new role
+                    genderFinder = (SocketRole sr) => { return sr.Name == gender.ToString().ToLower(); };
+                    genderRole = roles.Find(genderFinder);
+                    await guildChannel.GetUser((ulong)userId).AddRoleAsync(genderRole);
 
                     user.Gender = gender;
                     db.SaveChanges();
@@ -133,7 +143,7 @@ namespace LunaBot.Commands
     [LunaBotCommand("set_o", "set_Orientation")]
     class SetOrientationCommand : BaseCommand
     {
-        public override async Task Process(SocketMessage message, string[] parameters)
+        public override async Task ProcessAsync(SocketMessage message, string[] parameters)
         {
             User.Orientation orientation = Utilities.StringToOrientation(parameters[0]);
 
@@ -167,7 +177,15 @@ namespace LunaBot.Commands
                     // Remove old role
                     Predicate<SocketRole> orientationFinder = (SocketRole sr) => { return sr.Name == user.orientation.ToString().ToLower(); };
                     SocketRole orientationRole = roles.Find(orientationFinder);
-                    await guildChannel.GetUser(userId).RemoveRoleAsync(orientationRole);
+                    if (orientationRole != null)
+                    {
+                        await guildChannel.GetUser(userId).RemoveRoleAsync(orientationRole);
+                        Logger.Verbose("System", $"found role {orientationRole.Name} and removed it.");
+                    }
+                    else
+                    {
+                        Logger.Warning("System", $"Couldn't find role {user.orientation.ToString().ToLower()}.");
+                    }
 
                     // Adding role to user
                     orientationFinder = (SocketRole sr) => { return sr.Name == orientation.ToString().ToLower(); };
@@ -193,7 +211,7 @@ namespace LunaBot.Commands
     [LunaBotCommand("set_Fur", "set_f")]
     class SetFurCommand : BaseCommand
     {
-        public override async Task Process(SocketMessage message, string[] parameters)
+        public override async Task ProcessAsync(SocketMessage message, string[] parameters)
         {
 
             using (DiscordContext db = new DiscordContext())
@@ -223,7 +241,7 @@ namespace LunaBot.Commands
     [LunaBotCommand("set_Ref", "set_f")]
     class SetRefCommand : BaseCommand
     {
-        public override async Task Process(SocketMessage message, string[] parameters)
+        public override async Task ProcessAsync(SocketMessage message, string[] parameters)
         {
 
             using (DiscordContext db = new DiscordContext())

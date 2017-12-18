@@ -13,7 +13,7 @@ namespace LunaBot.Commands
     [LunaBotCommand("forcetut")]
     class ForceTutCommand : BaseCommand
     {
-        public override async Task Process(SocketMessage message, string[] parameters)
+        public override async Task ProcessAsync(SocketMessage message, string[] parameters)
         {
             // Check if command params are correct.
             if (parameters.Length != 1)
@@ -66,7 +66,7 @@ namespace LunaBot.Commands
                 await channel.Guild.GetUser((ulong)parsedUserId).AddRoleAsync(role);
 
                 // Creat intro room
-                RestTextChannel introRoom = channel.Guild.CreateTextChannelAsync($"intro-{parsedUserId}").Result;
+                RestTextChannel introRoom = await channel.Guild.CreateTextChannelAsync($"intro-{parsedUserId}");
 
                 await Task.Run(async () =>
                 {
