@@ -39,7 +39,7 @@ namespace LunaBot.Commands
                         user.SnugG = user.SnugG + 1;
                         user2.SnugR = user.SnugR + 1;
                         db.SaveChanges();
-
+                        
                         if (rand == 0)
                         {
                             await message.Channel.SendMessageAsync($"<@{userId}> is now snuggling with <@{userId2}>!");
