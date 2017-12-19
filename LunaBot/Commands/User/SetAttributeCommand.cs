@@ -320,7 +320,7 @@ namespace LunaBot.Commands
             }
             else
             {
-                await message.Channel.SendMessageAsync($"Sorry i couldn't understand. Please answer `yes` or `no`");
+                await message.Channel.SendMessageAsync($"Sorry I couldn't understand. Please answer `yes` or `no`");
 
             }
         }
@@ -379,7 +379,7 @@ namespace LunaBot.Commands
             }
             else
             {
-                await message.Channel.SendMessageAsync($"Sorry i couldn't understand. Please answer `yes` or `no`");
+                await message.Channel.SendMessageAsync($"Sorry I couldn't understand. Please answer `yes` or `no`");
 
             }
         }
