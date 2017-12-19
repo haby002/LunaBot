@@ -268,4 +268,120 @@ namespace LunaBot.Commands
         }
     }
 
+    [LunaBotCommand("set_Sfw")]
+    class SetSFWCommand : BaseCommand
+    {
+        public override async Task ProcessAsync(SocketMessage message, string[] parameters)
+        {
+            string sfwAsk = parameters[0].ToLower();
+            if (sfwAsk == "yes" || sfwAsk == "no")
+            {
+                ulong userId = message.Author.Id;
+
+                SocketGuildChannel guildChannel = message.Channel as SocketGuildChannel;
+                List<SocketRole> roles = guildChannel.Guild.Roles.ToList();
+
+                if (sfwAsk == "no")
+                {
+                    Logger.Info(message.Author.Username, $"Removing SFW role for <@{userId}>.");
+
+                    // Remove old role
+                    Predicate<SocketRole> SfwFinder = (SocketRole sr) => { return sr.Name == "SFW"; };
+                    SocketRole SfwRole = roles.Find(SfwFinder);
+                    if (SfwRole != null)
+                    {
+                        await guildChannel.GetUser(userId).RemoveRoleAsync(SfwRole);
+                        Logger.Verbose("System", $"found role {SfwRole.Name} and removed it.");
+                        await message.Channel.SendMessageAsync($"<@{userId}> is now alowed into the NSFW rooms.");
+                    }
+                    else
+                    {
+                        Logger.Warning("System", $"Couldn't find role SWF.");
+                    }
+                }
+                else if (sfwAsk == "yes")
+                {
+                    // Adding role to user
+                    Predicate<SocketRole> Sfwfinder = (SocketRole sr) => { return sr.Name == "SFW"; };
+                    SocketRole SfwRole = roles.Find(Sfwfinder);
+                    await guildChannel.GetUser(userId).AddRoleAsync(SfwRole);
+                    if (SfwRole != null)
+                    {
+                        await message.Channel.SendMessageAsync($"<@{userId}> has been removed from the NSFW rooms.");
+                    }
+                    else
+                    {
+                        Logger.Warning("System", $"Couldn't find role SWF.");
+                    }
+                }
+
+                return;
+
+            }
+            else
+            {
+                await message.Channel.SendMessageAsync($"Sorry i couldn't understand. Please answer `yes` or `no`");
+
+            }
+        }
+    }
+
+    [LunaBotCommand("set_Monk")]
+    class SetMonkCommand : BaseCommand
+    {
+        public override async Task ProcessAsync(SocketMessage message, string[] parameters)
+        {
+            string monkAsk = parameters[0].ToLower();
+            if (monkAsk == "yes" || monkAsk == "no")
+            {
+                ulong userId = message.Author.Id;
+
+                SocketGuildChannel guildChannel = message.Channel as SocketGuildChannel;
+                List<SocketRole> roles = guildChannel.Guild.Roles.ToList();
+
+                if (monkAsk == "no")
+                {
+                    Logger.Info(message.Author.Username, $"Removing Monk role for <@{userId}>.");
+
+                    // Remove old role
+                    Predicate<SocketRole> MonkFinder = (SocketRole sr) => { return sr.Name == "Monk"; };
+                    SocketRole MonkRole = roles.Find(MonkFinder);
+                    if (MonkRole != null)
+                    {
+                        await guildChannel.GetUser(userId).RemoveRoleAsync(MonkRole);
+                        Logger.Verbose("System", $"found role {MonkRole.Name} and removed it.");
+                        await message.Channel.SendMessageAsync($"<@{userId}> is now alowed into the RP rooms.");
+                    }
+                    else
+                    {
+                        Logger.Warning("System", $"Couldn't find role Monk.");
+                    }
+                }
+                else if (monkAsk == "yes")
+                {
+
+
+                    // Adding role to user
+                    Predicate<SocketRole> Monkfinder = (SocketRole sr) => { return sr.Name == "Monk"; };
+                    SocketRole MonkRole = roles.Find(Monkfinder);
+                    await guildChannel.GetUser(userId).AddRoleAsync(MonkRole);
+                    if (MonkRole != null)
+                    {
+                        await message.Channel.SendMessageAsync($"<@{userId}> has been removed from RP rooms.");
+                    }
+                    else
+                    {
+                        Logger.Warning("System", $"Couldn't find role Monk.");
+                    }
+                }
+
+                return;
+            }
+            else
+            {
+                await message.Channel.SendMessageAsync($"Sorry i couldn't understand. Please answer `yes` or `no`");
+
+            }
+        }
+    }
 }
