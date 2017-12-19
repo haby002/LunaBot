@@ -15,7 +15,11 @@ namespace LunaBot.ServerUtilities
             ":eyes:",
             "Totally did not just wake up...",
             "Someone called?",
-            "And the moon rises!"
+            "And the moon rises!",
+            "Thou has awoken from thou slumber!",
+            "*Its ya ~~boi~~ girl*,",
+            "I'm back bi***es!",
+            "OwO"
         };
 
 

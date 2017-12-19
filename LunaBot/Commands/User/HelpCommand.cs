@@ -31,6 +31,8 @@ namespace LunaBot.Commands
                     "```!roll <number>d<size> <number>d<size> ...etc```");
                 commands.Add("snug:\n" +
                     "```!snug <user>```");
+                commands.Add("Change SFW and Monk modes:\n" +
+                    "```+<sfw, monk> <yes, no>```");
 
                 if (user.Privilege > User.Privileges.User)
                 {
