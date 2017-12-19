@@ -644,7 +644,7 @@ namespace LunaBot
                     {
                         databaseUser.Age = age;
                     }
-                    else if (message.Content.Equals("no"))
+                    else if (message.Content.ToLower().Equals("no"))
                     {
                         databaseUser.Age = -1;
                     }
