@@ -17,7 +17,7 @@ namespace LunaBot.ServerUtilities
             "Someone called?",
             "And the moon rises!",
             "Thou has awoken from thou slumber!",
-            "*Its ya ~~boi~~ girl*,",
+            "*Its ya ~~boi~~ girl*",
             "I'm back bi***es!",
             "OwO"
         };
