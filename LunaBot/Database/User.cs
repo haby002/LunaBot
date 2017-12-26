@@ -62,7 +62,7 @@ namespace LunaBot.Database
             Gay,
             Bi,
             Asexual,
-            Pansexual,
+            Pan,
             Gray
         };
 

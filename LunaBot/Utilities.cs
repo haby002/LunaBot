@@ -55,7 +55,7 @@ namespace LunaBot
                     return User.Orientation.Gray;
                 case "pansexual":
                 case "pan":
-                    return User.Orientation.Pansexual;
+                    return User.Orientation.Pan;
                 default:
                     return User.Orientation.None;
             }

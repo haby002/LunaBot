@@ -614,7 +614,7 @@ namespace LunaBot
                             orientationFinder = (SocketRole sr) => { return sr.Name == Roles.Pan; };
                             orientation = roles.Find(orientationFinder);
                             await user.AddRoleAsync(orientation);
-                            databaseUser.orientation = User.Orientation.Pansexual;
+                            databaseUser.orientation = User.Orientation.Pan;
                             break;
                         default:
                             await message.Channel.SendMessageAsync("Hmm... That's not an orientation I can undestand.\n" +
