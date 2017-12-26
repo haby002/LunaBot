@@ -87,7 +87,7 @@ namespace LunaBot.Commands
                     "- Male\n" +
                     "- Female\n" +
                     "- Trans-Female\n" +
-                    "- Transe-Male\n" +
+                    "- Trans-Male\n" +
                     "- Other\n" +
                     "```");
 
