@@ -50,8 +50,8 @@ namespace LunaBot.Database
             None,
             Male,
             Female,
-            TransF,
-            TransM,
+            TransFemale,
+            TransMale,
             Other,
         };
 

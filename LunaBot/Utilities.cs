@@ -23,9 +23,9 @@ namespace LunaBot
                 case "o":
                     return User.Genders.Other;
                 case "trans-male":
-                    return User.Genders.TransM;
+                    return User.Genders.TransMale;
                 case "trans-female":
-                    return User.Genders.TransF;
+                    return User.Genders.TransFemale;
                 default:
                     return User.Genders.None;
             }

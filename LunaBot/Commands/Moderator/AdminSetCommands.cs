@@ -145,13 +145,13 @@ namespace LunaBot.Commands
                                     genderFinder = (SocketRole sr) => { return sr.Name == "trans-male"; };
                                     gender = roles.Find(genderFinder);
                                     await discordUser.AddRoleAsync(gender);
-                                    user.Gender = User.Genders.TransM;
+                                    user.Gender = User.Genders.TransMale;
                                     break;
                                 case "trans-female":
                                     genderFinder = (SocketRole sr) => { return sr.Name == "trans-female"; };
                                     gender = roles.Find(genderFinder);
                                     await discordUser.AddRoleAsync(gender);
-                                    user.Gender = User.Genders.TransF;
+                                    user.Gender = User.Genders.TransFemale;
                                     break;
                                 default:
                                     await message.Channel.SendMessageAsync("I'm sorry I couldn't understand your message. Make sure the gender is either male, female, trans-male, trans-female, or other.\n" +
