@@ -29,7 +29,7 @@ namespace LunaBot.Commands
                     "```!help```");
                 commands.Add("Roll:\n" +
                     "```!roll <number>d<size> <number>d<size> ...etc```");
-                commands.Add("snug:\n" +
+                commands.Add("Snug:\n" +
                     "```!snug <user>```");
                 commands.Add("Change SFW and Monk modes:\n" +
                     "```+<sfw, monk> <yes, no>```");

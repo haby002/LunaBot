@@ -20,7 +20,7 @@ namespace LunaBot.Commands
 
                 userId2 = message.MentionedUsers.FirstOrDefault().Id;
 
-                Logger.Info(message.Author.Username, " is doing something.");
+                Logger.Info(message.Author.Username, " is using an action.");
 
                 if(userId == userId2)
                 {
@@ -51,8 +51,8 @@ namespace LunaBot.Commands
                                                                 $"```\n" +
                                                                 $"Bap\n" +
                                                                 $"Smooch\n" +
-                                                                $"boop\n" +
-                                                                $"punch\n" +
+                                                                $"Boop\n" +
+                                                                $"Punch\n" +
                                                                 $"```");
                     }
                 }
@@ -64,8 +64,8 @@ namespace LunaBot.Commands
                                                         $"```\n" +
                                                         $"Bap\n" +
                                                         $"Smooch\n" +
-                                                        $"boop\n" +
-                                                        $"punch\n" +
+                                                        $"Boop\n" +
+                                                        $"Punch\n" +
                                                         $"```");
                 return;
                 
