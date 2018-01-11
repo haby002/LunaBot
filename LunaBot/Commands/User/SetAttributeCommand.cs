@@ -208,7 +208,7 @@ namespace LunaBot.Commands
         }
     }
 
-    [LunaBotCommand("set_Fur", "set_f")]
+    [LunaBotCommand("set_f", "set_Fur")]
     class SetFurCommand : BaseCommand
     {
         public override async Task ProcessAsync(SocketMessage message, string[] parameters)
@@ -238,7 +238,7 @@ namespace LunaBot.Commands
         }
     }
 
-    [LunaBotCommand("set_Ref", "set_f")]
+    [LunaBotCommand("set_r", "set_Ref")]
     class SetRefCommand : BaseCommand
     {
         public override async Task ProcessAsync(SocketMessage message, string[] parameters)
