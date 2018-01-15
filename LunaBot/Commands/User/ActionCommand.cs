@@ -10,6 +10,10 @@ namespace LunaBot.Commands
     {
         public override async Task ProcessAsync(SocketMessage message, string[] parameters)
         {
+            // return if used in the lobby
+            if (message.Channel.Id == 308306400717832192)
+                return;
+
             ulong userId = message.Author.Id;
             ulong userId2;
 
