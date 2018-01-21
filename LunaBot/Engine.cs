@@ -2,7 +2,6 @@
 using Discord.Rest;
 using Discord.WebSocket;
 using LunaBot.Commands;
-using LunaBot.Database;
 using LunaBot.ServerUtilities;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -84,40 +83,7 @@ namespace LunaBot
             roles = guild.Roles.ToList();
             report = new BotReporting(guild.GetChannel(Channels.BotLogs));
             luna = guild.GetUser(UserIds.Luna);
-
-            // Adding owners
-            using (DiscordContext db = new DiscordContext())
-            {
-                db.Database.EnsureCreated();
-                foreach (ulong userId in UserIds.Owners)
-                {
-                    User owner = db.Users.Where(x => x.DiscordId == userId).FirstOrDefault();
-                    if (owner == null)
-                    {
-                        Logger.Warning("System", "An owner not found in the database, adding as Owner.");
-
-                        User newUser = new User();
-                        newUser.DiscordId = userId;
-                        newUser.Level = 1;
-                        newUser.Privilege = User.Privileges.Owner;
-                        newUser.TutorialFinished = true;
-
-                        db.Users.Add(newUser);
-                        db.SaveChanges();
-
-                        Logger.Verbose("System", "Created Owner: " + newUser.DiscordId);
-                        return;
-                    }
-                    else if (owner.Privilege != User.Privileges.Owner)
-                    {
-                        owner.Privilege = User.Privileges.Owner;
-
-                        db.SaveChanges();
-
-                        Logger.Verbose("System", "Updated Haby's priviledges to Owner");
-                    }
-                }
-            }
+            
 
             // Set Playing flavor text
             await client.SetGameAsync("!help");
@@ -141,9 +107,6 @@ namespace LunaBot
                     return;
                 }
 
-                //Anti-raid system
-                if (await ProcessMessageAsync(message))
-                    return;
 
 #pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
                 Task.Run(() =>
@@ -212,44 +175,6 @@ namespace LunaBot
             {
                 Logger.Error(message.Author.Username, string.Format(StringTable.UnrecognizedCommand, command));
             }
-        }
-
-        private async Task<bool> ProcessMessageAsync(SocketMessage message)
-        {
-            ulong user = message.Author.Id;
-            DateTime userTimestamp = message.Timestamp.DateTime;
-            DateTime cachedTimestamp;
-
-            // Ignore Luna
-            if (message.Author.Id == UserIds.Luna)
-                return false;
-            using (DiscordContext db = new DiscordContext())
-            {
-                ulong userId = message.Author.Id;
-                User databaseUser = db.Users.Where(x => x.DiscordId == userId).FirstOrDefault();
-                if (databaseUser.Privilege >= User.Privileges.Moderator)
-                    return false;
-            }
-
-            if(messageTimestamps.TryGetValue(user, out cachedTimestamp))
-            {
-                if (userTimestamp.Subtract(cachedTimestamp) < TimeSpan.FromSeconds(1))
-                {
-                    Logger.Info("System", $"User {message.Author.Username}<{message.Author.Id}> is talking too fast. Deleting latest message.");
-                    await message.DeleteAsync();
-
-                    return true;
-                }
-                else
-                {
-                    messageTimestamps[user] = userTimestamp;
-                    return false;
-                }
-            }
-
-            messageTimestamps.Add(user, DateTime.Now);
-
-            return false;
         }
     }
 }

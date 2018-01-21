@@ -13,11 +13,20 @@ namespace LunaBot.ServerUtilities
         /// <summary>
         /// Owners of the FR server
         /// </summary>
-        internal static ulong[] Owners =
+        internal static ulong[] Mods =
         {
-            123470919535427584,
-            201934665961963520,
-            196558107520794624
+            //Doodles
+            285606103243554816,
+            //Rand
+            353124842540761089,
+            //FireFlash
+            92466867364433920,
+            //Jason
+            263506098768707595,
+            //Hellblaze Wolf
+            180623286747660288,
+            //Zelenyy (TEMP FOR TESTING)
+            284861595396472834
         };
 
         /// <summary>

@@ -1,5 +1,4 @@
 ﻿using Discord.WebSocket;
-using LunaBot.Database;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -23,50 +22,7 @@ namespace LunaBot.ServerUtilities
 
             List<SocketGuildUser> users = guild.Users.ToList();
 
-            using (DiscordContext db = new DiscordContext())
-            {
-                foreach (SocketGuildUser u in users)
-                {
-                    if (toplevel.ContainsKey(u.Id.ToString()))
-                    {
-                        User user = db.Users.Where(x => x.DiscordId == u.Id).FirstOrDefault();
-
-                        JObject secondLevel = (JObject)toplevel[u.Id.ToString()];
-
-                        JToken thirdLevel = secondLevel.Last;
-
-                        JToken fourthLevel = thirdLevel.First();
-
-                        foreach (JProperty attribute in fourthLevel)
-                        {
-                            string value;
-                            switch (attribute.Name)
-                            {
-                                case "age":
-                                    user.Age = int.Parse(attribute.Value.ToString());
-                                    break;
-                                case "sex":
-                                    value = attribute.Value.ToString();
-                                    break;
-                                case "level":
-                                    user.Level = int.Parse(attribute.Value.ToString());
-                                    break;
-                                case "fur":
-                                    user.Fur = attribute.Value.ToString();
-                                    break;
-                                case "ref":
-                                    user.Ref = attribute.Value.ToString();
-                                    break;
-                                case "desc":
-                                    user.Description = attribute.Value.ToString();
-                                    break;
-                            }
-                        }
-                    }
-                }
-
-                db.SaveChanges();
-            }
+            
         }
     }
 }

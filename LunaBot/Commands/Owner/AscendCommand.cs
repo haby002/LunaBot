@@ -1,5 +1,7 @@
-﻿using Discord.WebSocket;
-using LunaBot.Database;
+﻿//DO NOT DELETE
+//I WILL TAKE CODE FROM HERE LATER
+/*
+using Discord.WebSocket;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -73,4 +75,4 @@ namespace LunaBot.Commands
             }
         }
     }
-}
+}*/
