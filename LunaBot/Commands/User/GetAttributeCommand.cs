@@ -68,9 +68,11 @@ namespace LunaBot.Commands
                 User user = db.Users.FirstOrDefault(x => x.DiscordId == userId);
                 if (user != null)
                 {
-                    if (user.Age == 0)
+                    if (user.Age <= 0)
                     {
-                        Logger.Warning(message.Author.Username, $"user <@{userId}> age not set.");
+                        if(user.Age == 0)
+                            Logger.Warning(message.Author.Username, $"user <@{userId}> age not set.");
+                            
                         await message.Channel.SendMessageAsync($"<@{userId}> is ageless");
 
                         return;
