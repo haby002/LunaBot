@@ -78,7 +78,6 @@ namespace LunaBot
         private async Task ReadyAsync()
         {
             guild = client.GetGuild(Guilds.Guild);
-            await guild.DownloadUsersAsync();
             lobby = client.GetChannel(Channels.Lobby) as SocketTextChannel;
             roles = guild.Roles.ToList();
             report = new BotReporting(guild.GetChannel(Channels.BotLogs));
@@ -86,7 +85,7 @@ namespace LunaBot
             
 
             // Set Playing flavor text
-            await client.SetGameAsync("!help");
+            await client.SetGameAsync("Ignore me");
 
             await LobbyAnnouncements.StartupConfirmationAsync(lobby);
 
@@ -114,7 +113,7 @@ namespace LunaBot
                     // Commands
                     string messageText = message.Content;
 
-                    if (messageText.StartsWith("k"))
+                    if (messageText.StartsWith("l"))
                     {
                         ProcessCommandAsync(message).ConfigureAwait(false);
                     }

@@ -32,7 +32,7 @@ namespace LunaBot.ServerUtilities
         /// <summary>
         /// The bot's ID
         /// </summary>
-        internal static ulong Luna = 333285108402487297;
+        internal static ulong Luna = 404589463549771777;
 
     }
 
@@ -41,7 +41,7 @@ namespace LunaBot.ServerUtilities
         /// <summary>
         /// FR lobby channel. Main channel
         /// </summary>
-        internal static ulong Lobby = 308306400717832192;
+        internal static ulong Lobby = 404734064759668736;
 
         /// <summary>
         /// Channel for error reporting and status reports
@@ -52,10 +52,8 @@ namespace LunaBot.ServerUtilities
 
     internal static class Guilds
     {
-        /// <summary>
-        /// FR guild
-        /// </summary>
-        internal static ulong Guild = 195198580724727810;
+        /// ID for Aus/NZ furries
+        internal static ulong Guild = 311366698538369025;
 
     }
 
