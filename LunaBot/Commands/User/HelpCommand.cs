@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿//WILL FIX LATER
+
+/*
+using System.Collections.Generic;
 using System.Linq;
 using Discord.WebSocket;
-using LunaBot.Database;
 using System.Threading.Tasks;
 
 namespace LunaBot.Commands
@@ -72,3 +74,4 @@ namespace LunaBot.Commands
         }
     }
 }
+*/

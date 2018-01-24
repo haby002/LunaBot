@@ -1,7 +1,8 @@
-﻿using System;
+﻿//WILL FIX LATER
+/*
+using System;
 using System.Linq;
 using Discord.WebSocket;
-using LunaBot.Database;
 using System.Collections.Generic;
 using Discord.Rest;
 using Discord.Rpc;
@@ -25,7 +26,7 @@ namespace LunaBot.Commands
                 var guildChannels = channel.Guild.TextChannels;
                 foreach(SocketTextChannel ch in guildChannels)
                 {
-                    if (/*ch.Name.Contains("room-") || */ch.Name.Contains("void-") || ch.Name.Contains("intro-"))
+                    if (ch.Name.Contains("void-") || ch.Name.Contains("intro-"))
                     {
                         Logger.Verbose("system", $"Found: {ch.Name}");
                         await ch.DeleteAsync();
@@ -87,3 +88,4 @@ namespace LunaBot.Commands
         }
     }
 }
+*/
