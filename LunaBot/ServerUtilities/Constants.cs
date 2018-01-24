@@ -13,17 +13,26 @@ namespace LunaBot.ServerUtilities
         /// <summary>
         /// Owners of the FR server
         /// </summary>
-        internal static ulong[] Owners =
+        internal static ulong[] Mods =
         {
-            123470919535427584,
-            201934665961963520,
-            196558107520794624
+            //Doodles
+            285606103243554816,
+            //Rand
+            353124842540761089,
+            //FireFlash
+            92466867364433920,
+            //Jason
+            263506098768707595,
+            //Hellblaze Wolf
+            180623286747660288,
+            //Zelenyy (TEMP FOR TESTING)
+            284861595396472834
         };
 
         /// <summary>
         /// The bot's ID
         /// </summary>
-        internal static ulong Luna = 333285108402487297;
+        internal static ulong Luna = 404589463549771777;
 
     }
 
@@ -32,7 +41,7 @@ namespace LunaBot.ServerUtilities
         /// <summary>
         /// FR lobby channel. Main channel
         /// </summary>
-        internal static ulong Lobby = 308306400717832192;
+        internal static ulong Lobby = 404734064759668736;
 
         /// <summary>
         /// Channel for error reporting and status reports
@@ -43,10 +52,8 @@ namespace LunaBot.ServerUtilities
 
     internal static class Guilds
     {
-        /// <summary>
-        /// FR guild
-        /// </summary>
-        internal static ulong Guild = 195198580724727810;
+        /// ID for Aus/NZ furries
+        internal static ulong Guild = 311366698538369025;
 
     }
 

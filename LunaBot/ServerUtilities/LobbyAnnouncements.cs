@@ -12,13 +12,14 @@ namespace LunaBot.ServerUtilities
         {
             "I'm up! I'm up... *yawn*",
             "```css\n#System (Ready)\n```",
+            ":eyes:",
             "Totally did not just wake up...",
             "Someone called?",
             "And the moon rises!",
-            "Thou has awoken me from slumber!",
-            "OwO",
-            "Yes?",
-            "Whatever it was, wasn't me!"
+            "Thou has awoken from thou slumber!",
+            "*Its ya ~~boi~~ girl*",
+            "I'm back bi***es!",
+            "OwO"
         };
 
 
