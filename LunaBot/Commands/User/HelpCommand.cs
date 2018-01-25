@@ -4,6 +4,7 @@ using System.Linq;
 using Discord.WebSocket;
 using LunaBot.Database;
 using System.Threading.Tasks;
+using System;
 
 namespace LunaBot.Commands
 {
@@ -69,9 +70,17 @@ namespace LunaBot.Commands
                     commands.Add("Descend to Admin:\n" +
                         "```!descend <user>```");
                 }
-
-                await author.SendMessageAsync(string.Join('\n', commands));
-                await message.Channel.SendMessageAsync($"<@{author.Id}>, I have sent you your available commands.");
+                try
+                {
+                    await author.SendMessageAsync(string.Join('\n', commands));
+                    await message.Channel.SendMessageAsync($"<@{author.Id}>, I have sent you your available commands.");
+                }
+                catch (Exception e)
+                {
+                    await message.Channel.SendMessageAsync($"Sorry, <@{author.Id}>, you have blocked me from sending you DMs so here are your commands.");
+                    await message.Channel.SendMessageAsync(string.Join('\n', commands));
+                    Logger.Warning(message.Author.Username, "Blocks DMs, Sending commands to server.");
+                }
             }
         }
     }
