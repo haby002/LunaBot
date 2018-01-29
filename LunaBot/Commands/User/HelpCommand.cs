@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using Discord;
+using System.Collections.Generic;
 using System.Linq;
 using Discord.WebSocket;
 using LunaBot.Database;
 using System.Threading.Tasks;
+using System;
 
 namespace LunaBot.Commands
 {
@@ -12,7 +14,9 @@ namespace LunaBot.Commands
         public override async Task ProcessAsync(SocketMessage message, string[] parameters)
         {
             List<string> commands = new List<string>();
-            
+
+            SocketUser author = message.Author;
+
             using (DiscordContext db = new DiscordContext())
             {
                 User user = db.Users.FirstOrDefault(x => x.DiscordId == message.Author.Id);
@@ -66,8 +70,17 @@ namespace LunaBot.Commands
                     commands.Add("Descend to Admin:\n" +
                         "```!descend <user>```");
                 }
-
-                await message.Channel.SendMessageAsync(string.Join('\n', commands));
+                try
+                {
+                    await author.SendMessageAsync(string.Join('\n', commands));
+                    await message.Channel.SendMessageAsync($"<@{author.Id}>, I have sent you your available commands.");
+                }
+                catch (Exception e)
+                {
+                    await message.Channel.SendMessageAsync($"Sorry, <@{author.Id}>, you have blocked me from sending you DMs so here are your commands.");
+                    await message.Channel.SendMessageAsync(string.Join('\n', commands));
+                    Logger.Warning(message.Author.Username, "Blocks DMs, Sending commands to server.");
+                }
             }
         }
     }
