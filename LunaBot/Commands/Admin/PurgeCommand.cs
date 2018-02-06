@@ -57,7 +57,7 @@ namespace LunaBot.Commands
                     {
                         Thread.Sleep(500);
                         Logger.Info("System", $"Purging:  {u.Username} for inactivity.");
-                        await KickUserHelper.KickAsync(channel as SocketTextChannel, u);
+                        // await KickUserHelper.KickAsync(channel as SocketTextChannel, u);
                     }
                     else if(databaseUser.TutorialFinished == false)
                     {
