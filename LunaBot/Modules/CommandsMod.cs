@@ -1,4 +1,4 @@
-﻿using Discord;
+using Discord;
 using Discord.Commands;
 using Discord.Rest;
 using Discord.WebSocket;
@@ -15,7 +15,7 @@ namespace LunaBot.Modules
 {
     class CommandsMod : ModuleBase<SocketCommandContext>
     {
-        [Command("set")]
+        [Command("set", RunMode = RunMode.Async)]
         public async Task SetAsync(IUser requestedUser, string attribute, [Remainder] string content)
         {
             using (DiscordContext db = new DiscordContext())
@@ -216,7 +216,7 @@ namespace LunaBot.Modules
             }
         }
 
-        [Command("registerall")]
+        [Command("registerall", RunMode = RunMode.Async)]
         public async Task RegisterAllAsync()
         {
             using (DiscordContext db = new DiscordContext())
@@ -266,7 +266,7 @@ namespace LunaBot.Modules
             }
         }
 
-        [Command("forcetut")]
+        [Command("forcetut", RunMode = RunMode.Async)]
         public async Task ForcetutAsync(IUser requestedUser)
         {
             // User to forcetut
@@ -318,7 +318,7 @@ namespace LunaBot.Modules
             }
         }
 
-        [Command("timeout")]
+        [Command("timeout", RunMode = RunMode.Async)]
         public async Task TimeoutAsync(IUser requestedUser, int time)
         {
             using (DiscordContext db = new DiscordContext())
