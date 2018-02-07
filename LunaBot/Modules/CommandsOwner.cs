@@ -1,4 +1,4 @@
-﻿using Discord;
+using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 using LunaBot.Database;
@@ -13,7 +13,7 @@ namespace LunaBot.Modules
 {
     class CommandsOwner : ModuleBase<SocketCommandContext>
     {
-        [Command("ascend")]
+        [Command("ascend", RunMode = RunMode.Async)]
         public async Task AscendAsync(IUser requestedUser)
         {
             SocketUser author = Context.User;
@@ -62,7 +62,7 @@ namespace LunaBot.Modules
             }
         }
 
-        [Command("descend")]
+        [Command("descend", RunMode = RunMode.Async)]
         public async Task DescendAsync(IUser requestedUser)
         {
             SocketUser author = Context.User;
