@@ -1,4 +1,4 @@
-﻿using Discord;
+using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 using LunaBot.Database;
@@ -11,7 +11,7 @@ namespace LunaBot.Modules
 {
     class SetAttributes : ModuleBase<SocketCommandContext>
     {
-        [Command("desc")]
+        [Command("desc", RunMode = RunMode.Async)]
         public async Task SetDescAsync([Remainder]string parameter)
         {
             using (DiscordContext db = new DiscordContext())
@@ -39,7 +39,7 @@ namespace LunaBot.Modules
             }
         }
 
-        [Command("age")]
+        [Command("age", RunMode = RunMode.Async)]
         public async Task SetAgeAsync(int age)
         {
             using (DiscordContext db = new DiscordContext())
@@ -66,7 +66,7 @@ namespace LunaBot.Modules
             }
         }
 
-        [Command("fur")]
+        [Command("fur", RunMode = RunMode.Async)]
         public async Task SetFurAsync([Remainder] string parameter)
         {
             using (DiscordContext db = new DiscordContext())
@@ -93,7 +93,7 @@ namespace LunaBot.Modules
             }
         }
 
-        [Command("g")]
+        [Command("g", RunMode = RunMode.Async)]
         public async Task SetGenderAsync(string parameter)
         {
             User.Genders gender = Utilities.StringToGender(parameter);
@@ -157,7 +157,7 @@ namespace LunaBot.Modules
             }
         }
 
-        [Command("o")]
+        [Command("o", RunMode = RunMode.Async)]
         public async Task SetOrientationAsync(string parameter)
         {
             User.Orientation orientation = Utilities.StringToOrientation(parameter);
@@ -223,7 +223,7 @@ namespace LunaBot.Modules
             }
         }
 
-        [Command("ref")]
+        [Command("ref", RunMode = RunMode.Async)]
         public async Task SetRefAsync([Remainder] string parameter)
         {
             using (DiscordContext db = new DiscordContext())
@@ -250,7 +250,7 @@ namespace LunaBot.Modules
             }
         }
 
-        [Command("sfw")]
+        [Command("sfw", RunMode = RunMode.Async)]
         public async Task SetSfwAsync(string parameter)
         {
             SocketUser author = Context.User;
@@ -299,7 +299,7 @@ namespace LunaBot.Modules
             }
         }
 
-        [Command("monk")]
+        [Command("monk", RunMode = RunMode.Async)]
         public async Task SetMonkAsync(string parameter)
         {
             SocketUser author = Context.User;
