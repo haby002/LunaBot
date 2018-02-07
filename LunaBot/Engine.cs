@@ -128,8 +128,9 @@ namespace LunaBot
             }
             else
             {
-                context = new SocketCommandContext(_client, message);
-                result = await _getAttributes.ExecuteAsync(context, argPos, _services);
+                await ProcessXpAsync(message);
+
+                return;
             }
 
             if (!result.IsSuccess)
