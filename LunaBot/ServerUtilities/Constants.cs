@@ -90,7 +90,7 @@ namespace LunaBot.ServerUtilities
         internal static string Other = "other";
 
         // Moderation Roles
-        internal static string Mute = "Mute";
+        internal static string Mute = "Muted";
 
     }
 
