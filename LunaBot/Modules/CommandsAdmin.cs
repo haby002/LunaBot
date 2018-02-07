@@ -1,4 +1,4 @@
-﻿using Discord;
+using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 using LunaBot.Database;
@@ -13,7 +13,7 @@ namespace LunaBot.Modules
 {
     class CommandsAdmin : ModuleBase<SocketCommandContext>
     {
-        [Command("demote")]
+        [Command("demote", RunMode = RunMode.Async)]
         public async Task DemoteAsync(IUser requestedUser)
         {
             SocketUser author = Context.User;
@@ -62,7 +62,7 @@ namespace LunaBot.Modules
             }
         }
 
-        [Command("promote")]
+        [Command("promote", RunMode = RunMode.Async)]
         public async Task PromoteAsync(IUser requestedUser)
         {
             SocketUser author = Context.User;
@@ -111,7 +111,7 @@ namespace LunaBot.Modules
             }
         }
 
-        [Command("purge")]
+        [Command("purge", RunMode = RunMode.Async)]
         public async Task PurgeAsync()
         {
             SocketUser author = Context.User;
