@@ -1,10 +1,12 @@
 ﻿using Discord;
+using Discord.Commands;
 using Discord.Rest;
 using Discord.WebSocket;
 using LunaBot.Commands;
 using LunaBot.Database;
 using LunaBot.ServerUtilities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,7 +26,11 @@ namespace LunaBot
         
         public static SocketGuildUser luna;
 
-        private readonly DiscordSocketClient client;
+        private readonly DiscordSocketClient _client;
+        private CommandService _commands;
+        private CommandService _setAttributes;
+        private CommandService _getAttributes;
+        private IServiceProvider _services;
 
         public SocketGuild guild;
         public SocketTextChannel lobby;
@@ -33,7 +39,11 @@ namespace LunaBot
 
         public Engine()
         {
-            this.client = new DiscordSocketClient();
+            this._client = new DiscordSocketClient();
+            this._commands = new CommandService();
+            this._setAttributes = new CommandService();
+            this._getAttributes = new CommandService();
+
             this.commandDictionary = new Dictionary<string, BaseCommand>();
             this.aliasDictionary = new Dictionary<string, string>();
             this.messageTimestamps = new Dictionary<ulong, DateTime>();
@@ -41,22 +51,89 @@ namespace LunaBot
 
         public async Task RunAsync()
         {
-            client.Log += Logger.LogAsync;
+            _client.Log += Logger.LogAsync;
 
             string token = SecretStrings.token;
-            await client.LoginAsync(TokenType.Bot, token);
-            await client.StartAsync();
             
-            client.MessageReceived += MessageReceivedAsync;
-            client.UserJoined += UserJoinedAsync;
-            client.UserLeft += UserLeftAsync;
-            client.UserBanned += UserBannedAsync;
-            
-            this.RegisterCommands();
+            _services = new ServiceCollection()
+                .AddSingleton(_client)
+                .AddSingleton(_commands)
+                .AddSingleton(_setAttributes)
+                .AddSingleton(_getAttributes)
+                .BuildServiceProvider();
 
-            client.Ready += ReadyAsync;
+            await InstallCommandsAsync();
+            
+            await _client.LoginAsync(TokenType.Bot, token);
+            await _client.StartAsync();
+            
+            //_client.MessageReceived += MessageReceivedAsync;
+            _client.UserJoined += UserJoinedAsync;
+            _client.UserLeft += UserLeftAsync;
+            _client.UserBanned += UserBannedAsync;
+            
+            //this.RegisterCommands();
+
+            _client.Ready += ReadyAsync;
 
             await Task.Delay(-1);
+        }
+
+        private async Task InstallCommandsAsync()
+        {
+            _client.MessageReceived += HandleCommandsAsync;
+
+            await _commands.AddModuleAsync<LunaBot.Modules.Commands>();
+            await _setAttributes.AddModuleAsync<Modules.SetAttributes>();
+            await _getAttributes.AddModuleAsync<Modules.GetAttributes>();
+        }
+
+        private async Task HandleCommandsAsync(SocketMessage messageParam)
+        {
+            SocketUserMessage message = messageParam as SocketUserMessage;
+
+            if (message == null)
+                return;
+
+            await message.LogAsync(LogSeverity.Verbose).ConfigureAwait(false);
+
+            if (await ProcessMessageAsync(message))
+                return;
+
+            int argPos = 1;
+            string messageText = message.Content;
+            SocketCommandContext context;
+            IResult result;
+
+            // Tutorial messages that cannot run commands.
+            if (message.Channel.Name.Contains("intro"))
+            {
+                ProcessTutorialMessaageAsync(message).ConfigureAwait(false);
+                return;
+            }
+            else if (messageText.StartsWith("!"))
+            {
+                context = new SocketCommandContext(_client, message);
+                result = await _commands.ExecuteAsync(context, argPos, _services);
+            }
+            else if (messageText.StartsWith("+"))
+            {
+                context = new SocketCommandContext(_client, message);
+                result = await _setAttributes.ExecuteAsync(context, argPos, _services);
+            }
+            else if (messageText.StartsWith("?"))
+            {
+                context = new SocketCommandContext(_client, message);
+                result = await _getAttributes.ExecuteAsync(context, argPos, _services);
+            }
+            else
+            {
+                context = new SocketCommandContext(_client, message);
+                result = await _getAttributes.ExecuteAsync(context, argPos, _services);
+            }
+
+            if (!result.IsSuccess)
+                Logger.Warning("CommandHandler", result.ErrorReason);
         }
 
         /// <summary>
@@ -81,9 +158,9 @@ namespace LunaBot
         
         private async Task ReadyAsync()
         {
-            guild = client.GetGuild(Guilds.Guild);
+            guild = _client.GetGuild(Guilds.Guild);
             await guild.DownloadUsersAsync();
-            lobby = client.GetChannel(Channels.Lobby) as SocketTextChannel;
+            lobby = _client.GetChannel(Channels.Lobby) as SocketTextChannel;
             roles = guild.Roles.ToList();
             report = new BotReporting(guild.GetChannel(Channels.BotLogs));
             luna = guild.GetUser(UserIds.Luna);
@@ -123,7 +200,7 @@ namespace LunaBot
             }
 
             // Set Playing flavor text
-            await client.SetGameAsync("!help");
+            await _client.SetGameAsync("!help");
 
             await LobbyAnnouncements.StartupConfirmationAsync(lobby);
 
@@ -135,7 +212,7 @@ namespace LunaBot
         {
             Logger.Info("System", $"User {user.Username}<{user.Id}> joined the server.");
             if (lobby == null)
-                lobby = client.GetChannel(343193171431522304) as SocketTextChannel;
+                lobby = _client.GetChannel(343193171431522304) as SocketTextChannel;
 
             RegisterCommand registerCommand = new RegisterCommand();
 
@@ -181,65 +258,7 @@ namespace LunaBot
             await lobby.SendMessageAsync($"My :banhammer: to your face!");
             Logger.Info("System", $"User {user.Username}<@{user.Id}> has been banned from the server.");
         }
-
-        private async Task MessageReceivedAsync(SocketMessage message)
-        {
-            try
-            {
-                // Log Message
-                await message.LogAsync(LogSeverity.Verbose).ConfigureAwait(false);
-
-                // ignore your own message if you ever manage to do this.
-                if (message.Author.IsBot)
-                {
-                    return;
-                }
-
-                //Anti-raid system
-                if (await ProcessMessageAsync(message))
-                    return;
-
-#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
-                Task.Run(() =>
-                {
-                    // Commands
-                    string messageText = message.Content;
-
-                    // Tutorial messages that cannot run commands.
-                    if (message.Channel.Name.Contains("intro"))
-                    {
-                        ProcessTutorialMessaageAsync(message).ConfigureAwait(false);
-                        return;
-                    }
-                    else if (messageText.StartsWith("!"))
-                    {
-                        ProcessCommandAsync(message).ConfigureAwait(false);
-                    }
-                    else if (messageText.StartsWith("+"))
-                    {
-                        ProcessSetAttributeAsync(message).ConfigureAwait(false);
-                    }
-                    else if (messageText.StartsWith("?"))
-                    {
-                        ProcessGetAttributeAsync(message).ConfigureAwait(false);
-                    }
-                    else
-                    {
-                        ProcessXpAsync(message).ConfigureAwait(false);
-                    }
-                    if (message.Content.Contains("︵ ┻━┻"))
-                        message.Channel.SendMessageAsync($"┬─┬﻿ ノ( ゜-゜ノ) <@{message.Author.Id}>, please respect the furniture.").ConfigureAwait(false);
-                }).ConfigureAwait(false);
-#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
-
-            }
-            catch (Exception e)
-            {
-                e.Log(message);
-            }
-
-        }
-
+        
         private async Task ProcessXpAsync(SocketMessage message)
         {
             using (DiscordContext db = new DiscordContext())
@@ -270,127 +289,7 @@ namespace LunaBot
                 db.SaveChanges();
             }
         }
-
-        private async Task ProcessCommandAsync(SocketMessage message)
-        {
-            // Cut up the message with the relevent parts
-            string messageText = message.Content;
-            string[] commandPts = messageText.Substring(1).Split(new Char[] { ' ' }, 4);
-            string command = commandPts[0].ToLower();
-            List<string> commandParamsList = new List<string>(commandPts);
-            commandParamsList.RemoveAt(0);
-            string[] commandParams = commandParamsList.ToArray();
-
-            if(this.aliasDictionary.ContainsKey(command))
-            {
-                command = this.aliasDictionary[command];
-            }
-
-            if (this.commandDictionary.ContainsKey(command))
-            {
-                Logger.Verbose(
-                    message.Author.Username, 
-                    string.Format(StringTable.RecognizedCommand, command, string.Join(",", commandParams)));
-                try
-                {
-                    await this.commandDictionary[command].ProcessAsync(message, commandParams);
-                }
-                catch (Exception e)
-                {
-                    Logger.Error("system", string.Format("Command failed: {0}", e.Message));
-                    while (e.InnerException != null)
-                    {
-                        e = e.InnerException;
-                        Logger.Error("system", string.Format("Command failed: {0}", e.Message));
-                    }
-
-                    await message.Channel.SendMessageAsync("Command failed. Try using !help for more info.`");
-                }
-
-                return;
-            }
-            else
-            {
-                Logger.Error(message.Author.Username, string.Format(StringTable.UnrecognizedCommand, command));
-            }
-        }
-
-        private async Task ProcessSetAttributeAsync(SocketMessage message)
-        {
-            // Cut up the message with the relevent parts
-            string messageText = message.Content;
-            string[] commandPts = messageText.Substring(1).Split(new Char[] {' '}, 2);
-            string command = commandPts[0].ToLower();
-
-            if (this.aliasDictionary.ContainsKey(command))
-            {
-                command = this.aliasDictionary[command];
-            }
-
-            string content = string.Empty;
-            if(commandPts.Count() > 1)
-            {
-                content = commandPts[1];
-            }
-            else
-            {
-                await message.Channel.SendMessageAsync("I can't set something as nothing, try `+Attribute <Content>`");
-                return;
-            }
-
-            try
-            {
-                await this.commandDictionary["set_" + command].ProcessAsync(message, new[] { content });
-            }
-            catch (Exception e)
-            {
-                Logger.Error("system", string.Format("Command failed: {0}", e.Message));
-                while (e.InnerException != null)
-                {
-                    e = e.InnerException;
-                    Logger.Error("system", string.Format("Command failed: {0}", e.Message));
-                }
-                await message.Channel.SendMessageAsync("Command failed. Try using !help for more info.`");
-            }
-        }
-
-        private async Task ProcessGetAttributeAsync(SocketMessage message)
-        {
-            // Cut up the message with the relevent parts
-            string messageText = message.Content;
-            string[] commandPts = messageText.Substring(1).Split(new Char[] { ' ' }, 2);
-            string command = "get_" + commandPts[0].ToLower();
-            
-            if (command.Equals("?"))
-               return;
-
-            if (this.aliasDictionary.ContainsKey(command))
-            {
-                command = this.aliasDictionary[command];
-            }
-
-            string user = message.Author.Id.ToString();
-            SocketUser mentionedUser = message.MentionedUsers.FirstOrDefault();
-            if (mentionedUser != null)
-            {
-                user = mentionedUser.Id.ToString();
-            }
-            try
-            {
-                await this.commandDictionary[command].ProcessAsync(message, new[] { command, user });
-            }
-            catch (Exception e)
-            {
-                Logger.Error("system", string.Format("Command failed: {0}", e.Message));
-                while (e.InnerException != null)
-                {
-                    e = e.InnerException;
-                    Logger.Error("system", string.Format("Command failed: {0}", e.Message));
-                }
-                await message.Channel.SendMessageAsync("Command failed. Try using !help for more info.`");
-            }
-        }
-
+        
         /// <summary>
         /// Processes messages and prevents raids by checking the newest message sent by the user and deletes if it doesn't pass criteria
         /// </summary>
