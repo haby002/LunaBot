@@ -83,7 +83,11 @@ namespace LunaBot
         {
             _client.MessageReceived += HandleCommandsAsync;
 
-            await _commands.AddModuleAsync<LunaBot.Modules.Commands>();
+            await _commands.AddModuleAsync<Modules.CommandsUser>();
+            await _commands.AddModuleAsync<Modules.CommandsMod>();
+            await _commands.AddModuleAsync<Modules.CommandsAdmin>();
+            await _commands.AddModuleAsync<Modules.CommandsOwner>();
+
             await _setAttributes.AddModuleAsync<Modules.SetAttributes>();
             await _getAttributes.AddModuleAsync<Modules.GetAttributes>();
         }
@@ -108,7 +112,7 @@ namespace LunaBot
             // Tutorial messages that cannot run commands.
             if (message.Channel.Name.Contains("intro"))
             {
-                ProcessTutorialMessaageAsync(message).ConfigureAwait(false);
+                await ProcessTutorialMessaageAsync(message).ConfigureAwait(false);
                 return;
             }
             else if (messageText.StartsWith("!"))
