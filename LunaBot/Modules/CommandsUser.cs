@@ -1,4 +1,4 @@
-﻿using Discord;
+using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 using LunaBot.Database;
@@ -11,13 +11,13 @@ namespace LunaBot.Modules
 {
     class CommandsUser : ModuleBase<SocketCommandContext>
     {
-        [Command("ping")]
+        [Command("ping", RunMode = RunMode.Async)]
         public async Task PingAsync()
         {
             await ReplyAsync(":ping_pong: Pong!");
         }
 
-        [Command("roll")]
+        [Command("roll", RunMode = RunMode.Async)]
         public async Task RollAsync([Remainder] string parameters)
         {
             string[] rollList = parameters.Split(' ');
@@ -42,7 +42,7 @@ namespace LunaBot.Modules
             }
         }
 
-        [Command("help")]
+        [Command("help", RunMode = RunMode.Async)]
         public async Task HelpAsync()
         {
             List<string> commands = new List<string>();
@@ -115,7 +115,7 @@ namespace LunaBot.Modules
             }
         }
 
-        [Command("snug")]
+        [Command("snug", RunMode = RunMode.Async)]
         public async Task SnugAsync(IUser requestedUser)
         {
             // return if used in the lobby
@@ -166,7 +166,7 @@ namespace LunaBot.Modules
             }
         }
 
-        [Command("action")]
+        [Command("action", RunMode = RunMode.Async)]
         public async Task ActionAsync(string action, IUser requestedUser)
         {
             // return if used in the lobby
