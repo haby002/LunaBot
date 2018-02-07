@@ -2,220 +2,392 @@ using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 using LunaBot.Database;
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace LunaBot.Modules
 {
-    class CommandsUser : ModuleBase<SocketCommandContext>
+    class GetAttributes : ModuleBase<SocketCommandContext>
     {
-        [Command("ping", RunMode = RunMode.Async)]
-        public async Task PingAsync()
+        [Command("desc", RunMode = RunMode.Async)]
+        public async Task GetDescAsync(IUser requestedUser = null)
         {
-            await ReplyAsync(":ping_pong: Pong!");
-        }
-
-        [Command("roll", RunMode = RunMode.Async)]
-        public async Task RollAsync([Remainder] string parameters)
-        {
-            string[] rollList = parameters.Split(' ');
-            foreach (string p in rollList)
+            using (DiscordContext db = new DiscordContext())
             {
-                string[] rolePts = p.Split('d');
-                if (rolePts.Count() != 2)
+                ulong userId;
+
+                if (requestedUser != null)
                 {
-                    throw new ArgumentException("Invalid roll, roll must be of the form #d#");
+                    userId = requestedUser.Id;
+                }
+                else
+                {
+                    userId = Context.User.Id;
                 }
 
-                int dice = Convert.ToInt32(rolePts[0]);
-                int diceType = Convert.ToInt32(rolePts[1]);
-                int sum = 0;
-                Random rand = new Random();
-                for (int i = 0; i < dice; i++)
+                User user = db.Users.FirstOrDefault(x => x.DiscordId == userId);
+                if (user != null)
                 {
-                    sum += (rand.Next() % diceType) + 1;
+                    if (user.Description == null)
+                    {
+                        Logger.Warning(Context.User.Username, $"user <@{userId}> description not found.");
+                        await ReplyAsync($"<@{userId}> has no description. *Mysterious...*");
+
+                        return;
+                    }
+
+                    Logger.Verbose(Context.User.Username, $"Looking for {userId} description.");
+                    await ReplyAsync($"<@{userId}> describes themselve as: {user.Description}");
+
+                    return;
                 }
 
-                await ReplyAsync(string.Format("I rolled {0} and got {1}", p, sum));
+                Logger.Verbose(Context.User.Username, $"Failed to find user: {userId}");
+                await ReplyAsync($"Failed to find user: `{Context.User.Username}`");
+
             }
         }
 
-        [Command("help", RunMode = RunMode.Async)]
-        public async Task HelpAsync()
+        [Command("age", RunMode = RunMode.Async)]
+        public async Task GetAgeAsync(IUser requestedUser = null)
         {
-            List<string> commands = new List<string>();
-            SocketUser author = Context.User;
+            using (DiscordContext db = new DiscordContext())
+            {
+                ulong userId;
+
+                if (requestedUser != null)
+                {
+                    userId = requestedUser.Id;
+                }
+                else
+                {
+                    userId = Context.User.Id;
+                }
+
+                User user = db.Users.FirstOrDefault(x => x.DiscordId == userId);
+                if (user != null)
+                {
+                    if (user.Age <= 0)
+                    {
+                        if (user.Age == 0)
+                            Logger.Warning(Context.User.Username, $"user <@{userId}> age not set.");
+
+                        await ReplyAsync($"<@{userId}> is ageless");
+
+                        return;
+                    }
+
+                    Logger.Verbose(Context.User.Username, $"Looking for {userId} description.");
+                    await ReplyAsync($"<@{userId}> is {user.Age} years old.");
+
+                    return;
+                }
+
+                Logger.Verbose(Context.User.Username, $"Failed to find user: {userId}");
+                await ReplyAsync($"Failed to find user: `{Context.User.Username}`");
+
+            }
+        }
+
+        [Command("fur", RunMode = RunMode.Async)]
+        public async Task GetFurAsync(IUser requestedUser = null)
+        {
+            using (DiscordContext db = new DiscordContext())
+            {
+                ulong userId;
+
+                if (requestedUser != null)
+                {
+                    userId = requestedUser.Id;
+                }
+                else
+                {
+                    userId = Context.User.Id;
+                }
+
+                User user = db.Users.FirstOrDefault(x => x.DiscordId == userId);
+                if (user != null)
+                {
+                    if (user.Description == null)
+                    {
+                        Logger.Warning(Context.User.Username, $"user <@{userId}> fur not found.");
+                        await ReplyAsync($"<@{userId}> has no fur. Maybe they're invisible...");
+
+                        return;
+                    }
+
+                    Logger.Verbose(Context.User.Username, $"Looking for {userId} fur.");
+                    await ReplyAsync($"<@{userId}> is a {user.Fur}");
+
+                    return;
+                }
+
+                Logger.Verbose(Context.User.Username, $"Failed to find user: {userId}");
+                await ReplyAsync($"Failed to find user: `{Context.User.Username}`");
+
+            }
+        }
+
+        [Command("lvl", RunMode = RunMode.Async)]
+        public async Task GetLvlAsync(IUser requestedUser = null)
+        {
+            using (DiscordContext db = new DiscordContext())
+            {
+                ulong userId;
+
+                if (requestedUser != null)
+                {
+                    userId = requestedUser.Id;
+                }
+                else
+                {
+                    userId = Context.User.Id;
+                }
+
+                User user = db.Users.FirstOrDefault(x => x.DiscordId == userId);
+                if (user != null)
+                {
+                    double percentage = user.Xp / (user.Level * 15);
+                    string progressbar = "";
+
+                    for (int i = 0; i < percentage; i++)
+                    {
+                        progressbar += ("▰");
+                    }
+
+                    while (progressbar.Count() < 10)
+                    {
+                        progressbar += "▱";
+                    }
+
+                    Logger.Warning(Context.User.Username, $"looking for user <@{userId}> level.");
+                    await ReplyAsync($"<@{userId}> is level {user.Level}\n" +
+                        progressbar + " " + (percentage * 10) + "%");
+
+                    return;
+                }
+
+                Logger.Verbose(Context.User.Username, $"Failed to find user: {userId}");
+                await ReplyAsync($"Failed to find user: `{Context.User.Username}`");
+
+            }
+        }
+
+        [Command("xp", RunMode = RunMode.Async)]
+        public async Task GetXpAsync(IUser requestedUser = null)
+        {
+            using (DiscordContext db = new DiscordContext())
+            {
+                ulong userId;
+
+                if (requestedUser != null)
+                {
+                    userId = requestedUser.Id;
+                }
+                else
+                {
+                    userId = Context.User.Id;
+                }
+
+                User user = db.Users.FirstOrDefault(x => x.DiscordId == userId);
+                if (user != null)
+                {
+                    double percentage = user.Xp / (user.Level * 15);
+                    string progressbar = "";
+
+                    for (int i = 0; i < percentage; i++)
+                    {
+                        progressbar += ("▰");
+                    }
+
+                    while (progressbar.Count() < 10)
+                    {
+                        progressbar += "▱";
+                    }
+
+                    Logger.Warning(Context.User.Username, $"looking for user <@{userId}> xp.");
+                    await ReplyAsync($"<@{userId}> has {user.Xp}/{user.Level * 150} xp\n" +
+                        progressbar + " " + (percentage * 10) + "%");
+
+                    return;
+                }
+
+                Logger.Verbose(Context.User.Username, $"Failed to find user: {userId}");
+                await ReplyAsync($"Failed to find user: `{Context.User.Username}`");
+
+            }
+        }
+
+
+        [Command("ref", RunMode = RunMode.Async)]
+        public async Task GetRefAsync(IUser requestedUser = null)
+        {
+            using (DiscordContext db = new DiscordContext())
+            {
+                ulong userId;
+
+                if (requestedUser != null)
+                {
+                    userId = requestedUser.Id;
+                }
+                else
+                {
+                    userId = Context.User.Id;
+                }
+
+                User user = db.Users.FirstOrDefault(x => x.DiscordId == userId);
+                if (user != null)
+                {
+                    if (user.Description == null)
+                    {
+                        Logger.Warning(Context.User.Username, $"user <@{userId}> ref not found.");
+                        await ReplyAsync($"<@{userId}> has no ref. use this one instead -> :wolf:");
+
+                        return;
+                    }
+
+                    Logger.Verbose(Context.User.Username, $"Looking for {userId} ref.");
+                    await ReplyAsync($"<@{userId}> ref: {user.Ref}");
+
+                    return;
+                }
+
+                Logger.Verbose(Context.User.Username, $"Failed to find user: {userId}");
+                await ReplyAsync($"Failed to find user: `{Context.User.Username}`");
+
+            }
+        }
+
+        [Command("o", RunMode = RunMode.Async)]
+        public async Task GetOrientationAsync(IUser requestedUser = null)
+        {
+            using (DiscordContext db = new DiscordContext())
+            {
+                ulong userId;
+
+                if (requestedUser != null)
+                {
+                    userId = requestedUser.Id;
+                }
+                else
+                {
+                    userId = Context.User.Id;
+                }
+
+                User user = db.Users.FirstOrDefault(x => x.DiscordId == userId);
+                if (user != null)
+                {
+                    Logger.Warning(Context.User.Username, $"looking for user @<{userId}> orientation.");
+                    await ReplyAsync($"<@{userId}> is {user.orientation.ToString().ToLower()}");
+
+                    return;
+                }
+
+                Logger.Verbose(Context.User.Username, $"Failed to find user: {userId}");
+                await ReplyAsync($"Failed to find user: `{Context.User.Username}`");
+
+            }
+        }
+
+        [Command("g", RunMode = RunMode.Async)]
+        public async Task GetGenderAsync(IUser requestedUser = null)
+        {
 
             using (DiscordContext db = new DiscordContext())
             {
-                User user = db.Users.FirstOrDefault(x => x.DiscordId == author.Id);
+                ulong userId;
 
-                commands.Add("**User Commands**");
-
-                commands.Add("See your own attributes:\n" +
-                    "```?<desc, g, o, a, f, ref, snug>```");
-                commands.Add("See others attributes:\n" +
-                    "```?<desc, g, o, a, f, ref, snug> <user>```");
-                commands.Add("Set your attributes:\n" +
-                    "```+<desc, g, o, a, f, ref>```");
-                commands.Add("Get Help:\n" +
-                    "```!help```");
-                commands.Add("Roll:\n" +
-                    "```!roll <number>d<size> <number>d<size> ...etc```");
-                commands.Add("Snug:\n" +
-                    "```!snug <user>```");
-                commands.Add("Change SFW and Monk modes:\n" +
-                    "```+<sfw, monk> <yes, no>```");
-                commands.Add("Use an action:\n" +
-                    "```!action <action> <user>```");
-
-                if (user.Privilege > User.Privileges.User)
+                if (requestedUser != null)
                 {
-                    commands.Add("**Moderator Commands**");
-                    commands.Add("Set others attributes:\n" +
-                        "```!set <user> <attribute> <content>```");
-                    commands.Add("Force Tutorial:\n" +
-                        "```!forcetut <user>```");
+                    userId = requestedUser.Id;
+                }
+                else
+                {
+                    userId = Context.User.Id;
                 }
 
-                if (user.Privilege > User.Privileges.Moderator)
+                User user = db.Users.FirstOrDefault(x => x.DiscordId == userId);
+                if (user != null)
                 {
-                    commands.Add("**Admin Commands**");
-                    commands.Add("Promote to Moderator:\n" +
-                        "```!promote <user>```");
-                    commands.Add("Demote to User:\n" +
-                        "```!demote <user>```");
-                    commands.Add("Delete intro rooms:\n" +
-                        "```!fixrooms```");
-                    commands.Add("Purge users:\n" +
-                        "```!purge```");
+                    Logger.Warning(Context.User.Username, $"looking for user @<{userId}> gender.");
+                    await ReplyAsync($"<@{userId}> is {user.Gender.ToString().ToLower()}");
+
+                    return;
                 }
 
-                if (user.Privilege > User.Privileges.Admin)
+                Logger.Verbose(Context.User.Username, $"Failed to find user: {userId}");
+                await ReplyAsync($"Failed to find user: `{Context.User.Username}`");
+
+            }
+        }
+
+        [Command("priv", RunMode = RunMode.Async)]
+        public async Task GetPrivAsync(IUser requestedUser = null)
+        {
+            using (DiscordContext db = new DiscordContext())
+            {
+                ulong userId;
+
+                if (requestedUser != null)
                 {
-                    commands.Add("**Owner Commands**");
-                    commands.Add("Ascend to Admin:\n" +
-                        "```!ascend <user>```");
-                    commands.Add("Descend to Admin:\n" +
-                        "```!descend <user>```");
+                    userId = requestedUser.Id;
                 }
-                try
+                else
                 {
-                    await author.SendMessageAsync(string.Join('\n', commands));
-                    await ReplyAsync($"<@{author.Id}>, I have sent you your available commands.");
+                    userId = Context.User.Id;
                 }
-                catch (Exception e)
+
+                User user = db.Users.FirstOrDefault(x => x.DiscordId == userId);
+                if (user != null)
                 {
-                    await ReplyAsync($"Sorry, <@{author.Id}>, you have blocked me from sending you DMs so here are your commands.");
-                    await ReplyAsync(string.Join('\n', commands));
-                    Logger.Warning(author.Username, "Blocks DMs, Sending commands to server.");
+                    Logger.Verbose(Context.User.Username, $"Looking for {userId} privilege.");
+                    if (user.Privilege == User.Privileges.Admin || user.Privilege == User.Privileges.Owner)
+                    {
+                        await ReplyAsync($"<@{userId}> is an `{user.Privilege.ToString()}`");
+
+                        return;
+                    }
+
+                    await ReplyAsync($"<@{userId}> is a `{user.Privilege.ToString()}`");
+
+                    return;
                 }
+
+                Logger.Verbose(Context.User.Username, $"Failed to find user: {userId}");
+                await ReplyAsync($"Failed to find user: `{Context.User.Username}`");
+
             }
         }
 
         [Command("snug", RunMode = RunMode.Async)]
-        public async Task SnugAsync(IUser requestedUser)
+        public async Task GetSnugAsync(IUser requestedUser = null)
         {
-            // return if used in the lobby
-            if (Context.Channel.Id == 308306400717832192)
-                return;
-
             using (DiscordContext db = new DiscordContext())
             {
-                SocketUser author = Context.User;
-                ulong userId = author.Id;
-                ulong userId2 = requestedUser.Id;
+                ulong userId;
 
-                Random random = new Random();
-                int rand = random.Next(0, 2);
+                if (requestedUser != null)
+                {
+                    userId = requestedUser.Id;
+                }
+                else
+                {
+                    userId = Context.User.Id;
+                }
 
                 User user = db.Users.FirstOrDefault(x => x.DiscordId == userId);
-                User user2 = db.Users.FirstOrDefault(x => x.DiscordId == userId2);
-
-                Logger.Info(author.Username, " is snugging.");
-
-                if (userId == userId2)
+                if (user != null)
                 {
-                    await ReplyAsync($"<@{userId}> is now snuggling by themselves. A bit lonely but no-one is judging.");
-                }
-                else
-                {
-                    user.SnugG = user.SnugG + 1;
-                    user2.SnugR = user.SnugR + 1;
-                    db.SaveChanges();
+                    Logger.Verbose(Context.User.Username, $"Looking for snug counts.");
 
-                    if (rand == 0)
-                    {
-                        await ReplyAsync($"<@{userId}> is now snuggling with <@{userId2}>!");
-                    }
-                    else if (rand == 1)
-                    {
-                        await ReplyAsync($"Aww, look at <@{userId}> and <@{userId2}> snuggling!");
-                    }
-                    else if (rand == 2)
-                    {
-                        await ReplyAsync($"*<@{userId}> grabs <@{userId2}> and they start to snuggle.*");
-                    }
-                    else
-                    {
-                        Logger.Warning(author.Username, "Tried to snug with someone and it failed somehow.");
-                    }
-                }
-            }
-        }
+                    await ReplyAsync($"<@{userId}> has given {user.SnugG} snugs and have recieved {user.SnugR} snugs.");
 
-        [Command("action", RunMode = RunMode.Async)]
-        public async Task ActionAsync(string action, IUser requestedUser)
-        {
-            // return if used in the lobby
-            if (Context.Channel.Id == 308306400717832192)
-                return;
-
-            SocketUser author = Context.User;
-            ulong userId = author.Id;
-            ulong userId2;
-
-            action = action.ToLower();
-
-            userId2 = requestedUser.Id;
-
-            Logger.Info(author.Username, " is using an action.");
-
-            if (userId == userId2)
-            {
-                await ReplyAsync($"<@{userId}>. :facepalm: look, you can't just use an action on yourself ok?");
-            }
-            else
-            {
-                if (action == "bap")
-                {
-                    await ReplyAsync($"<@{userId}> :newspaper2: <@{userId2}>");
+                    return;
                 }
-                else if (action == "smooch")
-                {
-                    await ReplyAsync($":heart: <@{userId}> :kissing_heart: <@{userId2}> :heart:");
-                }
-                else if (action == "boop")
-                {
-                    await ReplyAsync($"<@{userId}> :point_right: <@{userId2}> *Boop*.");
-                }
-                else if (action == "punch")
-                {
-                    await ReplyAsync($"<@{userId}> :right_facing_fist: :boom: <@{userId2}>");
-                }
-                else
-                {
-                    await ReplyAsync($"Sorry <@{userId}> that was not an action or it was misspelt...\n" +
-                                                            $"Avaliable actions:\n" +
-                                                            $"```\n" +
-                                                            $"Bap\n" +
-                                                            $"Smooch\n" +
-                                                            $"Boop\n" +
-                                                            $"Punch\n" +
-                                                            $"```");
-                }
+
+                Logger.Warning(Context.User.Username, $"Failed to find user: {userId}");
+                await ReplyAsync($"Failed to find user: `{Context.User.Username}`");
+
             }
         }
     }
