@@ -357,8 +357,9 @@ namespace LunaBot
 
             // Make room only visible to new user and admins
             await introRoom.AddPermissionOverwriteAsync(user, Permissions.userPerm);
-            //await introRoom.AddPermissionOverwriteAsync(everyone, removeAllPerm);
-            //await introRoom.AddPermissionOverwriteAsync(luna, lunaTutPerm);
+            //await introRoom.AddPermissionOverwriteAsync(everyone, Permissions.removeAllPerm);
+            //await introRoom.AddPermissionOverwriteAsync(luna, Permissions.adminPerm);
+            //await introRoom.AddPermissionOverwriteAsync(guild.GetRole(411752657863049228), Permissions.adminPerm);
 
             // Register user in database
             RegisterCommand registerCommand = new RegisterCommand();
@@ -704,9 +705,14 @@ namespace LunaBot
 
                         await message.Channel.SendMessageAsync("This channel will self-destruct in 2 minutes");
 
-                        Thread.Sleep(120000);
+                        new Thread(() =>
+                        {
+                            Thread.CurrentThread.IsBackground = true;
 
-                        await (message.Channel as SocketTextChannel).DeleteAsync();
+                            Thread.Sleep(120000);
+                            (message.Channel as SocketTextChannel).DeleteAsync();
+
+                        }).Start();
                         
                     }
                     else if (message.Content.ToLower() == "no" || message.Content.ToLower() == "n")
