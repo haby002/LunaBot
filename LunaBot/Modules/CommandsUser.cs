@@ -79,6 +79,8 @@ namespace LunaBot.Modules
                         "These can be nick, desc, age, gender, orientation, fur, xp, level, ref, or forcetut");
                     commands.Add("Force Tutorial:\n" +
                         "```!forcetut <user>```");
+                    commands.Add("Mute/Timeout:\n" +
+                        "```!timeout <user> <time>```");
                 }
 
                 if (user.Privilege >= User.Privileges.Admin)
@@ -111,7 +113,7 @@ namespace LunaBot.Modules
                     await author.SendMessageAsync(string.Join('\n', commands));
                     await ReplyAsync($"<@{author.Id}>, I have sent you your available commands.");
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     await ReplyAsync($"Sorry, <@{author.Id}>, you have blocked me from sending you DMs so here are your commands.");
                     await ReplyAsync(string.Join('\n', commands));
