@@ -71,16 +71,17 @@ namespace LunaBot.Modules
                 commands.Add("Use an action:\n" +
                     "```!action <action> <user>```");
 
-                if (user.Privilege > User.Privileges.User)
+                if (user.Privilege >= User.Privileges.Moderator)
                 {
                     commands.Add("**Moderator Commands**");
                     commands.Add("Set others attributes:\n" +
-                        "```!set <user> <attribute> <content>```");
+                        "```!set <user> <attribute> <content>```\n" +
+                        "These can be nick, desc, age, gender, orientation, fur, xp, level, ref, or forcetut");
                     commands.Add("Force Tutorial:\n" +
                         "```!forcetut <user>```");
                 }
 
-                if (user.Privilege > User.Privileges.Moderator)
+                if (user.Privilege >= User.Privileges.Admin)
                 {
                     commands.Add("**Admin Commands**");
                     commands.Add("Promote to Moderator:\n" +
@@ -89,11 +90,15 @@ namespace LunaBot.Modules
                         "```!demote <user>```");
                     commands.Add("Delete intro rooms:\n" +
                         "```!fixrooms```");
+                    commands.Add("Ban user:\n" +
+                        "```!ban <user> <reason>```");
+                    commands.Add("Kick users:\n" +
+                        "```!kick <user>```");
                     commands.Add("Purge users:\n" +
                         "```!purge```");
                 }
 
-                if (user.Privilege > User.Privileges.Admin)
+                if (user.Privilege >= User.Privileges.Owner)
                 {
                     commands.Add("**Owner Commands**");
                     commands.Add("Ascend to Admin:\n" +
