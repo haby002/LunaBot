@@ -537,10 +537,10 @@ namespace LunaBot
                 else if (databaseUser.Fur == null)
                 {
                     databaseUser.Fur = message.Content;
-                    Logger.Verbose(user.Username, $"Setting fur to {message.Content}");
+                    Logger.Verbose(user.Username, $"Setting sona to {message.Content}");
 
                     await message.Channel.GetMessagesAsync().ForEachAsync((x) => { foreach (var f in x) { f.DeleteAsync(); } });
-                    await message.Channel.SendMessageAsync($"Fur set to `{message.Content}`. Next lets set your `age`.\n" +
+                    await message.Channel.SendMessageAsync($"Sona set to `{message.Content}`. Next lets set your `age`.\n" +
                         $"If you don't want to show your age you can just type `no`");
                 }
                 else if (databaseUser.Age == 0)
