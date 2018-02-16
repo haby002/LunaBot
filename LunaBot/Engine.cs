@@ -531,7 +531,7 @@ namespace LunaBot
 
                     await message.Channel.GetMessagesAsync().ForEachAsync((x) => { foreach (var f in x) { f.DeleteAsync(); } });
                     await message.Channel.SendMessageAsync($"Alright, you are now `{message.Content}`. \n" +
-                        $"Next lets set your `fur`.\n" +
+                        $"Next lets set your `sona`.\n" +
                         $"Species, type, color, etc..");
                 }
                 else if (databaseUser.Fur == null)
