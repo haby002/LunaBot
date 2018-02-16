@@ -39,6 +39,13 @@ namespace LunaBot.Modules
                 {
                     switch (attribute.ToLower())
                     {
+                        case "nick":
+                        case "nickname":
+                            SocketGuildUser gUser = (SocketGuildUser)requestedUser;
+                            await gUser.ModifyAsync(u => u.Nickname = content);
+                            user.Nickname = content;
+                            Logger.Info(author.Username, $"Changed user <@{ requestedUser.Id}> 's description from {user.Description} to {content}");
+                            break;
                         case "description":
                         case "desc":
                             Logger.Info(author.Username, $"Changed user <@{requestedUser.Id}>'s description from {user.Description} to {content}");
@@ -194,6 +201,17 @@ namespace LunaBot.Modules
                                 await ReplyAsync($"Error: Ref sheet must be a link. You gave: `{content}`");
                             }
                             break;
+                        case "forcetut":
+                            bool value;
+                            if(!Boolean.TryParse(content, out value))
+                            {
+                                await ReplyAsync($"Could not set `forcetut` to {value}. It can be either `true` or `false`");
+                                Logger.Info(author.Username, $"Failed to change user <@{requestedUser.Id}> 's tutorial state from {user.TutorialFinished} to {value}");
+                                return;
+                            }
+                            user.TutorialFinished = value;
+                            Logger.Info(author.Username, $"Changed user <@{requestedUser.Id}> 's tutorial state from {user.TutorialFinished} to {value}");
+                            break;
                         default:
                             Logger.Warning(author.Username, "Failed database set command.");
                             await ReplyAsync($"Error: Could not find attribute {attribute}. Check you syntax!");
@@ -336,5 +354,28 @@ namespace LunaBot.Modules
 
             }
         }
+
+        [Command("intervention", RunMode = RunMode.Async)]
+        public async Task IntervetionAsync(IUser requestedUser, int time)
+        {
+            using (DiscordContext db = new DiscordContext())
+            {
+                ulong userId = Context.User.Id;
+                if (db.Users.Where(x => x.DiscordId == userId).FirstOrDefault().Privilege == 0)
+                {
+                    Logger.Warning(Context.User.Username, "Failed intervention command. Not enough privileges.");
+                    await ReplyAsync("You're not a moderator, go away.");
+
+                    return;
+                }
+
+                // Limbo user
+                // Create room
+                // Add permissions (user and staff)
+                // un-limbo person
+
+            }
+        }
+
     }
 }
