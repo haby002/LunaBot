@@ -111,6 +111,30 @@ namespace LunaBot.Modules
             }
         }
 
+        [Command("ban", RunMode = RunMode.Async)]
+        public async Task BanAsync(IUser requestedUser, [Remainder] string reason = null)
+        {
+            using (DiscordContext db = new DiscordContext())
+            {
+                ulong userId = Context.User.Id;
+                if (db.Users.Where(x => x.DiscordId == userId).FirstOrDefault().Privilege < User.Privileges.Admin)
+                {
+                    Logger.Warning(Context.User.Username, "User tried to use ascend command and failed");
+                    await ReplyAsync($"Looks like someone wants to *get* a ban...");
+                    return;
+                }
+
+                if (reason == null)
+                {
+                    await Context.Guild.AddBanAsync(requestedUser, 0, $"Banned by {Context.User.Username}: no reason given");
+
+                    return;
+                }
+
+                await Context.Guild.AddBanAsync(requestedUser, 0, $"Banned by {Context.User.Username}: {reason}");
+            }
+        }
+
         [Command("purge", RunMode = RunMode.Async)]
         public async Task PurgeAsync()
         {
