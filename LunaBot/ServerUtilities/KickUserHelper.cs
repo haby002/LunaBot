@@ -12,11 +12,13 @@ namespace LunaBot.ServerUtilities
         private static IList<string> kickFlavorText = new List<string>()
         {
             "{0} bit the dust",
-            "lol gay, kicked {0}",
             "Critical hit! {0} has been kicked!",
             "I cast purge on {0}! Begone demon!",
-            "2 to the 1 to the 3, {0} has been kicked and you can't disagree!",
-            "The last of the {0} has been ~~slain~~ kicked."
+            "The last of the {0} has been ~~slain~~ kicked.",
+            "No more of thee {0}!",
+            "Find some other server to bother {0}",
+            "Boot to {0}'s face!",
+            "Bye bye {0}"
         };
 
 
