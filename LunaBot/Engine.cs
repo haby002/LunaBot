@@ -227,12 +227,12 @@ namespace LunaBot
                 ulong userId = user.Id;
                 if (db.Users.Where(x => x.DiscordId == userId).FirstOrDefault().TutorialFinished)
                 {
-                    Logger.Info("System", $"{user.Username}<@{user.Id}> already finished the tutorial. Announcing in lobby.");
+                    Logger.Verbose("System", $"{user.Username}<@{user.Id}> already finished the tutorial. Announcing in lobby.");
                     await lobby.SendMessageAsync($"Welcome back <@{user.Id}> to the server!");
                 }
                 else
                 {
-                    Logger.Info("System", $"Placing {user.Username}<@{user.Id}> through tutorial...");
+                    Logger.Verbose("System", $"Placing {user.Username}<@{user.Id}> through tutorial...");
 #pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
                     Task.Run(() =>
                     {
@@ -253,7 +253,7 @@ namespace LunaBot
                 if (u.TutorialFinished)
                 {
                     Logger.Info("System", $"User {user.Username}<@{user.Id}> has left the server.");
-                    await lobby.SendMessageAsync($"<@{user.Id}> has left the server :wave:").ConfigureAwait(false);
+                    await lobby.SendMessageAsync($"{user.Username} has left the server :wave:").ConfigureAwait(false);
                 }
             }
         }

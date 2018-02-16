@@ -27,7 +27,7 @@ namespace LunaBot
                     Console.ForegroundColor = ConsoleColor.White;
                     break;
                 case LogSeverity.Verbose:
-                    Console.ForegroundColor = ConsoleColor.Gray;
+                    Console.ForegroundColor = ConsoleColor.DarkGray;
                     break;
                 case LogSeverity.Debug:
                     Console.ForegroundColor = ConsoleColor.Green;
