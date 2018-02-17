@@ -118,5 +118,30 @@ namespace LunaBot.Modules
 
         }
 
+        [Command("printColors", RunMode = RunMode.Async)]
+        public async Task PrintColorsAsync()
+        {
+            EmbedBuilder eb = new EmbedBuilder();
+            eb.WithColor(Color.DarkerGrey); eb.WithTitle("DarkerGrey"); await ReplyAsync("", false, eb);
+            eb.WithColor(Color.DarkGrey); eb.WithTitle("DarkGrey"); await ReplyAsync("", false, eb);
+            eb.WithColor(Color.LighterGrey); eb.WithTitle("LighterGrey"); await ReplyAsync("", false, eb);
+            eb.WithColor(Color.LightGrey); eb.WithTitle("LightGrey"); await ReplyAsync("", false, eb);
+            eb.WithColor(Color.DarkRed); eb.WithTitle("DarkRed"); await ReplyAsync("", false, eb);
+            eb.WithColor(Color.Red); eb.WithTitle("Red"); await ReplyAsync("", false, eb);
+            eb.WithColor(Color.Orange); eb.WithTitle("Orange"); await ReplyAsync("", false, eb);
+            eb.WithColor(Color.LightOrange); eb.WithTitle("LightOrange"); await ReplyAsync("", false, eb);
+            eb.WithColor(Color.Gold); eb.WithTitle("Gold"); await ReplyAsync("", false, eb);
+            eb.WithColor(Color.DarkOrange); eb.WithTitle("DarkOrange"); await ReplyAsync("", false, eb);
+            eb.WithColor(Color.Magenta); eb.WithTitle("Magenta"); await ReplyAsync("", false, eb);
+            eb.WithColor(Color.DarkMagenta); eb.WithTitle("DarkMagenta"); await ReplyAsync("", false, eb);
+            eb.WithColor(Color.DarkTeal); eb.WithTitle("DarkTeal"); await ReplyAsync("", false, eb);
+            eb.WithColor(Color.Green); eb.WithTitle("Green"); await ReplyAsync("", false, eb);
+            eb.WithColor(Color.DarkGreen); eb.WithTitle("DarkGreen"); await ReplyAsync("", false, eb);
+            eb.WithColor(Color.Teal); eb.WithTitle("Teal"); await ReplyAsync("", false, eb);
+            eb.WithColor(Color.DarkBlue); eb.WithTitle("DarkBlue"); await ReplyAsync("", false, eb);
+            eb.WithColor(Color.Purple); eb.WithTitle("Purple"); await ReplyAsync("", false, eb);
+            eb.WithColor(Color.DarkPurple); eb.WithTitle("DarkPurple"); await ReplyAsync("", false, eb);
+            eb.WithColor(Color.Blue); eb.WithTitle("Blue"); await ReplyAsync("", false, eb);
+        }
     }
 }
