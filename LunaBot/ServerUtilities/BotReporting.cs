@@ -14,7 +14,7 @@ namespace LunaBot.ServerUtilities
             reportChannel = rc;
         }
 
-        public static async Task ReportAsync(Color color, SocketTextChannel channel, string title, string content, string footerText, SocketUser originUser, SocketUser targetUser = null)
+        public static async Task ReportAsync(Color color, SocketTextChannel channel, string title, string content, SocketUser originUser, SocketUser targetUser = null, string footerText = null)
         {
             EmbedBuilder eb = new EmbedBuilder();
 
@@ -29,14 +29,17 @@ namespace LunaBot.ServerUtilities
 
             eb.WithCurrentTimestamp();
 
-            EmbedFooterBuilder footer = new EmbedFooterBuilder();
-            //footer.WithIconUrl("URL to footer image");
-            footer.WithText(footerText);
-            eb.WithFooter(footer);
+            if (footerText != null)
+            {
+                EmbedFooterBuilder footer = new EmbedFooterBuilder();
+                //footer.WithIconUrl("URL to footer image");
+                footer.WithText(footerText);
+                eb.WithFooter(footer);
+            }
 
             //eb.WithTitle("Title");
             eb.WithThumbnailUrl(targetUser.GetAvatarUrl());
-            eb.WithUrl("http://EBUrlshow.com");
+            //eb.WithUrl("http://EBUrlshow.com");
             
             await reportChannel.SendMessageAsync("",false, eb);
         }

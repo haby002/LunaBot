@@ -107,4 +107,25 @@ namespace LunaBot.ServerUtilities
         internal static OverwritePermissions mutePerm = new OverwritePermissions(PermValue.Deny, PermValue.Deny, PermValue.Deny, PermValue.Allow, PermValue.Deny, PermValue.Deny, PermValue.Deny, PermValue.Deny, PermValue.Deny, PermValue.Allow, PermValue.Deny, PermValue.Deny, PermValue.Deny, PermValue.Deny, PermValue.Deny, PermValue.Deny, PermValue.Deny, PermValue.Deny, PermValue.Deny, PermValue.Deny);
 
     }
+
+    internal static class ReportColors
+    {
+        internal static Color userCommand = Color.Purple;
+
+        internal static Color modCommand = Color.DarkMagenta;
+
+        internal static Color adminCommand = Color.Magenta;
+
+        internal static Color ownerCommand = Color.Gold;
+
+        internal static Color userJoined = Color.Teal;
+
+        internal static Color userLeft = Color.Orange;
+
+        internal static Color spamBlock = Color.Red;
+
+        internal static Color userKicked = Color.DarkOrange;
+
+        internal static Color userBanned = Color.DarkRed;
+    }
 }
