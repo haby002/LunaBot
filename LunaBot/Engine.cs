@@ -35,7 +35,6 @@ namespace LunaBot
         public SocketGuild guild;
         public SocketTextChannel lobby;
         public List<SocketRole> roles;
-        public BotReporting report;
 
         public Engine()
         {
@@ -167,7 +166,7 @@ namespace LunaBot
             await guild.DownloadUsersAsync();
             lobby = _client.GetChannel(Channels.Lobby) as SocketTextChannel;
             roles = guild.Roles.ToList();
-            report = new BotReporting(guild.GetChannel(Channels.BotLogs));
+            BotReporting.SetBotReportingChannel(guild.GetTextChannel(Channels.BotLogs));
             luna = guild.GetUser(UserIds.Luna);
 
             // Adding owners

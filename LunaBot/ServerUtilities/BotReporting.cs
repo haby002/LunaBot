@@ -1,24 +1,51 @@
-﻿using Discord.WebSocket;
-using System;
+﻿using Discord;
+using Discord.WebSocket;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace LunaBot.ServerUtilities
 {
-    class BotReporting
+    internal static class BotReporting
     {
-        private SocketChannel reportChannel;
+        private static SocketTextChannel reportChannel;
 
-        public BotReporting(SocketChannel rc)
+        public static void SetBotReportingChannel(SocketTextChannel rc)
         {
             reportChannel = rc;
         }
 
-        public bool report()
+        public static async Task ReportAsync(Color color, SocketTextChannel channel, string title, string content, SocketUser originUser, SocketUser targetUser = null)
         {
-            return true;
+            EmbedBuilder eb = new EmbedBuilder();
+
+            EmbedAuthorBuilder authorBuilder = new EmbedAuthorBuilder();
+            authorBuilder.WithName(title);
+            //authorBuilder.WithUrl("Title URL");
+            authorBuilder.WithIconUrl(originUser.GetAvatarUrl());
+
+            eb.WithAuthor(authorBuilder);
+            eb.WithColor(color);
+            eb.WithDescription(content);
+
+            eb.WithCurrentTimestamp();
+
+            EmbedFooterBuilder footer = new EmbedFooterBuilder();
+            //footer.WithIconUrl("URL to footer image");
+            footer.WithText("footer").Build();
+            eb.WithFooter(footer);
+
+            //eb.WithTitle("Title");
+            eb.WithThumbnailUrl(targetUser.GetAvatarUrl());
+            eb.WithUrl("http://EBUrlshow.com");
+            
+            await reportChannel.SendMessageAsync("",false, eb);
         }
+    }
+
+    enum level
+    {
+        blue,
+        yellow,
+        red
     }
 }
