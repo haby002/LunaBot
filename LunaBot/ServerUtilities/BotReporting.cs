@@ -14,7 +14,7 @@ namespace LunaBot.ServerUtilities
             reportChannel = rc;
         }
 
-        public static async Task ReportAsync(Color color, SocketTextChannel channel, string title, string content, SocketUser originUser, SocketUser targetUser = null)
+        public static async Task ReportAsync(Color color, SocketTextChannel channel, string title, string content, string footerText, SocketUser originUser, SocketUser targetUser = null)
         {
             EmbedBuilder eb = new EmbedBuilder();
 
@@ -31,7 +31,7 @@ namespace LunaBot.ServerUtilities
 
             EmbedFooterBuilder footer = new EmbedFooterBuilder();
             //footer.WithIconUrl("URL to footer image");
-            footer.WithText("footer").Build();
+            footer.WithText(footerText);
             eb.WithFooter(footer);
 
             //eb.WithTitle("Title");
