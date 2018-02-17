@@ -59,6 +59,13 @@ namespace LunaBot.Modules
                 }
 
                 db.SaveChanges();
+
+                await BotReporting.ReportAsync(ReportColors.ownerCommand,
+                        (SocketTextChannel)Context.Channel,
+                        $"Ascend Command by {Context.User.Username}",
+                        $"<@{requestedUser.Id}> has been ascended to admin.",
+                        Context.User,
+                        (SocketUser)requestedUser).ConfigureAwait(false);
             }
         }
 
@@ -114,6 +121,13 @@ namespace LunaBot.Modules
                 }
 
                 db.SaveChanges();
+
+                await BotReporting.ReportAsync(ReportColors.ownerCommand,
+                        (SocketTextChannel)Context.Channel,
+                        $"Descend Command by {Context.User.Username}",
+                        $"<@{requestedUser.Id}> has been descended to user.",
+                        Context.User,
+                        (SocketUser)requestedUser).ConfigureAwait(false);
             }
 
         }
@@ -121,6 +135,9 @@ namespace LunaBot.Modules
         [Command("printColors", RunMode = RunMode.Async)]
         public async Task PrintColorsAsync()
         {
+            if (UserIds.Owners.Contains<ulong>(Context.User.Id))
+                return;
+
             EmbedBuilder eb = new EmbedBuilder();
             eb.WithColor(Color.DarkerGrey); eb.WithTitle("DarkerGrey"); await ReplyAsync("", false, eb);
             eb.WithColor(Color.DarkGrey); eb.WithTitle("DarkGrey"); await ReplyAsync("", false, eb);
@@ -142,6 +159,8 @@ namespace LunaBot.Modules
             eb.WithColor(Color.Purple); eb.WithTitle("Purple"); await ReplyAsync("", false, eb);
             eb.WithColor(Color.DarkPurple); eb.WithTitle("DarkPurple"); await ReplyAsync("", false, eb);
             eb.WithColor(Color.Blue); eb.WithTitle("Blue"); await ReplyAsync("", false, eb);
+
+
         }
     }
 }

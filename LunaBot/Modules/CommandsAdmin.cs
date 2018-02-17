@@ -59,6 +59,13 @@ namespace LunaBot.Modules
                 }
 
                 db.SaveChanges();
+
+                await BotReporting.ReportAsync(ReportColors.adminCommand,
+                        (SocketTextChannel)Context.Channel,
+                        $"Demote Command by {Context.User.Username}",
+                        $"<@{requestedUser.Id}> has been demoted to user.",
+                        Context.User,
+                        (SocketUser)requestedUser).ConfigureAwait(false);
             }
         }
 
@@ -108,6 +115,13 @@ namespace LunaBot.Modules
                 }
 
                 db.SaveChanges();
+
+                await BotReporting.ReportAsync(ReportColors.adminCommand,
+                        (SocketTextChannel)Context.Channel,
+                        $"Promote Command by {Context.User.Username}",
+                        $"<@{requestedUser.Id}> has been promoted to moderator.",
+                        Context.User,
+                        (SocketUser)requestedUser).ConfigureAwait(false);
             }
         }
 
@@ -132,6 +146,13 @@ namespace LunaBot.Modules
                 }
 
                 await Context.Guild.AddBanAsync(requestedUser, 0, $"Banned by {Context.User.Username}: {reason}");
+
+                await BotReporting.ReportAsync(ReportColors.adminCommand,
+                        (SocketTextChannel)Context.Channel,
+                        $"Ban Command by {Context.User.Username}",
+                        $"<@{requestedUser.Id}> has been kicked. Reason: `{reason}`",
+                        Context.User,
+                        (SocketUser)requestedUser).ConfigureAwait(false);
             }
         }
 
@@ -150,6 +171,13 @@ namespace LunaBot.Modules
 
                 await ServerUtilities.KickUserHelper.KickAsync(Context.Channel as SocketTextChannel, requestedUser as SocketGuildUser);
                 Logger.Warning(Context.User.Username, $"Kicked {requestedUser.Username} by {Context.User.Username}");
+
+                await BotReporting.ReportAsync(ReportColors.adminCommand,
+                        (SocketTextChannel)Context.Channel,
+                        $"Kick Command by {Context.User.Username}",
+                        $"<@{requestedUser.Id}> has been kicked",
+                        Context.User,
+                        (SocketUser)requestedUser).ConfigureAwait(false);
             }
         }
 
@@ -165,6 +193,12 @@ namespace LunaBot.Modules
                     Logger.Debug(author.Username, "User attempted pruge command");
                     await ReplyAsync("Do you want to start a riot? ");
                 }
+
+                await BotReporting.ReportAsync(ReportColors.adminCommand,
+                            (SocketTextChannel)Context.Channel,
+                            $"Purge Command by {Context.User.Username}",
+                            $"<@{Context.User.Id}> started a purge.",
+                            Context.User).ConfigureAwait(false);
 
                 SocketGuildChannel channel = Context.Channel as SocketGuildChannel;
                 List<SocketGuildUser> users = channel.Guild.Users.ToList();
@@ -215,6 +249,7 @@ namespace LunaBot.Modules
 
                 await ReplyAsync("Purging finished. You all, are the lucky few...");
             }
+
         }
 
 
