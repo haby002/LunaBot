@@ -221,6 +221,13 @@ namespace LunaBot.Modules
                     db.SaveChanges();
                     Logger.Verbose(author.Username, $"Updated data for {userId}");
 
+                    await BotReporting.ReportAsync(ReportColors.modCommand,
+                        (SocketTextChannel)Context.Channel,
+                        $"Mod Attribute Set by {Context.User.Username}",
+                        $"<@{Context.User.Id}> has changed <@{requestedUser.Id}>'s {attribute} to `{content}` ",
+                        Context.User,
+                        (SocketUser)requestedUser).ConfigureAwait(false);
+
                     return;
                 }
 
@@ -281,6 +288,12 @@ namespace LunaBot.Modules
                 await ReplyAsync("Finished registering users.");
                 Logger.Info(author.Username, "Finished registering users.");
 
+                await BotReporting.ReportAsync(ReportColors.modCommand,
+                        (SocketTextChannel)Context.Channel,
+                        $"RegisterAll command by {Context.User.Username}",
+                        $"",
+                        Context.User).ConfigureAwait(false);
+
             }
         }
 
@@ -333,6 +346,13 @@ namespace LunaBot.Modules
                 }).ConfigureAwait(false);
 
                 db.SaveChanges();
+
+                await BotReporting.ReportAsync(ReportColors.modCommand,
+                        (SocketTextChannel)Context.Channel,
+                        $"Forcetut by {Context.User.Username}",
+                        $"<@{Context.User.Id}> has placed <@{requestedUser.Id}> in a tutorial room.",
+                        Context.User,
+                        (SocketUser)requestedUser).ConfigureAwait(false);
             }
         }
 
@@ -351,7 +371,13 @@ namespace LunaBot.Modules
                 }
 
                 await MuteUserHelper.MuteAsync(Context.Channel as SocketTextChannel, requestedUser as SocketGuildUser, time);
-
+                
+                await BotReporting.ReportAsync(ReportColors.modCommand,
+                    (SocketTextChannel)Context.Channel,
+                    $"Timeout command by {Context.User.Username}",
+                    $"<@{Context.User.Id}> has muted <@{requestedUser.Id}> for `{time}` seconds.",
+                    Context.User,
+                    (SocketUser)requestedUser).ConfigureAwait(false);
             }
         }
 
@@ -373,6 +399,13 @@ namespace LunaBot.Modules
                 // Create room
                 // Add permissions (user and staff)
                 // un-limbo person
+
+                await BotReporting.ReportAsync(ReportColors.modCommand,
+                        (SocketTextChannel)Context.Channel,
+                        $"Intervention command by {Context.User.Username}",
+                        $"<@{Context.User.Id}> placed <@{requestedUser.Id}> in an intervention.",
+                        Context.User,
+                        (SocketUser)requestedUser).ConfigureAwait(false);
 
             }
         }
