@@ -232,15 +232,18 @@ namespace LunaBot
                 else
                 {
                     Logger.Verbose("System", $"Placing {user.Username}<@{user.Id}> through tutorial...");
-#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
-                    Task.Run(() =>
-                    {
-                        StartTutorialAsync(user as SocketGuildUser).ConfigureAwait(false);
-                    });
-#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+                    await StartTutorialAsync(user as SocketGuildUser).ConfigureAwait(false);
+
                 }
             }
-            
+
+            await BotReporting.ReportAsync(ReportColors.userJoined,
+                        channel : null,
+                        title : "User Joined",
+                        content : $"<@{user.Id}> has joined the server.",
+                        originUser : luna,
+                        targetUser : user).ConfigureAwait(false);
+
         }
 
         private async Task UserLeftAsync(SocketUser user)
@@ -255,12 +258,26 @@ namespace LunaBot
                     await lobby.SendMessageAsync($"{user.Username} has left the server :wave:").ConfigureAwait(false);
                 }
             }
+
+            await BotReporting.ReportAsync(ReportColors.userLeft,
+                       channel: null,
+                       title: "User Left",
+                       content: $"<@{user.Id}> has left the server.",
+                       originUser: luna,
+                       targetUser: user).ConfigureAwait(false);
         }
 
         private async Task UserBannedAsync(SocketUser user, SocketGuild guild)
         {
             await lobby.SendMessageAsync($"My hammer to your face!");
             Logger.Info("System", $"User {user.Username}<@{user.Id}> has been banned from the server.");
+
+            await BotReporting.ReportAsync(ReportColors.userBanned,
+                       channel: null,
+                       title: "User Banned",
+                       content: $"<@{user.Id}> has been banned.",
+                       originUser: luna,
+                       targetUser: user).ConfigureAwait(false);
         }
         
         private async Task ProcessXpAsync(SocketMessage message)
@@ -379,12 +396,16 @@ namespace LunaBot
 
         private async Task ProcessTutorialMessaageAsync(SocketMessage message)
         {
+            // Ignore Luna
             // Ignore tutorial finished people -
             // Find what step they are on
             // Order is Nickname, Gender, Age, Fur,Description, Ref
             // process response
             //  -> ask next question and fill in data
             // !-> ask to provide a correct answer
+            if (message.Author == luna)
+                return;
+
             using (DiscordContext db = new DiscordContext())
             {
                 SocketGuildUser user = message.Author as SocketGuildUser;
