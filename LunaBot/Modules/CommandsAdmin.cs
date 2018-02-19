@@ -35,7 +35,7 @@ namespace LunaBot.Modules
                 {
                     if ((int)user.Privilege == (int)User.Privileges.User)
                     {
-                        Logger.Info(author.Id.ToString(), $"User <@{author.Id}> isn't a mod.");
+                        Logger.Info(author.Id.ToString(), $"User <@{requestedUser.Id}> isn't a mod.");
                         await ReplyAsync($"<@{author.Id}> isn't a `moddlet`.");
 
                         return;
