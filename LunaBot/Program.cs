@@ -12,7 +12,9 @@ namespace LunaBot
         // Start in an async context
         static void Main(string[] args)
         {
+#pragma warning disable VSTHRD002 // Avoid problematic synchronous waits
             new Engine().RunAsync().GetAwaiter().GetResult();
+#pragma warning restore VSTHRD002 // Avoid problematic synchronous waits
 
         }
     }
