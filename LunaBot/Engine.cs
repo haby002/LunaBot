@@ -594,6 +594,12 @@ namespace LunaBot
                 {
                     if (int.TryParse(message.Content, out var age))
                     {
+                        if(age < 0)
+                        {
+                            await message.Channel.SendMessageAsync("Please only use positive numbers.");
+                            return;
+                        }
+
                         databaseUser.Age = age;
                     }
                     else if (message.Content.ToLower().Equals("no"))
