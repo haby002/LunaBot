@@ -127,5 +127,7 @@ namespace LunaBot.ServerUtilities
         internal static Color userKicked = Color.DarkOrange;
 
         internal static Color userBanned = Color.DarkRed;
+
+        internal static Color exception = Color.Red;
     }
 }

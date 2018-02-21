@@ -108,36 +108,49 @@ namespace LunaBot
             SocketCommandContext context;
             IResult result;
 
-            // Tutorial messages that cannot run commands.
-            if (message.Channel.Name.Contains("intro"))
+            try
             {
-                await ProcessTutorialMessaageAsync(message).ConfigureAwait(false);
-                return;
-            }
-            else if (messageText.StartsWith("!"))
-            {
-                context = new SocketCommandContext(_client, message);
-                result = await _commands.ExecuteAsync(context, argPos, _services);
-            }
-            else if (messageText.StartsWith("+"))
-            {
-                context = new SocketCommandContext(_client, message);
-                result = await _setAttributes.ExecuteAsync(context, argPos, _services);
-            }
-            else if (messageText.StartsWith("?"))
-            {
-                context = new SocketCommandContext(_client, message);
-                result = await _getAttributes.ExecuteAsync(context, argPos, _services);
-            }
-            else
-            {
-                await ProcessXpAsync(message);
+                // Tutorial messages that cannot run commands.
+                if (message.Channel.Name.Contains("intro"))
+                {
+                    await ProcessTutorialMessaageAsync(message).ConfigureAwait(false);
+                    return;
+                }
+                else if (messageText.StartsWith("!"))
+                {
+                    context = new SocketCommandContext(_client, message);
+                    result = await _commands.ExecuteAsync(context, argPos, _services);
+                }
+                else if (messageText.StartsWith("+"))
+                {
+                    context = new SocketCommandContext(_client, message);
+                    result = await _setAttributes.ExecuteAsync(context, argPos, _services);
+                }
+                else if (messageText.StartsWith("?"))
+                {
+                    context = new SocketCommandContext(_client, message);
+                    result = await _getAttributes.ExecuteAsync(context, argPos, _services);
+                }
+                else
+                {
+                    await ProcessXpAsync(message);
 
-                return;
+                    return;
+                }
+
+                if (!result.IsSuccess)
+                    Logger.Warning("CommandHandler", result.ErrorReason);
+
+            }
+            catch(Exception e)
+            {
+                await BotReporting.ReportAsync(ReportColors.exception, 
+                    (SocketTextChannel)message.Channel, 
+                    "Exception encountered while running a command, contact administrator.", 
+                    e.Message + ":\n" + e.InnerException, 
+                    luna);
             }
 
-            if (!result.IsSuccess)
-                Logger.Warning("CommandHandler", result.ErrorReason);
         }
 
         /// <summary>
