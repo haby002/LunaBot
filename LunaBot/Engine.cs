@@ -340,6 +340,20 @@ namespace LunaBot
                     Logger.Info("System", $"User {message.Author.Username}<{message.Author.Id}> is talking too fast. Deleting latest message.");
                     await message.DeleteAsync();
 
+                    await message.Channel.SendMessageAsync($"<@{message.Author.Id}> you are talking too fast, please slow down.");
+
+                    Task.Run(async () =>
+                    {
+                        await BotReporting.ReportAsync(ReportColors.spamBlock, 
+                            (SocketTextChannel)message.Channel, 
+                            "User talking too fast.", 
+                            $"<@{message.Author.Id}>: {message.Content}", 
+                            luna, 
+                            message.Author);
+
+                        // add warn
+                    }).Start();
+
                     return true;
                 }
                 else
