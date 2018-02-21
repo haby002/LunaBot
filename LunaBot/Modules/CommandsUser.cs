@@ -43,33 +43,49 @@ namespace LunaBot.Modules
         }
 
         [Command("help", RunMode = RunMode.Async)]
-        public async Task HelpAsync()
+        public async Task HelpAsync([Remainder] string verboseString)
         {
             List<string> commands = new List<string>();
             SocketUser author = Context.User;
 
             using (DiscordContext db = new DiscordContext())
             {
+                bool verbose = String.Equals(verboseString, "verbose");
                 User user = db.Users.FirstOrDefault(x => x.DiscordId == author.Id);
+                commands.Add("My purpose is to allow you to customize a profile as well as providing moderating tools.\n" +
+                    "For a more in-depth explaination of these commands type `!help verbose`");
 
                 commands.Add("**User Commands**");
 
                 commands.Add("See your own attributes:\n" +
-                    "```?<desc, g, o, a, f, ref, snug>```");
+                    "```?<desc, g, o, age, fur, ref, snug>```");
                 commands.Add("See others attributes:\n" +
-                    "```?<desc, g, o, a, f, ref, snug> <user>```");
+                    "```?<desc, g, o, age, fur, ref, snug> <user>```");
                 commands.Add("Set your attributes:\n" +
-                    "```+<desc, g, o, a, f, ref>```");
+                    "```+<desc, g, o, age, fur, ref>```");
+                if (verbose)
+                    commands.Add("desc = description\n" +
+                        "g = gender\n" +
+                        "o = orientation\n" +
+                        "age = user's age\n" +
+                        "fur = fursona\n" +
+                        "ref = reference sheet");
                 commands.Add("Get Help:\n" +
                     "```!help```");
                 commands.Add("Roll:\n" +
                     "```!roll <number>d<size> <number>d<size> ...etc```");
                 commands.Add("Snug:\n" +
                     "```!snug <user>```");
-                commands.Add("Change SFW and Monk modes:\n" +
+                commands.Add("Change SFW and RP modes:\n" +
                     "```+<sfw, monk> <yes, no>```");
                 commands.Add("Use an action:\n" +
                     "```!action <action> <user>```");
+                if (verbose)
+                    commands.Add("Available actions:\n" +
+                        "snug\n" +
+                        "smooch\n" +
+                        "bap\n" +
+                        "boop\n");
 
                 if (user.Privilege >= User.Privileges.Moderator)
                 {
@@ -80,7 +96,7 @@ namespace LunaBot.Modules
                     commands.Add("Force Tutorial:\n" +
                         "```!forcetut <user>```");
                     commands.Add("Mute/Timeout:\n" +
-                        "```!timeout <user> <time>```");
+                        "```!timeout <user> <minutes>```");
                 }
 
                 if (user.Privilege >= User.Privileges.Admin)
