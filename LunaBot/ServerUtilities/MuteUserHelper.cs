@@ -22,14 +22,14 @@ namespace LunaBot.ServerUtilities
         };
 
 
-        public static async Task MuteAsync(SocketTextChannel channel, SocketGuildUser user, int seconds)
+        public static async Task MuteAsync(SocketTextChannel channel, SocketGuildUser user, int minutes)
         {
             if (user.Id == 333285108402487297)
                 return;
 
             // Logging, telling the user, and announcing in server.
             Logger.Info("System", $"Muting {user.Username}");
-            await user.SendMessageAsync($"You have been muted for {seconds} seconds");
+            await user.SendMessageAsync($"You have been muted for {minutes} minutes");
             Random r = new Random();
             await channel.SendMessageAsync(String.Format(kickFlavorText[r.Next(kickFlavorText.Count)], user.Id));
 
@@ -41,14 +41,12 @@ namespace LunaBot.ServerUtilities
             muteFinder = (SocketRole sr) => { return sr.Name == Roles.Mute; };
             mute = roles.Find(muteFinder);
             await user.AddRoleAsync(mute);
-
-#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+            
             Task.Run(async () =>
             {
-                Thread.Sleep(seconds * 1000);
+                Thread.Sleep(minutes * 1000 * 60);
                 await user.RemoveRoleAsync(mute);
-            });
-#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+            }).Start();
         }
     }
 }

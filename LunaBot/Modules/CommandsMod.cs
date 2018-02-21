@@ -357,7 +357,7 @@ namespace LunaBot.Modules
         }
 
         [Command("timeout", RunMode = RunMode.Async)]
-        public async Task TimeoutAsync(IUser requestedUser, int time)
+        public async Task TimeoutAsync(IUser requestedUser, int minutes)
         {
             using (DiscordContext db = new DiscordContext())
             {
@@ -370,12 +370,12 @@ namespace LunaBot.Modules
                     return;
                 }
 
-                await MuteUserHelper.MuteAsync(Context.Channel as SocketTextChannel, requestedUser as SocketGuildUser, time);
+                await MuteUserHelper.MuteAsync(Context.Channel as SocketTextChannel, requestedUser as SocketGuildUser, minutes);
                 
                 await BotReporting.ReportAsync(ReportColors.modCommand,
                     (SocketTextChannel)Context.Channel,
                     $"Timeout command by {Context.User.Username}",
-                    $"<@{Context.User.Id}> has muted <@{requestedUser.Id}> for `{time}` seconds.",
+                    $"<@{Context.User.Id}> has muted <@{requestedUser.Id}> for `{minutes}` minutes.",
                     Context.User,
                     (SocketUser)requestedUser).ConfigureAwait(false);
             }
