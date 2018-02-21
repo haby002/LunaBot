@@ -2,6 +2,7 @@ using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 using LunaBot.Database;
+using LunaBot.ServerUtilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -96,7 +97,7 @@ namespace LunaBot.Modules
         [Command("g", RunMode = RunMode.Async)]
         public async Task SetGenderAsync(string parameter)
         {
-            User.Genders gender = Utilities.StringToGender(parameter);
+            User.Genders gender = EnumParsers.StringToGender(parameter);
             if (gender == User.Genders.None)
             {
                 await ReplyAsync("Couldn't understand that gender... it can either be\n" +
@@ -160,7 +161,7 @@ namespace LunaBot.Modules
         [Command("o", RunMode = RunMode.Async)]
         public async Task SetOrientationAsync(string parameter)
         {
-            User.Orientation orientation = Utilities.StringToOrientation(parameter);
+            User.Orientation orientation = EnumParsers.StringToOrientation(parameter);
 
             if (orientation == User.Orientation.None)
             {

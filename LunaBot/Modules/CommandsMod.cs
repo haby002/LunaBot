@@ -108,7 +108,7 @@ namespace LunaBot.Modules
                             List<SocketRole> roles = channel.Guild.Roles.ToList();
                             SocketGuildUser discordUser = requestedUser as SocketGuildUser;
 
-                            User.Genders genderEnum = Utilities.StringToGender(content);
+                            User.Genders genderEnum = EnumParsers.StringToGender(content);
                             if (genderEnum == User.Genders.None)
                             {
                                 await ReplyAsync("I'm sorry I couldn't understand your message. Make sure the gender is either male, female, trans-male, trans-female, or other.\n" +
@@ -148,7 +148,7 @@ namespace LunaBot.Modules
                             roles = channel.Guild.Roles.ToList();
                             discordUser = requestedUser as SocketGuildUser;
 
-                            User.Orientation orientationEnum = Utilities.StringToOrientation(content);
+                            User.Orientation orientationEnum = EnumParsers.StringToOrientation(content);
                             if (orientationEnum == User.Orientation.None)
                             {
                                 await ReplyAsync("Couldn't understand that gender... it can either be\n" +

@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LunaBot
+namespace LunaBot.ServerUtilities
 {
-    class Utilities
+    class EnumParsers
     {
         public static User.Genders StringToGender(string gender)
         {
