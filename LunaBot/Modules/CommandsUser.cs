@@ -43,7 +43,7 @@ namespace LunaBot.Modules
         }
 
         [Command("help", RunMode = RunMode.Async)]
-        public async Task HelpAsync([Remainder] string verboseString)
+        public async Task HelpAsync([Remainder] string verboseString = null)
         {
             List<string> commands = new List<string>();
             SocketUser author = Context.User;
