@@ -240,7 +240,7 @@ namespace LunaBot
                 if (db.Users.Where(x => x.DiscordId == userId).FirstOrDefault().TutorialFinished)
                 {
                     Logger.Verbose("System", $"{user.Username}<@{user.Id}> already finished the tutorial. Announcing in lobby.");
-                    await lobby.SendMessageAsync($"Welcome back <@{user.Id}> to the server!");
+                    await lobby.SendMessageAsync($"Welcome <@{user.Id}> back to the server!");
                 }
                 else
                 {
