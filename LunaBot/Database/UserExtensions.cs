@@ -33,6 +33,7 @@ namespace LunaBot.Database
         {
             try
             {
+                user.Nickname = "";
                 user.Age = 0;
                 user.Description = null;
                 user.Fur = null;
