@@ -131,7 +131,7 @@ namespace LunaBot.Modules
                 }
                 catch (Exception)
                 {
-                    await ReplyAsync($"Sorry, <@{author.Id}>, you have blocked me from sending you DMs so here are your commands.");
+                    await ReplyAsync($"Sorry <@{author.Id}>, you have blocked me from sending you DMs so here are your commands.");
                     await ReplyAsync(string.Join('\n', commands));
                     Logger.Warning(author.Username, "Blocks DMs, Sending commands to server.");
                 }
