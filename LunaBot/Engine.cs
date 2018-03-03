@@ -274,6 +274,12 @@ namespace LunaBot
                        targetUser: user).ConfigureAwait(false);
         }
 
+        /// <summary>
+        /// Reports deleted messages in the BotReporting channel
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="channel"></param>
+        /// <returns></returns>
         private async Task MessageDeletedAsync(Cacheable<IMessage, ulong> message, ISocketMessageChannel channel)
         {
             Logger.Info("System", $"User {message.Value.Author.Username} <@{message.Value.Id}> deleted the message: {message.Value.Content}.");
