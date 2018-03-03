@@ -446,7 +446,7 @@ namespace LunaBot
                     return;
                 }
 
-                if (databaseUser.Nickname == null)
+                if (databaseUser.Nickname == null || databaseUser.Nickname == "")
                 {
                     SocketGuildUser guildUser = message.Author as SocketGuildUser;
                     await guildUser.ModifyAsync(n => n.Nickname = message.Content);

@@ -58,6 +58,7 @@ namespace LunaBot.Commands
                 Logger.Verbose("System", $"Creating User {user.Username} Data");
 
                 User newUser = new User();
+                newUser.Nickname = "";
                 newUser.DiscordId = userId;
                 newUser.Level = 1;
                 newUser.LastMessage = DateTime.UtcNow;
