@@ -70,7 +70,8 @@ namespace LunaBot
             _client.UserJoined += UserJoinedAsync;
             _client.UserLeft += UserLeftAsync;
             _client.UserBanned += UserBannedAsync;
-            
+            _client.MessageDeleted += MessageDeletedAsync;
+
             //this.RegisterCommands();
 
             _client.Ready += ReadyAsync;
@@ -152,27 +153,7 @@ namespace LunaBot
             }
 
         }
-
-        /// <summary>
-        /// Registers all commands in LunaBot.Commands namespace
-        /// </summary>
-        private void RegisterCommands()
-        {
-            Type[] commands = Assembly.GetExecutingAssembly().GetTypes().Where(t => String.Equals(t.Namespace, "LunaBot.Commands", StringComparison.Ordinal)).ToArray();
-            commands = commands.Where(x => x.GetCustomAttributes(typeof(LunaBotCommandAttribute)).Any()).ToArray();
-
-            foreach(Type command in commands)
-            {
-                LunaBotCommandAttribute commandAttribute = command.GetCustomAttribute(typeof(LunaBotCommandAttribute)) as LunaBotCommandAttribute;
-                this.commandDictionary[commandAttribute.Name] = Activator.CreateInstance(command) as BaseCommand;
                 
-                foreach(string alias in commandAttribute.Aliases)
-                {
-                    this.aliasDictionary[alias] = commandAttribute.Name;
-                }
-            }
-        }
-        
         private async Task ReadyAsync()
         {
             guild = _client.GetGuild(Guilds.Guild);
@@ -290,6 +271,22 @@ namespace LunaBot
                        title: "User Banned",
                        content: $"<@{user.Id}> has been banned.",
                        originUser: luna,
+                       targetUser: user).ConfigureAwait(false);
+        }
+
+        private async Task MessageDeletedAsync(Cacheable<IMessage, ulong> message, ISocketMessageChannel channel)
+        {
+            Logger.Info("System", $"User {message.Value.Author.Username} <@{message.Value.Id}> deleted the message: {message.Value.Content}.");
+
+            SocketUser user = (SocketUser)message.Value.Author;
+            SocketTextChannel textChannel = (SocketTextChannel)channel;
+
+            await BotReporting.ReportAsync(ReportColors.userCommand,
+                       channel: textChannel,
+                       title: $"{message.Value.Author.Username} deleted message",
+                       content: $"<@{message.Value.Id}> deleted a message in {channel.Name}:\n" +
+                                $"{message.Value.Content}",
+                       originUser: user,
                        targetUser: user).ConfigureAwait(false);
         }
         
