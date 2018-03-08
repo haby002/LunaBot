@@ -130,4 +130,17 @@ namespace LunaBot.ServerUtilities
 
         internal static Color exception = Color.Red;
     }
+
+    internal static class BannedWords
+    {
+        internal static string[] words =
+        {
+            "nigger",
+            "nig",
+            "faggot",
+            "fag",
+            "fagoot",
+            "cunt"
+        };
+    }
 }
