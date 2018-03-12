@@ -221,9 +221,10 @@ namespace LunaBot
                 User databaseUser = db.Users.Where(x => x.DiscordId == userId).FirstOrDefault();
                 if (databaseUser.TutorialFinished)
                 {
-                    await ReestablishUserPreferences(databaseUser, (SocketGuildUser)user);
+                    await ReestablishUserPreferencesAsync(databaseUser, (SocketGuildUser)user);
                     Logger.Verbose("System", $"{user.Username}<@{user.Id}> already finished the tutorial. Announcing in lobby.");
                     await lobby.SendMessageAsync($"Welcome <@{user.Id}> back to the server!");
+                    await lobby.SendMessageAsync("I cannot set SFW or RP roles. Please set these using `+sfw <yes, no>` and `+monk <yes, no>`");
                 }
                 else
                 {
@@ -426,7 +427,7 @@ namespace LunaBot
             
         }
 
-        private async Task ReestablishUserPreferences(User databaseUser, SocketGuildUser user)
+        private async Task ReestablishUserPreferencesAsync(User databaseUser, SocketGuildUser user)
         {
             // Set Gender
             Predicate<SocketRole> genderFinder;
