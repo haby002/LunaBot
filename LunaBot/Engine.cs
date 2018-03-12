@@ -218,8 +218,10 @@ namespace LunaBot
             using (DiscordContext db = new DiscordContext())
             {
                 ulong userId = user.Id;
-                if (db.Users.Where(x => x.DiscordId == userId).FirstOrDefault().TutorialFinished)
+                User databaseUser = db.Users.Where(x => x.DiscordId == userId).FirstOrDefault();
+                if (databaseUser.TutorialFinished)
                 {
+                    await ReestablishUserPreferences(databaseUser, (SocketGuildUser)user);
                     Logger.Verbose("System", $"{user.Username}<@{user.Id}> already finished the tutorial. Announcing in lobby.");
                     await lobby.SendMessageAsync($"Welcome <@{user.Id}> back to the server!");
                 }
@@ -422,6 +424,44 @@ namespace LunaBot
             //RestTextChannel personalRoom = await guild.CreateTextChannelAsync($"room-{user.Id}");
             //await personalRoom.SendMessageAsync("This is your room, you can do whatever you want in here. Try using the !help command to start ;)");
             
+        }
+
+        private async Task ReestablishUserPreferences(User databaseUser, SocketGuildUser user)
+        {
+            // Set Gender
+            Predicate<SocketRole> genderFinder;
+            SocketRole gender;
+
+            genderFinder = (SocketRole sr) => { return sr.Name == databaseUser.Gender.ToString().ToLower(); };
+            gender = roles.Find(genderFinder);
+            if (gender != null)
+            {
+                await user.AddRoleAsync(gender);
+                Logger.Info(user.Username, $"Changed user <@{user.Id}>'s gender to {databaseUser.Gender}");
+            }
+            else
+            {
+                Logger.Error("System", $"Could not find user gender {databaseUser.Gender.ToString().ToString()}");
+            }
+
+            // Set Orientation
+            Predicate<SocketRole> orientationFinder;
+            SocketRole orientation;
+
+            // Remove old role
+            orientationFinder = (SocketRole sr) => { return sr.Name == databaseUser.orientation.ToString().ToLower(); };
+            orientation = roles.Find(orientationFinder);
+            if (orientation != null)
+            {
+                await user.AddRoleAsync(orientation);
+                Logger.Info(user.Username, $"Changed user <@{user.Id}>'s orientation to {databaseUser.orientation.ToString()}");
+            }
+            else
+            {
+                Logger.Error("System", $"Could not find user orientation {databaseUser.orientation.ToString().ToString()}");
+            }
+
+
         }
 
         private async Task ProcessTutorialMessaageAsync(SocketMessage message)
