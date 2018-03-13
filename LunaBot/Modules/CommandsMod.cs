@@ -317,18 +317,40 @@ namespace LunaBot.Modules
 
                 RegisterCommand registerCommand = new RegisterCommand();
                 User user = db.Users.Where(x => x.DiscordId == parsedUserId).FirstOrDefault();
+                
+                // Remove old gender and orientation
+                Predicate<SocketRole> genderFinder = (SocketRole sr) => { return sr.Name == user.Gender.ToString().ToLower(); };
+                SocketRole genderRole = Context.Guild.Roles.ToList().Find(genderFinder);
+                if (genderRole != null)
+                {
+                    await ((SocketGuildUser)requestedUser).RemoveRoleAsync(genderRole);
+                    Logger.Verbose("System", $"found role {genderRole.Name} and removed it.");
+                }
+                else
+                {
+                    Logger.Warning("System", $"Couldn't find role {user.Gender.ToString().ToLower()}.");
+                }
+
+                Predicate<SocketRole> orientationFinder = (SocketRole sr) => { return sr.Name == user.orientation.ToString().ToLower(); };
+                SocketRole orientationRole = Context.Guild.Roles.ToList().Find(orientationFinder);
+                if (orientationRole != null)
+                {
+                    await ((SocketGuildUser)requestedUser).RemoveRoleAsync(orientationRole);
+                    Logger.Verbose("System", $"found role {orientationRole.Name} and removed it.");
+                }
+                else
+                {
+                    Logger.Warning("System", $"Couldn't find role {user.orientation.ToString().ToLower()}.");
+                }
 
                 //Reset database entry for user
                 user.ResetUser();
-
-                // Register user in database
                 registerCommand.manualRegister(discordUser);
 
                 SocketGuildChannel channel = Context.Channel as SocketGuildChannel;
                 IReadOnlyCollection<SocketRole> guildRoles = channel.Guild.Roles;
 
                 SocketRole role = guildRoles.Where(x => x.Name.Equals("Newbie")).FirstOrDefault();
-
                 await channel.Guild.GetUser((ulong)parsedUserId).AddRoleAsync(role);
 
                 // Creat intro room
