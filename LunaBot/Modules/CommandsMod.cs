@@ -441,7 +441,7 @@ namespace LunaBot.Modules
                 if (db.Users.Where(x => x.DiscordId == userId).FirstOrDefault().Privilege < User.Privileges.Moderator)
                 {
                     Logger.Warning(Context.User.Username, "User tried to use ban command and failed");
-                    await ReplyAsync($"Looks like someone wants to *get* a ban. Call an admin will ya?");
+                    await ReplyAsync($"Looks like someone wants to *get* a ban. Call a mod will ya?");
                     return;
                 }
 
@@ -471,12 +471,12 @@ namespace LunaBot.Modules
                 ulong userId = Context.User.Id;
                 if (db.Users.Where(x => x.DiscordId == userId).FirstOrDefault().Privilege < User.Privileges.Moderator)
                 {
-                    Logger.Warning(Context.User.Username, "User tried to use ban command and failed");
-                    await ReplyAsync($"No can do Jonny boy. You need admin for that.");
+                    Logger.Warning(Context.User.Username, "User tried to use kick command and failed");
+                    await ReplyAsync($"No can do Jonny boy. You need moddlet for that.");
                     return;
                 }
 
-                await ServerUtilities.KickUserHelper.KickAsync(Context.Channel as SocketTextChannel, requestedUser as SocketGuildUser);
+                await KickUserHelper.KickAsync(Context.Channel as SocketTextChannel, requestedUser as SocketGuildUser);
                 Logger.Warning(Context.User.Username, $"Kicked {requestedUser.Username} by {Context.User.Username}");
 
                 await BotReporting.ReportAsync(ReportColors.adminCommand,
@@ -485,6 +485,88 @@ namespace LunaBot.Modules
                         $"<@{requestedUser.Id}> has been kicked",
                         Context.User,
                         (SocketUser)requestedUser).ConfigureAwait(false);
+            }
+        }
+
+        [Command("warn", RunMode = RunMode.Async)]
+        public async Task warnAsync(IUser requestedUser)
+        {
+            using(DiscordContext db = new DiscordContext())
+            {
+                ulong userId = Context.User.Id;
+                if(db.Users.Where(x => x.DiscordId == userId).FirstOrDefault().Privilege < User.Privileges.Moderator)
+                {
+                    Logger.Warning(Context.User.Username, "User tried to use warn command and failed");
+                    await ReplyAsync($"You wanna get warned? Cause that's how you get warned.");
+                    return;
+                }
+
+                User databaseUser = db.Users.Where(x => x.DiscordId == requestedUser.Id).FirstOrDefault();
+
+                databaseUser.warnCount++;
+
+                // When a user reaches 5 warns they will be kicked.
+                if (databaseUser.warnCount % 5 == 0)
+                {
+                    await ReplyAsync($"<@{requestedUser.Id}>, we warned you and you didn't listen. Goodbye.");
+                    await KickUserHelper.KickAsync((SocketTextChannel)Context.Channel, (SocketGuildUser)requestedUser);
+                }
+                else
+                {
+                    await ReplyAsync($"<@{requestedUser.Id}> you have been warned. Current: {databaseUser.warnCount}, get 5 and you *will* be kicked.");
+                }
+
+                db.SaveChanges();
+
+                await BotReporting.ReportAsync(ReportColors.modCommand,
+                                            (SocketTextChannel)Context.Channel,
+                                            $"{Context.User.Username} used warn command",
+                                            $"{Context.User.Username} warned {requestedUser.Username} in {Context.Channel.Name}.",
+                                            Context.User,
+                                            (SocketGuildUser)requestedUser,
+                                            $"Mod ID: {Context.User.Id}");
+            }
+        }
+
+        [Command("removeWarn", RunMode = RunMode.Async)]
+        public async Task removeWarnAsync(IUser requestedUser, int amount = 0)
+        {
+            using (DiscordContext db = new DiscordContext())
+            {
+                ulong userId = Context.User.Id;
+                if (db.Users.Where(x => x.DiscordId == userId).FirstOrDefault().Privilege < User.Privileges.Moderator)
+                {
+                    Logger.Warning(Context.User.Username, "User tried to use removeWarn command and failed");
+                    await ReplyAsync($"Tough luck kiddo, you aint got any powers over me.");
+                    return;
+                }
+                if(amount < 0)
+                {
+                    await ReplyAsync($"I can't remove a negative number of warns. You gave me `{amount}`");
+                    return;
+                }
+
+                User databaseUser = db.Users.Where(x => x.DiscordId == requestedUser.Id).FirstOrDefault();
+
+                databaseUser.warnCount = amount == 0 ? databaseUser.warnCount - 1 : databaseUser.warnCount - amount;
+
+                if (databaseUser.warnCount < 0)
+                {
+                    databaseUser.warnCount = 0;
+                }
+
+                await ReplyAsync($"<@{requestedUser.Id}> warnings reduced to: {databaseUser.warnCount}");
+
+
+                await BotReporting.ReportAsync(ReportColors.modCommand,
+                                            (SocketTextChannel)Context.Channel,
+                                            $"{Context.User.Username} used removeWarn command",
+                                            $"{Context.User.Username} set warns for {requestedUser.Username} to {databaseUser.warnCount} in {Context.Channel.Name}.",
+                                            Context.User,
+                                            (SocketGuildUser)requestedUser,
+                                            $"Mod ID: {Context.User.Id}");
+
+                db.SaveChanges();
             }
         }
     }

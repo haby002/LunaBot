@@ -17,6 +17,8 @@ namespace LunaBot.Database
 
         public bool TutorialFinished { get; set; }
 
+        public int warnCount { get; set; }
+
         public int Level { get; set; }
 
         public int Xp { get; set; }
