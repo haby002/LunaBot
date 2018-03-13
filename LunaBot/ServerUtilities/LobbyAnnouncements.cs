@@ -12,9 +12,11 @@ namespace LunaBot.ServerUtilities
         {
             "I'm up! I'm up... *yawn*",
             "```css\n#System (Ready)\n```",
-            "Morning, afternoon, evening?",
             "Spinning engines...",
-            "Someone dinged my bell?"
+            "Another day, another chip",
+            "Luna est super vos..",
+            "Someone dinged my bell?",
+            "Upgrade complete!"
         };
 
 
