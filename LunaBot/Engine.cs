@@ -10,7 +10,6 @@ using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Task = System.Threading.Tasks.Task;
@@ -406,9 +405,6 @@ namespace LunaBot
 
             // Make room only visible to new user and admins
             await introRoom.AddPermissionOverwriteAsync(user, Permissions.userPerm);
-            //await introRoom.AddPermissionOverwriteAsync(everyone, Permissions.removeAllPerm);
-            //await introRoom.AddPermissionOverwriteAsync(luna, Permissions.adminPerm);
-            //await introRoom.AddPermissionOverwriteAsync(guild.GetRole(411752657863049228), Permissions.adminPerm);
 
             // Register user in database
             RegisterCommand registerCommand = new RegisterCommand();
@@ -509,48 +505,19 @@ namespace LunaBot
                 }
                 else if (databaseUser.Gender == User.Genders.None)
                 {
-                    Predicate<SocketRole> genderFinder;
-                    SocketRole gender;
+                    
+                    User.Genders gender = EnumParsers.StringToGender(message.Content);
 
-                    switch (message.Content.ToLower())
+                    if(gender == User.Genders.None)
                     {
-                        case "male":
-                        case "m":
-                            genderFinder = (SocketRole sr) => { return sr.Name == Roles.Male; };
-                            gender = roles.Find(genderFinder);
-                            await user.AddRoleAsync(gender);
-                            databaseUser.Gender = User.Genders.Male;
-                            break;
-                        case "female":
-                        case "f":
-                            genderFinder = (SocketRole sr) => { return sr.Name == Roles.Female; };
-                            gender = roles.Find(genderFinder);
-                            await user.AddRoleAsync(gender);
-                            databaseUser.Gender = User.Genders.Female;
-                            break;
-                        case "other":
-                        case "o":
-                            genderFinder = (SocketRole sr) => { return sr.Name == Roles.Other; };
-                            gender = roles.Find(genderFinder);
-                            await user.AddRoleAsync(gender);
-                            databaseUser.Gender = User.Genders.Other;
-                            break;
-                        case "trans-male":
-                            genderFinder = (SocketRole sr) => { return sr.Name == Roles.TransMale; };
-                            gender = roles.Find(genderFinder);
-                            await user.AddRoleAsync(gender);
-                            databaseUser.Gender = User.Genders.TransMale;
-                            break;
-                        case "trans-female":
-                            genderFinder = (SocketRole sr) => { return sr.Name == Roles.TransFemale; };
-                            gender = roles.Find(genderFinder);
-                            await user.AddRoleAsync(gender);
-                            databaseUser.Gender = User.Genders.TransFemale;
-                            break;
-                        default:
-                            await message.Channel.SendMessageAsync("I'm sorry I couldn't understand your message. Make sure it's either `male`, `female`, `trans-male`, `trans-female`, or `other`.");
-                            return;
+                        await message.Channel.SendMessageAsync("I'm sorry I couldn't understand your message. Make sure it's either `male`, `female`, `trans-male`, `trans-female`, or `other`.");
+                        return;
                     }
+
+                    Predicate<SocketRole> genderFinder = (SocketRole sr) => { return sr.Name == gender.ToString().ToLower(); };
+                    SocketRole genderRole = roles.Find(genderFinder);
+                    await user.AddRoleAsync(genderRole);
+                    databaseUser.Gender = gender;
 
                     Logger.Verbose(user.Username, $"Setting gender to {message.Content}");
 
@@ -567,56 +534,21 @@ namespace LunaBot
                 }
                 else if(databaseUser.orientation == User.Orientation.None)
                 {
-                    Predicate<SocketRole> orientationFinder;
-                    SocketRole orientation;
+                    User.Orientation orientation = EnumParsers.StringToOrientation(message.Content);
 
-                    switch (message.Content.ToLower())
+                    if (orientation == User.Orientation.None)
                     {
-                        case "straight":
-                        case "s":
-                            orientationFinder = (SocketRole sr) => { return sr.Name == Roles.Straight; };
-                            orientation = roles.Find(orientationFinder);
-                            await user.AddRoleAsync(orientation);
-                            databaseUser.orientation = User.Orientation.Straight;
-                            break;
-                        case "gay":
-                        case "g":
-                            orientationFinder = (SocketRole sr) => { return sr.Name == Roles.Gay; };
-                            orientation = roles.Find(orientationFinder);
-                            await user.AddRoleAsync(orientation);
-                            databaseUser.orientation = User.Orientation.Gay;
-                            break;
-                        case "bisexual":
-                        case "bi":
-                            orientationFinder = (SocketRole sr) => { return sr.Name == Roles.Bi; };
-                            orientation = roles.Find(orientationFinder);
-                            await user.AddRoleAsync(orientation);
-                            databaseUser.orientation = User.Orientation.Bi;
-                            break;
-                        case "asexual":
-                            orientationFinder = (SocketRole sr) => { return sr.Name == Roles.Asexual; };
-                            orientation = roles.Find(orientationFinder);
-                            await user.AddRoleAsync(orientation);
-                            databaseUser.orientation = User.Orientation.Asexual;
-                            break;
-                        case "gray-a":
-                            orientationFinder = (SocketRole sr) => { return sr.Name == Roles.GrayA; };
-                            orientation = roles.Find(orientationFinder);
-                            await user.AddRoleAsync(orientation);
-                            databaseUser.orientation = User.Orientation.Gray;
-                            break;
-                        case "pansexual":
-                        case "pan":
-                            orientationFinder = (SocketRole sr) => { return sr.Name == Roles.Pan; };
-                            orientation = roles.Find(orientationFinder);
-                            await user.AddRoleAsync(orientation);
-                            databaseUser.orientation = User.Orientation.Pan;
-                            break;
-                        default:
-                            await message.Channel.SendMessageAsync("Hmm... That's not an orientation I can undestand.\n" +
-                                "Make sure it's either straight, gay, bisexaul, asexual, or gray-a.");
-                            return;
+                        await message.Channel.SendMessageAsync("Hmm... That's not an orientation I can undestand.\n" +
+                                                        "Make sure it's either straight, gay, bisexaul, asexual, or gray-a.");
+                        return;
                     }
+
+                    Predicate<SocketRole> orientationFinder = (SocketRole sr) => { return sr.Name == orientation.ToString().ToLower(); };
+                    SocketRole orientationRole = roles.Find(orientationFinder);
+                    await user.AddRoleAsync(orientationRole);
+                    databaseUser.orientation = orientation;
+
+                    Logger.Verbose(user.Username, $"Setting gender to {message.Content}");
 
                     Logger.Verbose(user.Username, $"Setting orientation to {message.Content}");
 
