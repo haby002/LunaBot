@@ -50,8 +50,8 @@ namespace LunaBot.Database
             None,
             Male,
             Female,
-            TransFemale,
-            TransMale,
+            Trans_Female,
+            Trans_Male,
             Other,
         };
 
@@ -63,7 +63,7 @@ namespace LunaBot.Database
             Bi,
             Asexual,
             Pan,
-            Gray
+            Gray_a
         };
 
         public enum Privileges
