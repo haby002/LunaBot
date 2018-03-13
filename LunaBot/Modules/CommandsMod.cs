@@ -410,5 +410,60 @@ namespace LunaBot.Modules
             }
         }
 
+        [Command("ban", RunMode = RunMode.Async)]
+        public async Task BanAsync(IUser requestedUser, [Remainder] string reason = null)
+        {
+            using (DiscordContext db = new DiscordContext())
+            {
+                ulong userId = Context.User.Id;
+                if (db.Users.Where(x => x.DiscordId == userId).FirstOrDefault().Privilege < User.Privileges.Moderator)
+                {
+                    Logger.Warning(Context.User.Username, "User tried to use ban command and failed");
+                    await ReplyAsync($"Looks like someone wants to *get* a ban. Call an admin will ya?");
+                    return;
+                }
+
+                if (reason == null)
+                {
+                    await Context.Guild.AddBanAsync(requestedUser, 0, $"Banned by {Context.User.Username}: no reason given");
+
+                    return;
+                }
+
+                await Context.Guild.AddBanAsync(requestedUser, 0, $"Banned by {Context.User.Username}: {reason}");
+
+                await BotReporting.ReportAsync(ReportColors.adminCommand,
+                        (SocketTextChannel)Context.Channel,
+                        $"Ban Command by {Context.User.Username}",
+                        $"<@{requestedUser.Id}> has been kicked. Reason: `{reason}`",
+                        Context.User,
+                        (SocketUser)requestedUser).ConfigureAwait(false);
+            }
+        }
+
+        [Command("kick", RunMode = RunMode.Async)]
+        public async Task KickAsync(IUser requestedUser, [Remainder] string reason = null)
+        {
+            using (DiscordContext db = new DiscordContext())
+            {
+                ulong userId = Context.User.Id;
+                if (db.Users.Where(x => x.DiscordId == userId).FirstOrDefault().Privilege < User.Privileges.Moderator)
+                {
+                    Logger.Warning(Context.User.Username, "User tried to use ban command and failed");
+                    await ReplyAsync($"No can do Jonny boy. You need admin for that.");
+                    return;
+                }
+
+                await ServerUtilities.KickUserHelper.KickAsync(Context.Channel as SocketTextChannel, requestedUser as SocketGuildUser);
+                Logger.Warning(Context.User.Username, $"Kicked {requestedUser.Username} by {Context.User.Username}");
+
+                await BotReporting.ReportAsync(ReportColors.adminCommand,
+                        (SocketTextChannel)Context.Channel,
+                        $"Kick Command by {Context.User.Username}",
+                        $"<@{requestedUser.Id}> has been kicked",
+                        Context.User,
+                        (SocketUser)requestedUser).ConfigureAwait(false);
+            }
+        }
     }
 }
