@@ -40,6 +40,18 @@ namespace LunaBot.Modules
             }
         }
 
+        [Command("d", RunMode = RunMode.Async)]
+        public async Task SetDescriptionExtensionAsync([Remainder]string parameter)
+        {
+            await SetDescAsync(parameter);
+        }
+
+        [Command("description", RunMode = RunMode.Async)]
+        public async Task SetDescriptionLongExtensionAsync([Remainder]string parameter)
+        {
+            await SetDescAsync(parameter);
+        }
+
         [Command("age", RunMode = RunMode.Async)]
         public async Task SetAgeAsync(int age)
         {
@@ -67,6 +79,12 @@ namespace LunaBot.Modules
             }
         }
 
+        [Command("a", RunMode = RunMode.Async)]
+        public async Task SetAgeExtensionAsync(int age)
+        {
+            await SetAgeAsync(age);
+        }
+
         [Command("fur", RunMode = RunMode.Async)]
         public async Task SetFurAsync([Remainder] string parameter)
         {
@@ -92,6 +110,12 @@ namespace LunaBot.Modules
                 await ReplyAsync($"Failed to find user: `{author.Username}`");
 
             }
+        }
+
+        [Command("f", RunMode = RunMode.Async)]
+        public async Task SetFurExtensionAsync([Remainder] string parameter)
+        {
+            await SetFurAsync(parameter);
         }
 
         [Command("g", RunMode = RunMode.Async)]
@@ -156,6 +180,12 @@ namespace LunaBot.Modules
                 await ReplyAsync($"Failed to find user: `{author.Username}`");
 
             }
+        }
+        
+        [Command("gender", RunMode = RunMode.Async)]
+        public async Task SetGenderExtensionAsync(string parameter)
+        {
+            await SetGenderAsync(parameter);
         }
 
         [Command("o", RunMode = RunMode.Async)]
@@ -222,6 +252,12 @@ namespace LunaBot.Modules
                 await ReplyAsync($"Failed to find user: `{author.Username}`");
 
             }
+        }
+
+        [Command("orientation", RunMode = RunMode.Async)]
+        public async Task SetOrientationExtensionAsync(string parameter)
+        {
+            await SetOrientationAsync(parameter);
         }
 
         [Command("ref", RunMode = RunMode.Async)]

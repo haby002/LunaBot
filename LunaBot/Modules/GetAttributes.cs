@@ -48,6 +48,12 @@ namespace LunaBot.Modules
             }
         }
 
+        [Command("d", RunMode = RunMode.Async)]
+        public async Task GetDescriptionExtensionAsync(IUser requestedUser = null)
+        {
+            await GetDescAsync(requestedUser);
+        }
+
         [Command("age", RunMode = RunMode.Async)]
         public async Task GetAgeAsync(IUser requestedUser = null)
         {
@@ -89,6 +95,12 @@ namespace LunaBot.Modules
             }
         }
 
+        [Command("a", RunMode = RunMode.Async)]
+        public async Task GetAgeExtensionAsync(IUser requestedUser = null)
+        {
+            await GetAgeAsync(requestedUser);
+        }
+
         [Command("fur", RunMode = RunMode.Async)]
         public async Task GetFurAsync(IUser requestedUser = null)
         {
@@ -126,6 +138,12 @@ namespace LunaBot.Modules
                 await ReplyAsync($"Failed to find user: `{Context.User.Username}`");
 
             }
+        }
+
+        [Command("f", RunMode = RunMode.Async)]
+        public async Task GetFurExtensionAsync(IUser requestedUser = null)
+        {
+            await GetFurAsync(requestedUser);
         }
 
         [Command("lvl", RunMode = RunMode.Async)]
@@ -173,6 +191,12 @@ namespace LunaBot.Modules
             }
         }
 
+        [Command("level", RunMode = RunMode.Async)]
+        public async Task GetLvlExtensionAsync(IUser requestedUser = null)
+        {
+            await GetLvlAsync(requestedUser);
+        }
+
         [Command("xp", RunMode = RunMode.Async)]
         public async Task GetXpAsync(IUser requestedUser = null)
         {
@@ -217,7 +241,6 @@ namespace LunaBot.Modules
 
             }
         }
-
 
         [Command("ref", RunMode = RunMode.Async)]
         public async Task GetRefAsync(IUser requestedUser = null)
@@ -289,6 +312,12 @@ namespace LunaBot.Modules
             }
         }
 
+        [Command("orientation", RunMode = RunMode.Async)]
+        public async Task GetOrientationExtensionAsync(IUser requestedUser = null)
+        {
+            await GetOrientationAsync(requestedUser);
+        }
+
         [Command("g", RunMode = RunMode.Async)]
         public async Task GetGenderAsync(IUser requestedUser = null)
         {
@@ -319,6 +348,12 @@ namespace LunaBot.Modules
                 await ReplyAsync($"Failed to find user: `{Context.User.Username}`");
 
             }
+        }
+
+        [Command("gender", RunMode = RunMode.Async)]
+        public async Task GetGenderExtensionAsync(IUser requestedUser = null)
+        {
+            await GetGenderAsync(requestedUser);
         }
 
         [Command("priv", RunMode = RunMode.Async)]
@@ -389,6 +424,12 @@ namespace LunaBot.Modules
                 await ReplyAsync($"Failed to find user: `{Context.User.Username}`");
 
             }
+        }
+
+        [Command("s", RunMode = RunMode.Async)]
+        public async Task GetSnugExtensionAsync(IUser requestedUser = null)
+        {
+            await GetSnugAsync(requestedUser);
         }
     }
 }
