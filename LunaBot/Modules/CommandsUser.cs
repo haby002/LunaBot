@@ -97,6 +97,10 @@ namespace LunaBot.Modules
                         "```!forcetut <user>```");
                     commands.Add("Mute/Timeout:\n" +
                         "```!timeout <user> <minutes>```");
+                    commands.Add("Ban user:\n" +
+                        "```!ban <user> <reason>```");
+                    commands.Add("Kick users:\n" +
+                        "```!kick <user>```");
                 }
 
                 if (user.Privilege >= User.Privileges.Admin)
@@ -108,10 +112,6 @@ namespace LunaBot.Modules
                         "```!demote <user>```");
                     commands.Add("Delete intro rooms:\n" +
                         "```!fixrooms```");
-                    commands.Add("Ban user:\n" +
-                        "```!ban <user> <reason>```");
-                    commands.Add("Kick users:\n" +
-                        "```!kick <user>```");
                     commands.Add("Purge users:\n" +
                         "```!purge```");
                 }
