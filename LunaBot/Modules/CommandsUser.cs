@@ -101,6 +101,11 @@ namespace LunaBot.Modules
                         "```!ban <user> <reason>```");
                     commands.Add("Kick users:\n" +
                         "```!kick <user>```");
+                    commands.Add("Warn user:\n" +
+                        "```!warn <user>```");
+                    commands.Add("Remove warn from user:\n" +
+                        "```!removewarn <user> <optional number>```\n" +
+                        "The number at the end is optional, otherwise it will remove 1 warn.");
                 }
 
                 if (user.Privilege >= User.Privileges.Admin)
