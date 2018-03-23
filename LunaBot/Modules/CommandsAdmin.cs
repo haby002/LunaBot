@@ -48,7 +48,7 @@ namespace LunaBot.Modules
 
                     List<SocketRole> roles = new List<SocketRole>()
                     {
-                        guildRoles.Where(x => x.Name.Equals("Moddlet")).FirstOrDefault(),
+                        guildRoles.Where(x => x.Name.Equals("Mod")).FirstOrDefault(),
                         guildRoles.Where(x => x.Name.Equals("Staff")).FirstOrDefault()
                     };
 
@@ -92,7 +92,7 @@ namespace LunaBot.Modules
                     if ((int)user.Privilege >= (int)User.Privileges.Moderator)
                     {
                         Logger.Info(author.Id.ToString(), $"User <@{author.Id}> already mod or above.");
-                        await ReplyAsync($"<@{author.Id}> is already `moddlet` or above.");
+                        await ReplyAsync($"<@{author.Id}> is already `mod` or above.");
 
                         return;
                     }
@@ -104,7 +104,7 @@ namespace LunaBot.Modules
 
                     List<SocketRole> roles = new List<SocketRole>()
                     {
-                        guildRoles.Where(x => x.Name.Equals("Moddlet")).FirstOrDefault(),
+                        guildRoles.Where(x => x.Name.Equals("Mod")).FirstOrDefault(),
                         guildRoles.Where(x => x.Name.Equals("Staff")).FirstOrDefault()
                     };
 
