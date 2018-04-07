@@ -311,7 +311,7 @@ namespace LunaBot
                 // Adds characters (no whitespace) as XP. Returns true if user leveled up.
                 if (user.AddXP(xp))
                 {
-                    if (user.Level % 5 == 0)
+                    if (user.Level % 10 == 0)
                     {
                         await message.Channel.SendMessageAsync($"Congrats <@{user.DiscordId}>! You leveled up to {user.Level}! :confetti_ball:");
                     }
