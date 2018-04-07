@@ -343,7 +343,13 @@ namespace LunaBot
             {
                 ulong userId = message.Author.Id;
                 User databaseUser = db.Users.Where(x => x.DiscordId == userId).FirstOrDefault();
+
+                // Return if user is mod or higher
                 if (databaseUser.Privilege >= User.Privileges.Moderator)
+                    return false;
+
+                // Return if user is above level 5
+                if (databaseUser.Level >= 5)
                     return false;
             }
 
