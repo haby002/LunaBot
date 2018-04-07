@@ -2,7 +2,6 @@
 using Discord.Commands;
 using Discord.Rest;
 using Discord.WebSocket;
-using LunaBot.Commands;
 using LunaBot.Database;
 using LunaBot.ServerUtilities;
 using Microsoft.EntityFrameworkCore;
@@ -18,7 +17,6 @@ namespace LunaBot
 {
     class Engine
     {
-        private IDictionary<string, BaseCommand> commandDictionary;
         private IDictionary<string, string> aliasDictionary;
         private IDictionary<ulong, DateTime> messageTimestamps;
 
@@ -41,8 +39,7 @@ namespace LunaBot
             this._commands = new CommandService();
             this._setAttributes = new CommandService();
             this._getAttributes = new CommandService();
-
-            this.commandDictionary = new Dictionary<string, BaseCommand>();
+            
             this.aliasDictionary = new Dictionary<string, string>();
             this.messageTimestamps = new Dictionary<ulong, DateTime>();
         }
@@ -211,9 +208,8 @@ namespace LunaBot
             if (lobby == null)
                 lobby = _client.GetChannel(343193171431522304) as SocketTextChannel;
 
-            RegisterCommand registerCommand = new RegisterCommand();
+            UserUtilities.manualRegister(user as SocketGuildUser);
 
-            registerCommand.manualRegister(user as SocketGuildUser);
             using (DiscordContext db = new DiscordContext())
             {
                 ulong userId = user.Id;
@@ -407,8 +403,7 @@ namespace LunaBot
             await introRoom.AddPermissionOverwriteAsync(user, Permissions.userPerm);
 
             // Register user in database
-            RegisterCommand registerCommand = new RegisterCommand();
-            bool register = registerCommand.manualRegister(user);
+            bool register = UserUtilities.manualRegister(user);
 
             // Start interaction with user. Sleeps are for humanizing the bot.
             await introRoom.SendMessageAsync("Welcome to the server! Lets get you settled, alright?");

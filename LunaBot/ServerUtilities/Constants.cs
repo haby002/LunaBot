@@ -57,7 +57,7 @@ namespace LunaBot.ServerUtilities
 
         internal static string Admin = "Admin";
 
-        internal static string Moddlet = "Moddlet";
+        internal static string Moddlet = "Mod";
 
         internal static string Staff = "Staff";
 

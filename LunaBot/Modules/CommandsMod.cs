@@ -2,7 +2,6 @@ using Discord;
 using Discord.Commands;
 using Discord.Rest;
 using Discord.WebSocket;
-using LunaBot.Commands;
 using LunaBot.Database;
 using LunaBot.ServerUtilities;
 using System;
@@ -314,8 +313,7 @@ namespace LunaBot.Modules
                     await ReplyAsync($"Nice try. Dont want me calling your parents, right?");
                     return;
                 }
-
-                RegisterCommand registerCommand = new RegisterCommand();
+                
                 User user = db.Users.Where(x => x.DiscordId == parsedUserId).FirstOrDefault();
                 
                 // Remove old gender and orientation
@@ -345,7 +343,7 @@ namespace LunaBot.Modules
 
                 //Reset database entry for user
                 user.ResetUser();
-                registerCommand.manualRegister(discordUser);
+                UserUtilities.manualRegister(discordUser);
 
                 SocketGuildChannel channel = Context.Channel as SocketGuildChannel;
                 IReadOnlyCollection<SocketRole> guildRoles = channel.Guild.Roles;
