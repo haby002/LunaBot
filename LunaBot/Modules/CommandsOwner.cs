@@ -6,6 +6,7 @@ using LunaBot.ServerUtilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -139,6 +140,17 @@ namespace LunaBot.Modules
                 return;
 
             EmbedBuilder eb = new EmbedBuilder();
+
+            //foreach(PropertyInfo p in typeof(Color).GetProperties())
+            //{
+            //    if (p.PropertyType != typeof(Color))
+            //    {
+            //        continue;
+            //    }
+
+            //    eb.WithColor((Color) p.GetValue(null, null)); eb.WithTitle(p.Name); await ReplyAsync("", false, eb);
+            //}
+
             eb.WithColor(Color.DarkerGrey); eb.WithTitle("DarkerGrey"); await ReplyAsync("", false, eb);
             eb.WithColor(Color.DarkGrey); eb.WithTitle("DarkGrey"); await ReplyAsync("", false, eb);
             eb.WithColor(Color.LighterGrey); eb.WithTitle("LighterGrey"); await ReplyAsync("", false, eb);
