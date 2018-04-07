@@ -254,7 +254,7 @@ namespace LunaBot
             await BotReporting.ReportAsync(ReportColors.userLeft,
                        channel: null,
                        title: "User Left",
-                       content: $"<@{user.Id}> has left the server.",
+                       content: $"<@{user.Id}> {user.Username} has left the server.",
                        originUser: luna,
                        targetUser: user).ConfigureAwait(false);
         }
