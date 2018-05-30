@@ -196,7 +196,7 @@ namespace LunaBot
             // Set Playing flavor text
             await _client.SetGameAsync("!help");
 
-            await LobbyAnnouncements.StartupConfirmationAsync(lobby);
+            //await LobbyAnnouncements.StartupConfirmationAsync(lobby);
 
             // Remove all mute from muted users
             

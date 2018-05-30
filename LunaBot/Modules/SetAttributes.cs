@@ -426,7 +426,7 @@ namespace LunaBot.Modules
                     else
                     {
                         // Add the role
-                        await guildChannel.GetUser((ulong)userId).RemoveRoleAsync(AnnouncementRole);
+                        await guildChannel.GetUser((ulong)userId).AddRoleAsync(AnnouncementRole);
                         Logger.Verbose("System", $"Found role {AnnouncementRole.Name} and added it.");
                         user.Games = true;
 
@@ -483,7 +483,7 @@ namespace LunaBot.Modules
                     else
                     {
                         // Add the role
-                        await guildChannel.GetUser((ulong)userId).RemoveRoleAsync(AnnouncementRole);
+                        await guildChannel.GetUser((ulong)userId).AddRoleAsync(AnnouncementRole);
                         Logger.Verbose("System", $"Found role {AnnouncementRole.Name} and added it.");
                         user.BotUpdates = true;
 
