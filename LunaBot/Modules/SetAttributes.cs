@@ -421,7 +421,7 @@ namespace LunaBot.Modules
                         Logger.Verbose("System", $"found role {AnnouncementRole.Name} and removed it.");
                         user.Games = false;
 
-                        await ReplyAsync($"<@{userId}> joined the `{user.Games}` role.");
+                        await ReplyAsync($"<@{userId}> left the `{Roles.Games}` role.");
                     }
                     else
                     {
@@ -430,7 +430,7 @@ namespace LunaBot.Modules
                         Logger.Verbose("System", $"Found role {AnnouncementRole.Name} and added it.");
                         user.Games = true;
 
-                        await ReplyAsync($"<@{userId}> left the `{user.Games}` role.");
+                        await ReplyAsync($"<@{userId}> joined the `{Roles.Games}` role.");
                     }
 
                     db.SaveChanges();
@@ -478,7 +478,7 @@ namespace LunaBot.Modules
                         Logger.Verbose("System", $"found role {AnnouncementRole.Name} and removed it.");
                         user.BotUpdates = false;
 
-                        await ReplyAsync($"<@{userId}> joined the `{user.BotUpdates}` role.");
+                        await ReplyAsync($"<@{userId}> left the `{Roles.BotUpdates}` role.");
                     }
                     else
                     {
@@ -487,7 +487,7 @@ namespace LunaBot.Modules
                         Logger.Verbose("System", $"Found role {AnnouncementRole.Name} and added it.");
                         user.BotUpdates = true;
 
-                        await ReplyAsync($"<@{userId}> left the `{user.BotUpdates}` role.");
+                        await ReplyAsync($"<@{userId}> joined the `{Roles.BotUpdates}` role.");
                     }
 
                     db.SaveChanges();
