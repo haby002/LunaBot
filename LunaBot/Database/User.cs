@@ -43,6 +43,8 @@ namespace LunaBot.Database
 
         public bool Monk { get; set; }
 
+        public bool Games { get; set; }
+
         public int SnugR { get; set; }
 
         public int SnugG { get; set; }

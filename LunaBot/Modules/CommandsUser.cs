@@ -78,6 +78,8 @@ namespace LunaBot.Modules
                     "```!snug <user>```");
                 commands.Add("Change SFW and RP modes:\n" +
                     "```+<sfw, monk> <yes, no>```");
+                commands.Add("Join special roles for announcements:\n" +
+                    "```+<games>```");
                 commands.Add("Use an action:\n" +
                     "```!action <action> <user>```");
                 if (verbose)

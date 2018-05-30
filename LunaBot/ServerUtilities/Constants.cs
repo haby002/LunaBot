@@ -92,6 +92,9 @@ namespace LunaBot.ServerUtilities
         // Moderation Roles
         internal static string Mute = "Muted";
 
+        // Announcement Roles
+        internal static string Games = "Games";
+
     }
 
     internal static class Permissions
