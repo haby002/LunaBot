@@ -95,6 +95,8 @@ namespace LunaBot.ServerUtilities
         // Announcement Roles
         internal static string Games = "Games";
 
+        internal static string BotUpdates = "Bot Updates";
+
     }
 
     internal static class Permissions

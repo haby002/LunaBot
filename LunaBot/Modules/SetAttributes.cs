@@ -402,14 +402,14 @@ namespace LunaBot.Modules
 
                 if (user != null)
                 {
-                    Predicate<SocketRole> genderFinder = (SocketRole sr) => { return sr.Name == user.Gender.ToString().ToLower(); };
-                    SocketRole genderRole = roles.Find(genderFinder);
-                    genderRole = roles.Find(genderFinder);
+                    Predicate<SocketRole> RoleFinder = (SocketRole sr) => { return sr.Name == Roles.Games; };
+                    SocketRole AnnouncementRole = roles.Find(RoleFinder);
+                    AnnouncementRole = roles.Find(RoleFinder);
 
                     // Check if role was found on the server
-                    if(genderRole == null)
+                    if(AnnouncementRole == null)
                     {
-                        Logger.Warning("System", $"Couldn't find role {user.Gender.ToString().ToLower()}.");
+                        Logger.Warning("System", $"Couldn't find role {Roles.Games}");
                         await BotReporting.ReportAsync(ReportColors.exception, Context.Channel as SocketTextChannel, "Error finding Role.", $"Could not find role: {Roles.Games}, contact admin.", Context.User);
                         await ReplyAsync("Error finding role, notifying staff.");
                     }
@@ -417,8 +417,8 @@ namespace LunaBot.Modules
                     if (user.Games == true)
                     {
                         // Remove the role
-                        await guildChannel.GetUser((ulong)userId).RemoveRoleAsync(genderRole);
-                        Logger.Verbose("System", $"found role {genderRole.Name} and removed it.");
+                        await guildChannel.GetUser((ulong)userId).RemoveRoleAsync(AnnouncementRole);
+                        Logger.Verbose("System", $"found role {AnnouncementRole.Name} and removed it.");
                         user.Games = false;
 
                         await ReplyAsync($"<@{userId}> joined the `{user.Games}` role.");
@@ -426,11 +426,68 @@ namespace LunaBot.Modules
                     else
                     {
                         // Add the role
-                        await guildChannel.GetUser((ulong)userId).RemoveRoleAsync(genderRole);
-                        Logger.Verbose("System", $"Found role {genderRole.Name} and added it.");
+                        await guildChannel.GetUser((ulong)userId).RemoveRoleAsync(AnnouncementRole);
+                        Logger.Verbose("System", $"Found role {AnnouncementRole.Name} and added it.");
                         user.Games = true;
 
                         await ReplyAsync($"<@{userId}> left the `{user.Games}` role.");
+                    }
+
+                    db.SaveChanges();
+
+                }
+                else
+                {
+                    Logger.Verbose(author.Username, $"Failed to find user: {userId}");
+                    await ReplyAsync($"Failed to find user: `{author.Username}`");
+                }
+            }
+        }
+
+        [Command("botupdates", RunMode = RunMode.Async)]
+        public async Task SetBotsUpdatesAsync()
+        {
+            SocketUser author = Context.User;
+            ulong userId = author.Id;
+
+            SocketGuildChannel guildChannel = Context.Channel as SocketGuildChannel;
+            List<SocketRole> roles = guildChannel.Guild.Roles.ToList();
+
+            using (DiscordContext db = new DiscordContext())
+            {
+                User user = db.Users.FirstOrDefault(x => x.DiscordId == userId);
+
+                if (user != null)
+                {
+                    Predicate<SocketRole> RoleFinder = (SocketRole sr) => { return sr.Name == Roles.BotUpdates; };
+                    SocketRole AnnouncementRole = roles.Find(RoleFinder);
+                    AnnouncementRole = roles.Find(RoleFinder);
+
+                    // Check if role was found on the server
+                    if (AnnouncementRole == null)
+                    {
+                        Logger.Warning("System", $"Couldn't find role {Roles.BotUpdates}");
+                        await BotReporting.ReportAsync(ReportColors.exception, Context.Channel as SocketTextChannel, "Error finding Role.", $"Could not find role: {Roles.BotUpdates}, contact admin.", Context.User);
+                        await ReplyAsync("Error finding role, notifying staff.");
+                    }
+
+                    if (user.BotUpdates == true)
+                    {
+                        // Remove the role
+                        await guildChannel.GetUser((ulong)userId).RemoveRoleAsync(AnnouncementRole);
+                        Logger.Verbose("System", $"found role {AnnouncementRole.Name} and removed it.");
+                        user.BotUpdates = false;
+
+                        await ReplyAsync($"<@{userId}> joined the `{user.BotUpdates}` role.");
+                    }
+                    else
+                    {
+                        // Add the role
+                        await guildChannel.GetUser((ulong)userId).RemoveRoleAsync(AnnouncementRole);
+                        Logger.Verbose("System", $"Found role {AnnouncementRole.Name} and added it.");
+                        user.BotUpdates = true;
+
+                        await ReplyAsync($"<@{userId}> left the `{user.BotUpdates}` role.");
                     }
 
                     db.SaveChanges();
