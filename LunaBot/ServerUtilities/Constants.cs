@@ -75,8 +75,12 @@ namespace LunaBot.ServerUtilities
         internal static string Bi = "bi";
 
         internal static string Pan = "pan";
+        
+        internal static string Demi = "demi";
 
-        internal static string GrayA = "grey-a";
+        internal static string Fluid = "fluid";
+        
+        internal static string Other = "other";
 
         // Gender Roles
         internal static string Male = "male";
@@ -88,6 +92,8 @@ namespace LunaBot.ServerUtilities
         internal static string TransFemale = "trans-female";
 
         internal static string Other = "other";
+        
+        internal static string None = "none";
 
         // Moderation Roles
         internal static string Mute = "Muted";
