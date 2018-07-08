@@ -502,6 +502,8 @@ namespace LunaBot
                         "- Female\n" +
                         "- Trans-Female\n" +
                         "- Trans-Male\n" +
+                        "- None \n" +
+                        "- Fluid \n" +
                         "- Other");
                 }
                 else if (databaseUser.Gender == User.Genders.Null)
@@ -531,7 +533,8 @@ namespace LunaBot
                         "- Bisexual\n" +
                         "- Asexual\n" +
                         "- Pansexual\n" +
-                        "- Gray-a (if you'd rather it not be shown)\n");
+                        "- Demisexual\n" +
+                        "- other");
                 }
                 else if(databaseUser.orientation == User.Orientation.None)
                 {

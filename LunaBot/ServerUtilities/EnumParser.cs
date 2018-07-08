@@ -56,15 +56,15 @@ namespace LunaBot.ServerUtilities
                 case "asexual":
                 case "a":
                     return User.Orientation.Asexual;
-                case "other":
-                case"o":
-                    return User.Orientation.other;
                 case "pansexual":
                 case "pan":
                     return User.Orientation.Pan;
                 case "demi":
                 case "d":
                     return User.Orientation.Demi;
+                case "other":
+                case "o":
+                    return User.Orientation.Oother;
                 default:
                     return User.Orientation.None;
             }

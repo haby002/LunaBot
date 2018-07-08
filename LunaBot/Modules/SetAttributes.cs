@@ -131,6 +131,8 @@ namespace LunaBot.Modules
                     "- Trans-Female\n" +
                     "- Trans-Male\n" +
                     "- Other\n" +
+                    "- None \n" +
+                    "- Fluid \n" +
                     "```");
 
                 return;
