@@ -37,7 +37,7 @@ namespace LunaBot.Database
                 user.Age = 0;
                 user.Description = null;
                 user.Fur = null;
-                user.Gender = User.Genders.None;
+                user.Gender = User.Genders.Null;
                 user.Monk = false;
                 user.Nsfw = false;
                 user.orientation = User.Orientation.None;

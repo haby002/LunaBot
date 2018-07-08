@@ -28,8 +28,11 @@ namespace LunaBot.ServerUtilities
                 case "other":
                 case "o":
                     return User.Genders.Other;
-                default:
+                case "none":
+                case "n":
                     return User.Genders.None;
+                default:
+                    return User.Genders.Null;
             }
 
         }

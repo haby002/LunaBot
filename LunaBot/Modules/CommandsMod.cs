@@ -108,7 +108,7 @@ namespace LunaBot.Modules
                             SocketGuildUser discordUser = requestedUser as SocketGuildUser;
 
                             User.Genders genderEnum = EnumParsers.StringToGender(content);
-                            if (genderEnum == User.Genders.None)
+                            if (genderEnum == User.Genders.Null)
                             {
                                 await ReplyAsync("I'm sorry I couldn't understand your message. Make sure the gender is either male, female, trans-male, trans-female, or other.\n" +
                                         $"You gave: {content}");
@@ -273,7 +273,7 @@ namespace LunaBot.Modules
                         newUser.Level = 1;
                         newUser.Privilege = 0;
                         newUser.TutorialFinished = false;
-                        newUser.Gender = User.Genders.None;
+                        newUser.Gender = User.Genders.Null;
                         db.Users.Add(newUser);
                         var list = db.Users.ToList();
 

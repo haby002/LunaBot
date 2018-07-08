@@ -28,7 +28,7 @@ namespace LunaBot.ServerUtilities
                 newUser.LastMessage = DateTime.UtcNow;
                 newUser.Privilege = 0;
                 newUser.TutorialFinished = false;
-                newUser.Gender = User.Genders.None;
+                newUser.Gender = User.Genders.Null;
                 newUser.SnugG = 0;
                 newUser.SnugR = 0;
                 db.Users.Add(newUser);

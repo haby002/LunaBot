@@ -53,12 +53,14 @@ namespace LunaBot.Database
 
         public enum Genders
         {
+            Null,
             None,
             Male,
             Female,
             Trans_Female,
             Trans_Male,
-            Other,
+            Fluid,
+            Other
         };
 
         public enum Orientation
@@ -69,7 +71,7 @@ namespace LunaBot.Database
             Bi,
             Asexual,
             Pan,
-            Gray_a
+            Demi
         };
 
         public enum Privileges

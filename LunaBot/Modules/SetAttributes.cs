@@ -122,7 +122,7 @@ namespace LunaBot.Modules
         public async Task SetGenderAsync(string parameter)
         {
             User.Genders gender = EnumParsers.StringToGender(parameter);
-            if (gender == User.Genders.None)
+            if (gender == User.Genders.Null)
             {
                 await ReplyAsync("Couldn't understand that gender... it can either be\n" +
                     "```\n" +

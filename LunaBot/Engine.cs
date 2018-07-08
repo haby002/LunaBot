@@ -504,12 +504,12 @@ namespace LunaBot
                         "- Trans-Male\n" +
                         "- Other");
                 }
-                else if (databaseUser.Gender == User.Genders.None)
+                else if (databaseUser.Gender == User.Genders.Null)
                 {
                     
                     User.Genders gender = EnumParsers.StringToGender(message.Content);
 
-                    if(gender == User.Genders.None)
+                    if(gender == User.Genders.Null)
                     {
                         await message.Channel.SendMessageAsync("I'm sorry I couldn't understand your message. Make sure it's either `male`, `female`, `trans-male`, `trans-female`, or `other`.");
                         return;

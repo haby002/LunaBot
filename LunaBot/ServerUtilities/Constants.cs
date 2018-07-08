@@ -79,8 +79,6 @@ namespace LunaBot.ServerUtilities
         internal static string Demi = "demi";
 
         internal static string Fluid = "fluid";
-        
-        internal static string Other = "other";
 
         // Gender Roles
         internal static string Male = "male";
