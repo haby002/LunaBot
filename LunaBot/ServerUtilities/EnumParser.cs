@@ -17,7 +17,7 @@ namespace LunaBot.ServerUtilities
                 case "m":
                     return User.Genders.Male;
                 case "female":
-                case "f":
+                case "fe":
                     return User.Genders.Female;
                 case "trans-male":
                 case "trans-m":
@@ -25,6 +25,9 @@ namespace LunaBot.ServerUtilities
                 case "trans-female":
                 case "trans-f":
                     return User.Genders.Trans_Female;
+                case "fluid":
+                case "fl":
+                    return User.Genders.Fluid;
                 case "other":
                 case "o":
                     return User.Genders.Other;
@@ -53,14 +56,15 @@ namespace LunaBot.ServerUtilities
                 case "asexual":
                 case "a":
                     return User.Orientation.Asexual;
-                case "gray-a":
-                case "gray":
-                case "grey-a":
-                case "grey":
-                    return User.Orientation.Gray_a;
+                case "other":
+                case"o":
+                    return User.Orientation.other;
                 case "pansexual":
                 case "pan":
                     return User.Orientation.Pan;
+                case "demi":
+                case "d":
+                    return User.Orientation.Demi;
                 default:
                     return User.Orientation.None;
             }

@@ -71,7 +71,8 @@ namespace LunaBot.Database
             Bi,
             Asexual,
             Pan,
-            Demi
+            Demi,
+            other
         };
 
         public enum Privileges
