@@ -303,9 +303,6 @@ namespace LunaBot.Modules
                 //Check for underage
                 using (DiscordContext db = new DiscordContext())
                 {
-                    SocketUser author = Context.User;
-                    ulong userId = author.Id;
-
                     User user = db.Users.FirstOrDefault(x => x.DiscordId == userId);
 
                     if (user != null)
