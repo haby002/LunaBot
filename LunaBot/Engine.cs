@@ -651,7 +651,7 @@ namespace LunaBot
                         if(databaseUser.Age < 18)
                         {
                             Logger.Verbose(user.Username, $"Skipping NSFW due to age.");
-                            database.User.Nsfw = true;
+                            databaseUser.User.Nsfw = true;
                             await message.Channel.SendMessageAsync($"I've disabled `RP` for you.\n" +
                                 $"That's it! Your profile has been set and you are ready to venture into our server.\n" +
                                 $"Just type `yes` if you agree to the server rules  and guidelines over at #rules_and_announcements.\n" +
@@ -673,7 +673,7 @@ namespace LunaBot
                         if(databaseUser.Age < 18)
                         {
                             Logger.Verbose(user.Username, $"Skipping NSFW due to age.");
-                            database.User.Nsfw = true;
+                            databaseUser.User.Nsfw = true;
                             await message.Channel.SendMessageAsync($"I've enabled `RP` for you.\n" +
                                 $"That's it! Your profile has been set and you are ready to venture into our server.\n" +
                                 $"Just type `yes` if you agree to the server rules  and guidelines over at #rules_and_announcements.\n" +
