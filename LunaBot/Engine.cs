@@ -651,6 +651,11 @@ namespace LunaBot
                         if(databaseUser.Age < 18)
                         {
                             Logger.Verbose(user.Username, $"Skipping NSFW due to age.");
+                            Logger.Verbose(user.Username, $"Disabling NSFW.");
+                            Predicate<SocketRole> sfwFinder = (SocketRole sr) => { return sr.Name == Roles.SFW; };
+                            SocketRole sfw = roles.Find(sfwFinder);
+
+                            await user.AddRoleAsync(sfw);
                             databaseUser.Nsfw = true;
                             await message.Channel.SendMessageAsync($"I've disabled `RP` for you.\n" +
                                 $"That's it! Your profile has been set and you are ready to venture into our server.\n" +
@@ -673,6 +678,11 @@ namespace LunaBot
                         if(databaseUser.Age < 18)
                         {
                             Logger.Verbose(user.Username, $"Skipping NSFW due to age.");
+                            Logger.Verbose(user.Username, $"Disabling NSFW.");
+                            Predicate<SocketRole> sfwFinder = (SocketRole sr) => { return sr.Name == Roles.SFW; };
+                            SocketRole sfw = roles.Find(sfwFinder);
+
+                            await user.AddRoleAsync(sfw);
                             databaseUser.Nsfw = true;
                             await message.Channel.SendMessageAsync($"I've enabled `RP` for you.\n" +
                                 $"That's it! Your profile has been set and you are ready to venture into our server.\n" +
