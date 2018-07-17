@@ -648,19 +648,43 @@ namespace LunaBot
                         databaseUser.Monk = true;
 
                         await message.Channel.GetMessagesAsync().ForEachAsync((x) => { foreach (var f in x) { f.DeleteAsync(); } });
-                        await message.Channel.SendMessageAsync($"I've disabled `RP` for you.\n" +
-                            $"Next we are a server with a `NSFW` section. You can opt-in with a `yes` or opt-out with a `no`.\n" +
-                            $"This can be changed later on if you change your mind.");
+                        if(databaseUser.Age < 18)
+                        {
+                            Logger.Verbose(user.Username, $"Skipping NSFW due to age.");
+                            database.User.Nsfw = true;
+                            await message.Channel.SendMessageAsync($"I've disabled `RP` for you.\n" +
+                                $"That's it! Your profile has been set and you are ready to venture into our server.\n" +
+                                $"Just type `yes` if you agree to the server rules  and guidelines over at #rules_and_announcements.\n" +
+                                $"Take all the time you need, we'll still be here ^^");
+                        } 
+                        else
+                        {
+                            await message.Channel.SendMessageAsync($"I've disabled `RP` for you.\n" +
+                                $"Next we are a server with a `NSFW` section. You can opt-in with a `yes` or opt-out with a `no`.\n" +
+                                $"This can be changed later on if you change your mind.");
+                        }
                     }
                     else if (message.Content.ToLower().Equals("yes"))
                     {
-                        Logger.Verbose(user.Username, $"Enabled RP.");
+                        Logger.Verbose(user.Username, $"Enabling RP.");
                         databaseUser.Monk = true;
 
                         await message.Channel.GetMessagesAsync().ForEachAsync((x) => { foreach (var f in x) { f.DeleteAsync(); } });
-                        await message.Channel.SendMessageAsync($"I've enabled `RP` for you.\n" +
-                            $"Next we are a server with a `NSFW` section. You can opt-in with a `yes` or opt-out with a `no`.\n" +
-                            $"This can be changed later on if you change your mind.");
+                        if(databaseUser.Age < 18)
+                        {
+                            Logger.Verbose(user.Username, $"Skipping NSFW due to age.");
+                            database.User.Nsfw = true;
+                            await message.Channel.SendMessageAsync($"I've enabled `RP` for you.\n" +
+                                $"That's it! Your profile has been set and you are ready to venture into our server.\n" +
+                                $"Just type `yes` if you agree to the server rules  and guidelines over at #rules_and_announcements.\n" +
+                                $"Take all the time you need, we'll still be here ^^");
+                        } 
+                        else
+                        {
+                            await message.Channel.SendMessageAsync($"I've enabled `RP` for you.\n" +
+                                $"Next we are a server with a `NSFW` section. You can opt-in with a `yes` or opt-out with a `no`.\n" +
+                                $"This can be changed later on if you change your mind.");
+                        }
                     }
                     else
                     {
