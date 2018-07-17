@@ -294,12 +294,36 @@ namespace LunaBot.Modules
         {
             SocketUser author = Context.User;
             ulong userId = author.Id;
-
+            
             SocketGuildChannel guildChannel = Context.Channel as SocketGuildChannel;
             List<SocketRole> roles = guildChannel.Guild.Roles.ToList();
 
             if (parameter == "no")
             {
+                //Check for underage
+                using (DiscordContext db = new DiscordContext())
+                {
+                    SocketUser author = Context.User;
+                    ulong userId = author.Id;
+
+                    User user = db.Users.FirstOrDefault(x => x.DiscordId == userId);
+
+                    if (user != null)
+                    {
+                        if (user.Age < 18)
+                        {
+                            // Add bot reporting about attempt
+                            await ReplyAsync($"You must be 18 or older to access NSFW rooms.");
+                            return;
+                        }
+                    }
+                    else 
+                    {
+                        await ReplyAsync($"An error occurred, you are not registered as a user.");
+                        return;
+                    }
+                }
+                
                 Logger.Info(author.Username, $"Removing SFW role for <@{userId}>.");
 
                 // Remove old role
