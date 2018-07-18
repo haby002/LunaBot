@@ -196,6 +196,49 @@ namespace LunaBot.Modules
 
         }
 
+        /// <summary>
+        /// Cleans the server of the following:
+        /// - Removes under 18 years old from NSFW
+        /// - Checks NSFW and MONK Tags (ToDo)
+        /// - Removes old profiles (ToDo)
+        /// </summary>
+        /// <returns>Task with completion status</returns>
+        [Command("cleanserver", RunMode = RunMode.Async)]
+        public async Task CleanServerAsync()
+        {
+            SocketUser author = Context.User;
+
+            using (DiscordContext db = new DiscordContext())
+            {
+                // Check Priviledges
+                ulong userId = author.Id;
+                if ((int)db.Users.Where(x => x.DiscordId == userId).FirstOrDefault().Privilege < (int)User.Privileges.Admin)
+                {
+                    Logger.Warning(author.Id.ToString(), "User tried to use ascend command and failed");
+                    await ReplyAsync($"Although we appreciate that you want to clean the server, this vacuum requires special operator's license.");
+                    return;
+                }
+
+                await ReplyAsync("Removing users from NSFW rooms...");
+
+                // Iterate through the users and remove underaged users from NSFW rooms
+                foreach (User user in db.Users)
+                {
+                    if(user.Age < 18)
+                    {
+                        SocketGuildUser guildUser = Context.Guild.GetUser((ulong)user.ID);
+                        SocketRole role = guildUser.Roles.Where((r) => r.Name == "SFW").FirstOrDefault();
+                        if(role == null)
+                        {
+                            await ReplyAsync($"{guildUser.Username} is under 18 and in NSFW rooms. Adding SFW tab.");
+                            await guildUser.AddRoleAsync(Context.Guild.Roles.Where((r) => r.Name == "SFW").FirstOrDefault());
+                        }
+                    }
+                }
+
+                await ReplyAsync("Finished NSFW check.");
+            }
+        }
 
     }
 }
