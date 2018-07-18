@@ -224,15 +224,20 @@ namespace LunaBot.Modules
                 // Iterate through the users and remove underaged users from NSFW rooms
                 foreach (User user in db.Users)
                 {
+                    Logger.Verbose("System", $"Checking for {user.Nickname}");
                     if(user.Age < 18)
                     {
                         SocketGuildUser guildUser = Context.Guild.GetUser((ulong)user.ID);
+                        if (guildUser == null)
+                            continue;
+
                         SocketRole role = guildUser.Roles.Where((r) => r.Name == "SFW").FirstOrDefault();
                         if(role == null)
                         {
                             await ReplyAsync($"{guildUser.Username} is under 18 and in NSFW rooms. Adding SFW tab.");
                             await guildUser.AddRoleAsync(Context.Guild.Roles.Where((r) => r.Name == "SFW").FirstOrDefault());
                         }
+                        Logger.Verbose("System", "User underaged and not in NSFW rooms")
                     }
                 }
 
