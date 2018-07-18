@@ -414,7 +414,8 @@ namespace LunaBot
             // Start interaction with user. Sleeps are for humanizing the bot.
             await introRoom.SendMessageAsync("Welcome to the server! Lets get you settled, alright?");
             Thread.Sleep(2000);
-            await introRoom.SendMessageAsync("Firstly, what should we call you?");
+            await introRoom.SendMessageAsync("Firstly, what should we call you? \n" +
+                "If you'd rather not change your nick just type `none`");
 
             return register;
             //await introRoom.DeleteAsync();
@@ -489,6 +490,11 @@ namespace LunaBot
 
                 if (databaseUser.Nickname == null || databaseUser.Nickname == "")
                 {
+                    if(message.Content.Equals("none"))
+                    {
+                        databaseUser.Nickname = message.Author.Username;
+                    }
+
                     SocketGuildUser guildUser = message.Author as SocketGuildUser;
                     await guildUser.ModifyAsync(n => n.Nickname = message.Content);
                     databaseUser.Nickname = message.Content;
