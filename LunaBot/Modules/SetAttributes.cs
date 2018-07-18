@@ -55,6 +55,12 @@ namespace LunaBot.Modules
         [Command("age", RunMode = RunMode.Async)]
         public async Task SetAgeAsync(int age)
         {
+            if(age < 0)
+            {
+                await ReplyAsync("You can't be unborn, no matter how much you try... Age cannot be less than 0");
+                return;
+            }
+
             using (DiscordContext db = new DiscordContext())
             {
                 SocketUser author = Context.User;
