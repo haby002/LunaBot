@@ -237,7 +237,7 @@ namespace LunaBot.Modules
                             await ReplyAsync($"{guildUser.Username} is under 18 and in NSFW rooms. Adding SFW tab.");
                             await guildUser.AddRoleAsync(Context.Guild.Roles.Where((r) => r.Name == "SFW").FirstOrDefault());
                         }
-                        Logger.Verbose("System", "User underaged and not in NSFW rooms")
+                        Logger.Verbose("System", "User underaged and not in NSFW rooms");
                     }
                 }
 
