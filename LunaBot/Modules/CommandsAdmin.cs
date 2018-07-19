@@ -225,8 +225,10 @@ namespace LunaBot.Modules
                 foreach (SocketGuildUser user in Context.Guild.Users)
                 {
                     Logger.Verbose("System", $"Checking for {user.Nickname}");
-                    if(db.Users.Where(x => x.DiscordId == userId).FirstOrDefault().Age < 18)
+                    User databaseUser = db.Users.Where(x => x.DiscordId == user.Id).First();
+                    if (databaseUser.Age < 18 && databaseUser.Age > 0)
                     {
+                        Logger.Verbose("System", $"User age {databaseUser.Age}");
                         SocketRole role = user.Roles.Where((r) => r.Name == "SFW").FirstOrDefault();
                         if(role == null)
                         {
