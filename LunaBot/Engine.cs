@@ -493,6 +493,9 @@ namespace LunaBot
                     if(message.Content.Equals("none"))
                     {
                         databaseUser.Nickname = message.Author.Username;
+                        
+                        await message.Channel.GetMessagesAsync().ForEachAsync((x) => { foreach (var f in x) { f.DeleteAsync(); } });
+                        
                         await message.Channel.SendMessageAsync("Very well, your name will not be changed. Now lets set your gender.");
                     }
                     else
@@ -500,11 +503,13 @@ namespace LunaBot
                         SocketGuildUser guildUser = message.Author as SocketGuildUser;
                         await guildUser.ModifyAsync(n => n.Nickname = message.Content);
                         databaseUser.Nickname = message.Content;
+                        
+                        await message.Channel.GetMessagesAsync().ForEachAsync((x) => { foreach (var f in x) { f.DeleteAsync(); } });
+                        
                         Logger.Verbose(user.Username, $"Changed nickname from {user.Username} to {message.Content}");
                         await message.Channel.SendMessageAsync("I've gone ahead and changed your name. Now lets set your gender.");
                     }
                     
-                    await message.Channel.GetMessagesAsync().ForEachAsync((x) => { foreach (var f in x) { f.DeleteAsync(); } });
                     await message.Channel.SendMessageAsync("You can choose between:\n" +
                         "- Male\n" +
                         "- Female\n" +
