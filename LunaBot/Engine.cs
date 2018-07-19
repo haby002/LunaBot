@@ -493,6 +493,7 @@ namespace LunaBot
                     if(message.Content.Equals("none"))
                     {
                         databaseUser.Nickname = message.Author.Username;
+                        await message.Channel.SendMessageAsync("Very well, your name will not be changed. Now lets set your gender.");
                     }
                     else
                     {
@@ -500,12 +501,11 @@ namespace LunaBot
                         await guildUser.ModifyAsync(n => n.Nickname = message.Content);
                         databaseUser.Nickname = message.Content;
                         Logger.Verbose(user.Username, $"Changed nickname from {user.Username} to {message.Content}");
+                        await message.Channel.SendMessageAsync("I've gone ahead and changed your name. Now lets set your gender.");
                     }
                     
                     await message.Channel.GetMessagesAsync().ForEachAsync((x) => { foreach (var f in x) { f.DeleteAsync(); } });
-                    await message.Channel.SendMessageAsync("I've gone ahead and changed your name. Now lets set your gender.\n" +
-                        "If you don't want to fill this in you can just choose other." +
-                        "You can choose between:\n" +
+                    await message.Channel.SendMessageAsync("You can choose between:\n" +
                         "- Male\n" +
                         "- Female\n" +
                         "- Trans-Female\n" +
