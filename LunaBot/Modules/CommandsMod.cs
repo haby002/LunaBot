@@ -362,7 +362,8 @@ namespace LunaBot.Modules
                     // Start interaction with user. Sleeps are for humanizing the bot.
                     await introRoom.SendMessageAsync("Welcome to the server! Lets get you settled, alright?");
                     Thread.Sleep(1000);
-                    await introRoom.SendMessageAsync("Firstly, what should we call you?");
+                    await introRoom.SendMessageAsync("Firstly, what should we call you?\n" +
+                "If you'd rather not change your nick just type `none`");
                 }).ConfigureAwait(false);
 
                 db.SaveChanges();
