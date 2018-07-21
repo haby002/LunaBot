@@ -208,6 +208,12 @@ namespace LunaBot.Modules
         {
             SocketUser author = Context.User;
 
+            await BotReporting.ReportAsync(ReportColors.adminCommand,
+                        (SocketTextChannel)Context.Channel,
+                        $"CleanServer Command by {Context.User.Username}",
+                        $"",
+                        Context.User).ConfigureAwait(false);
+
             using (DiscordContext db = new DiscordContext())
             {
                 // Check Priviledges
@@ -244,6 +250,30 @@ namespace LunaBot.Modules
                 }
 
                 await ReplyAsync("Finished NSFW check.");
+
+                await ReplyAsync("Removing unused rooms...");
+
+                // Remove rooms of users no longer in the server
+                int roomsRemovedCount = 0;
+                foreach (SocketGuildChannel channel in Context.Guild.TextChannels.Where(x => x.Name.StartsWith("room-")))
+                {
+                    if (channel == null)
+                        continue;
+
+                    // Get user ID from room name
+                    string roomUserId = channel.Name.Substring(5);
+
+                    // If user isn't in the server anymore, remove the room
+                    if (Context.Guild.GetUser(ulong.Parse(roomUserId)) == null)
+                    {
+                        Logger.Info("System", $"Found empty room {channel.Name}, total: {roomsRemovedCount}");
+                        roomsRemovedCount++;
+                        await channel.DeleteAsync();
+                    }
+                }
+
+                await ReplyAsync($"Finished removing rooms. Total: {roomsRemovedCount}");
+                
             }
         }
 
