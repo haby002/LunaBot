@@ -406,28 +406,49 @@ namespace LunaBot.Modules
         [Command("intervention", RunMode = RunMode.Async)]
         public async Task IntervetionAsync(IUser requestedUser, int time)
         {
-            using (DiscordContext db = new DiscordContext())
-            {
-                ulong userId = Context.User.Id;
-                if (db.Users.Where(x => x.DiscordId == userId).FirstOrDefault().Privilege == 0)
-                {
-                    Logger.Warning(Context.User.Username, "Failed intervention command. Not enough privileges.");
-                    await ReplyAsync("You're not a moderator, go away.");
-
-                    return;
-                }
-
-                // Limbo user
-                // Create room
-                // Add permissions (user and staff)
-                // un-limbo person
-
-                await BotReporting.ReportAsync(ReportColors.modCommand,
+            await BotReporting.ReportAsync(ReportColors.modCommand,
                         (SocketTextChannel)Context.Channel,
                         $"Intervention command by {Context.User.Username}",
                         $"<@{Context.User.Id}> placed <@{requestedUser.Id}> in an intervention.",
                         Context.User,
                         (SocketUser)requestedUser).ConfigureAwait(false);
+
+            using (DiscordContext db = new DiscordContext())
+            {
+                ulong userId = Context.User.Id;
+                if (db.Users.Where(x => x.DiscordId == userId).FirstOrDefault().Privilege == User.Privileges.User)
+                {
+                    Logger.Warning(Context.User.Username, "Failed intervention command. Not enough privileges.");
+                    await ReplyAsync("You are not a moderator, go away.");
+
+                    return;
+                }
+
+                try
+                {
+                    // Look for intervention role
+                    SocketRole intervetionRole = Context.Guild.Roles.Where(x => x.Name == "intervention").First();
+
+                    // give user the role
+                    SocketGuildUser user = requestedUser as SocketGuildUser;
+                    await user.AddRoleAsync(intervetionRole);
+
+
+                }
+                catch (Exception e)
+                {
+                    await BotReporting.ReportAsync(ReportColors.exception,
+                    (SocketTextChannel)Context.Channel,
+                    e.Message,
+                    $"Source: {e.Source}\n {e.InnerException}\n {e.StackTrace}",
+                    Engine.luna);
+
+                    return;
+                }
+
+                
+                // Add permissions (user and staff)
+                // un-limbo person
 
             }
         }
