@@ -24,7 +24,7 @@ namespace LunaBot.Modules
             using (DiscordContext db = new DiscordContext())
             {
                 ulong userId = author.Id;
-                if ((int)db.Users.Where(x => x.DiscordId == userId).FirstOrDefault().Privilege < (int)User.Privileges.Admin)
+                if (db.Users.Where(x => x.DiscordId == userId).FirstOrDefault().Privilege < User.Privileges.Admin)
                 {
                     Logger.Warning(author.Id.ToString(), "User tried to use demote command and failed");
                     await ReplyAsync($"Nice try. Dont want me calling your parents, right?");
@@ -33,7 +33,7 @@ namespace LunaBot.Modules
 
                 User user = db.Users.Where(x => x.DiscordId == parsedUserId).FirstOrDefault();
                 {
-                    if ((int)user.Privilege == (int)User.Privileges.User)
+                    if (user.Privilege == User.Privileges.User)
                     {
                         Logger.Info(author.Id.ToString(), $"User <@{requestedUser.Id}> isn't a mod.");
                         await ReplyAsync($"<@{requestedUser.Id}> isn't a `mod`.");
@@ -80,7 +80,7 @@ namespace LunaBot.Modules
             using (DiscordContext db = new DiscordContext())
             {
                 ulong userId = author.Id;
-                if ((int)db.Users.Where(x => x.DiscordId == userId).FirstOrDefault().Privilege < (int)User.Privileges.Admin)
+                if (db.Users.Where(x => x.DiscordId == userId).FirstOrDefault().Privilege < User.Privileges.Admin)
                 {
                     Logger.Warning(author.Id.ToString(), "User tried to use ascend command and failed");
                     await ReplyAsync($"Nice try. Dont want me calling your parents, right?");
@@ -89,7 +89,7 @@ namespace LunaBot.Modules
 
                 User user = db.Users.Where(x => x.DiscordId == parsedUserId).FirstOrDefault();
                 {
-                    if ((int)user.Privilege >= (int)User.Privileges.Moderator)
+                    if (user.Privilege >= User.Privileges.Moderator)
                     {
                         Logger.Info(author.Id.ToString(), $"User <@{author.Id}> already mod or above.");
                         await ReplyAsync($"<@{author.Id}> is already `mod` or above.");

@@ -25,7 +25,7 @@ namespace LunaBot.Modules
             using (DiscordContext db = new DiscordContext())
             {
                 ulong userId = author.Id;
-                if ((int)db.Users.Where(x => x.DiscordId == userId).FirstOrDefault().Privilege != 3)
+                if (db.Users.Where(x => x.DiscordId == userId).FirstOrDefault().Privilege != User.Privileges.Owner)
                 {
                     Logger.Warning(author.Id.ToString(), "User tried to use ascend command and failed");
                     await ReplyAsync($"Nice try. Dont want me calling your parents, right?");
@@ -34,7 +34,7 @@ namespace LunaBot.Modules
 
                 User user = db.Users.Where(x => x.DiscordId == parsedUserId).FirstOrDefault();
                 {
-                    if ((int)user.Privilege >= 2)
+                    if (user.Privilege >= User.Privileges.Admin)
                     {
                         Logger.Info(author.Id.ToString(), $"User <@{requestedUser.Id}> already admin.");
                         await ReplyAsync($"<@{requestedUser.Id}> is already `admin` or above.");

@@ -24,7 +24,7 @@ namespace LunaBot.Modules
                 // check privileges
                 ulong userId = author.Id;
                 User user = db.Users.FirstOrDefault(x => x.DiscordId == userId);
-                if ((int)user.Privilege < 1)
+                if (user.Privilege < User.Privileges.Moderator)
                 {
                     Logger.Warning(author.Username, "Not enough permissions.");
                     await ReplyAsync("Can't let you do that Dave.");
