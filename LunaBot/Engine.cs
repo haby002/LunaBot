@@ -107,13 +107,17 @@ namespace LunaBot
 
             try
             {
-                // Tutorial messages that cannot run commands.
-                if (message.Channel.Name.Contains("intro"))
+                using (DiscordContext db = new DiscordContext())
                 {
-                    await ProcessTutorialMessaageAsync(message).ConfigureAwait(false);
-                    return;
+                    User author = db.Users.Where(x => (ulong)x.ID == message.Author.Id).First();
+                    // Tutorial messages that cannot run commands.
+                    if (message.Channel.Name.Contains("intro") && author.Privilege == User.Privileges.User)
+                    {
+                        await ProcessTutorialMessaageAsync(message).ConfigureAwait(false);
+                        return;
+                    }
                 }
-                else if (messageText.StartsWith("!"))
+                if (messageText.StartsWith("!"))
                 {
                     context = new SocketCommandContext(_client, message);
                     result = await _commands.ExecuteAsync(context, argPos, _services);
