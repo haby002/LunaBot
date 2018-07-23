@@ -208,8 +208,9 @@ namespace LunaBot.Modules
                                 Logger.Info(author.Username, $"Failed to change user <@{requestedUser.Id}> 's tutorial state from {user.TutorialFinished} to {value}");
                                 return;
                             }
-                            user.TutorialFinished = value;
                             Logger.Info(author.Username, $"Changed user <@{requestedUser.Id}> 's tutorial state from {user.TutorialFinished} to {value}");
+                            await ReplyAsync($"Changed <@{requestedUser.Id}>'s tutorial state from {user.TutorialFinished} to {value}");
+                            user.TutorialFinished = value;
                             break;
                         default:
                             Logger.Warning(author.Username, "Failed database set command.");
