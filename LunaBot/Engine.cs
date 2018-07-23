@@ -771,6 +771,12 @@ namespace LunaBot
                         await personalRoom.AddPermissionOverwriteAsync(user, Permissions.roomPerm);
                         await personalRoom.AddPermissionOverwriteAsync(everyone, Permissions.removeAllPerm);
 
+                        // Send intro information
+                        await personalRoom.SendMessageAsync($"<@{user.Id}>, welcome to your room! \n" +
+                            $"The server might be public but this is your own private sliver of the server.\n" +
+                            $"You can run commands, save images, post stuff, etc.\n" +
+                            $"type `!help` for a list of the commands!");
+
                         Thread.Sleep(500);
                         await message.Channel.SendMessageAsync($"Adding sparkles...");
                         Thread.Sleep(700);
