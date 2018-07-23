@@ -142,10 +142,10 @@ namespace LunaBot
             catch(Exception e)
             {
                 await BotReporting.ReportAsync(ReportColors.exception, 
-                    (SocketTextChannel)message.Channel, 
-                    "Exception encountered while running a command, contact administrator.", 
-                    e.Message + ":\n" + e.InnerException, 
-                    luna);
+                    (SocketTextChannel)message.Channel,
+                    e.Message,
+                    $"Source: {e.Source}\n {e.InnerException}\n {e.StackTrace}", 
+                    message.Author);
             }
 
         }
