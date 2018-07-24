@@ -282,7 +282,23 @@ namespace LunaBot.Modules
         [Command("fixrooms", RunMode = RunMode.Async)]
         public async Task FixRoomsAsync()
         {
+            await ReplyAsync("Checking rooms...");
 
+            int roomCount = 0;
+            foreach(SocketGuildUser user in Context.Guild.Users)
+            {
+                Logger.Verbose("system", $"Room check for {user.Username}");
+                if (Context.Guild.TextChannels.Where(x => x.Name.Contains(user.Id.ToString())).FirstOrDefault() == null)
+                {
+                    Logger.Verbose("system", $"No room found. Creating room.");
+                    await ReplyAsync($"No room found for {user.Username}. Room created");
+                    await RoomUtilities.CreatePersonalRoomAsync(Context.Guild, user);
+
+                    roomCount++;
+                }
+            }
+
+            await ReplyAsync($"Finished checking rooms. Rooms created: {roomCount}");
         }
 
     }
