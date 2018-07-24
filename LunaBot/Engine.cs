@@ -240,23 +240,45 @@ namespace LunaBot
 
         private async Task UserLeftAsync(SocketUser user)
         {
-            using (DiscordContext db = new DiscordContext())
-            {
-                ulong userId = user.Id;
-                User u = db.Users.Where(x => x.DiscordId == userId).FirstOrDefault();
-                if (u.TutorialFinished)
-                {
-                    Logger.Info("System", $"User {user.Username}<@{user.Id}> has left the server.");
-                    await lobby.SendMessageAsync($"{user.Username} has left the server :wave:").ConfigureAwait(false);
-                }
-            }
+            SocketTextChannel channel = null;
 
+            Logger.Info("System", $"User {user.Username}<@{user.Id}> has left the server.");
             await BotReporting.ReportAsync(ReportColors.userLeft,
                        channel: null,
                        title: "User Left",
                        content: $"<@{user.Id}> {user.Username} has left the server.",
                        originUser: luna,
                        targetUser: user).ConfigureAwait(false);
+
+            using (DiscordContext db = new DiscordContext())
+            {
+                ulong userId = user.Id;
+                User u = db.Users.Where(x => x.DiscordId == userId).FirstOrDefault();
+
+                if (u.TutorialFinished)
+                {
+                    await lobby.SendMessageAsync($"{user.Username} has left the server :wave:").ConfigureAwait(false);
+
+                    channel = guild.TextChannels.Where(x => x.Name == $"room-{user.Id}").FirstOrDefault();
+                }
+                else
+                {
+                    channel = guild.TextChannels.Where(x => x.Name == $"intro-{user.Id}").FirstOrDefault();
+                }
+
+            }
+
+            if (channel != null)
+            {
+                await channel.DeleteAsync();
+
+                await BotReporting.ReportAsync(ReportColors.userLeft,
+                      channel: null,
+                      title: "Room deleted",
+                      content: $"{user.Username} has left the server, room {channel.Name} deleted.",
+                      originUser: luna,
+                      targetUser: user).ConfigureAwait(false);
+            }
         }
 
         private async Task UserBannedAsync(SocketUser user, SocketGuild guild)
