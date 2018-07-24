@@ -789,17 +789,7 @@ namespace LunaBot
                         SocketRole everyone = roles.Find(everyoneFinder);
 
                         // Creat personal room
-                        RestTextChannel personalRoom = await guild.CreateTextChannelAsync($"room-{user.Id}");
-
-                        // Make room only visible to new user and admins
-                        await personalRoom.AddPermissionOverwriteAsync(user, Permissions.roomPerm);
-                        await personalRoom.AddPermissionOverwriteAsync(everyone, Permissions.removeAllPerm);
-
-                        // Send intro information
-                        await personalRoom.SendMessageAsync($"<@{user.Id}>, welcome to your room! \n" +
-                            $"The server might be public but this is your own private sliver of the server.\n" +
-                            $"You can run commands, save images, post stuff, etc.\n" +
-                            $"type `!help` for a list of the commands!");
+                        await RoomUtilities.CreatePersonalRoomAsync(guild, user);
 
                         Thread.Sleep(500);
                         await message.Channel.SendMessageAsync($"Adding sparkles...");
