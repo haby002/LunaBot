@@ -283,7 +283,7 @@ namespace LunaBot
 
         private async Task UserBannedAsync(SocketUser user, SocketGuild guild)
         {
-            await lobby.SendMessageAsync($"My hammer to your face!");
+            await lobby.SendMessageAsync($"My hammer to your face {user.Username}!");
             Logger.Info("System", $"User {user.Username}<@{user.Id}> has been banned from the server.");
 
             await BotReporting.ReportAsync(ReportColors.userBanned,
