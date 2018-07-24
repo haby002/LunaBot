@@ -109,9 +109,9 @@ namespace LunaBot
             {
                 using (DiscordContext db = new DiscordContext())
                 {
-                    User author = db.Users.Where(x => (ulong)x.ID == message.Author.Id).FirstOrDefault();
+                    //User author = db.Users.Where(x => (ulong)x.ID == message.Author.Id).FirstOrDefault();
                     // Tutorial messages that cannot run commands.
-                    if (message.Channel.Name.Contains("intro") && author.Privilege == User.Privileges.User)
+                    if (message.Channel.Name.Contains("intro") /*&& author.Privilege == User.Privileges.User*/)
                     {
                         await ProcessTutorialMessaageAsync(message).ConfigureAwait(false);
                         return;
