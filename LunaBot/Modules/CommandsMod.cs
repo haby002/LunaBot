@@ -404,7 +404,7 @@ namespace LunaBot.Modules
         }
 
         [Command("intervention", RunMode = RunMode.Async)]
-        public async Task IntervetionAsync(IUser requestedUser, int time)
+        public async Task InterventionAsync(IUser requestedUser, int time)
         {
             await BotReporting.ReportAsync(ReportColors.modCommand,
                         (SocketTextChannel)Context.Channel,

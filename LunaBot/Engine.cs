@@ -92,7 +92,7 @@ namespace LunaBot
         {
             SocketUserMessage message = messageParam as SocketUserMessage;
 
-            if (message == null)
+            if (message == null || message.Author.Id == ServerUtilities.UserIds.Luna)
                 return;
 
             await message.LogAsync(LogSeverity.Verbose).ConfigureAwait(false);
