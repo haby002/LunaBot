@@ -9,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Task = System.Threading.Tasks.Task;
@@ -350,11 +351,14 @@ namespace LunaBot
                 User databaseUser = db.Users.Where(x => x.DiscordId == userId).FirstOrDefault();
 
                 // Check for banned words
-                /*foreach (string bannedWord in BannedWords.words)
+                foreach (string bannedWord in BannedWords.words)
                 {
-                    if (message.Content.Contains(bannedWord))
+                    if (Regex.Match(message.Content, string.Format(@"\b{0}\b", bannedWord)).Success)
                     {
                         await message.DeleteAsync();
+
+                        await message.Author.SendMessageAsync("One or more of the words in your latest message is a banned word.\n" +
+                            "You have been warned and when you get 5 warns you will be kicked.\n");
 
                         await BotReporting.ReportAsync(ReportColors.spamBlock,
                                 (SocketTextChannel)message.Channel,
@@ -370,7 +374,7 @@ namespace LunaBot
 
                         return true;
                     }
-                }*/
+                }
 
                 // Return if user is mod or higher
                 if (databaseUser.Privilege >= User.Privileges.Moderator)
