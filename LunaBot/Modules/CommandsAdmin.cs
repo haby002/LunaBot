@@ -273,8 +273,16 @@ namespace LunaBot.Modules
                 }
 
                 await ReplyAsync($"Finished removing rooms. Total: {roomsRemovedCount}");
+
+                // Fix monk and other roles
                 
             }
+        }
+
+        [Command("fixrooms", RunMode = RunMode.Async)]
+        public async Task FixRoomsAsync()
+        {
+
         }
 
     }

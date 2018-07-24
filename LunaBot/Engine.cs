@@ -92,7 +92,7 @@ namespace LunaBot
         {
             SocketUserMessage message = messageParam as SocketUserMessage;
 
-            if (message == null || message.Author.Id == ServerUtilities.UserIds.Luna)
+            if (message == null || message.Author.IsBot || message.Author.IsWebhook)
                 return;
 
             await message.LogAsync(LogSeverity.Verbose).ConfigureAwait(false);
@@ -109,7 +109,7 @@ namespace LunaBot
             {
                 using (DiscordContext db = new DiscordContext())
                 {
-                    User author = db.Users.Where(x => (ulong)x.ID == message.Author.Id).First();
+                    User author = db.Users.Where(x => (ulong)x.ID == message.Author.Id).FirstOrDefault();
                     // Tutorial messages that cannot run commands.
                     if (message.Channel.Name.Contains("intro") && author.Privilege == User.Privileges.User)
                     {
