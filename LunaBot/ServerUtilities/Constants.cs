@@ -146,7 +146,9 @@ namespace LunaBot.ServerUtilities
         {
             "nigger",
             "nig",
+            "niger",
             "faggot",
+            "fagot",
             "fag",
             "fagoot",
             "cunt"

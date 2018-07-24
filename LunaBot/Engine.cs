@@ -343,10 +343,34 @@ namespace LunaBot
             // Ignore Luna
             if (message.Author.Id == UserIds.Luna)
                 return false;
+
             using (DiscordContext db = new DiscordContext())
             {
                 ulong userId = message.Author.Id;
                 User databaseUser = db.Users.Where(x => x.DiscordId == userId).FirstOrDefault();
+
+                // Check for banned words
+                foreach (string bannedWord in BannedWords.words)
+                {
+                    if (message.Content.Contains(bannedWord))
+                    {
+                        await message.DeleteAsync();
+
+                        await BotReporting.ReportAsync(ReportColors.spamBlock,
+                                (SocketTextChannel)message.Channel,
+                                $"User said banned word. Warn given and total is {++databaseUser.warnCount}",
+                                $"<@{message.Author.Id}>: {message.Content}",
+                                luna,
+                                message.Author);
+
+                        if(databaseUser.warnCount >= 5)
+                        {
+                            await KickUserHelper.KickAsync(message.Channel as SocketTextChannel, message.Author as SocketGuildUser);
+                        }
+
+                        return true;
+                    }
+                }
 
                 // Return if user is mod or higher
                 if (databaseUser.Privilege >= User.Privileges.Moderator)
@@ -364,18 +388,19 @@ namespace LunaBot
                     Logger.Info("System", $"User {message.Author.Username}<{message.Author.Id}> is talking too fast. Deleting latest message.");
                     await message.DeleteAsync();
 
-                    await message.Channel.SendMessageAsync($"<@{message.Author.Id}> you are talking too fast, please slow down.");
+                    RestUserMessage r = await message.Channel.SendMessageAsync($"<@{message.Author.Id}> you are talking too fast, please slow down.");
+
+                    await BotReporting.ReportAsync(ReportColors.spamBlock,
+                            (SocketTextChannel)message.Channel,
+                            "User talking too fast.",
+                            $"<@{message.Author.Id}>: {message.Content}",
+                            luna,
+                            message.Author);
 
                     Task.Run(async () =>
                     {
-                        await BotReporting.ReportAsync(ReportColors.spamBlock, 
-                            (SocketTextChannel)message.Channel, 
-                            "User talking too fast.", 
-                            $"<@{message.Author.Id}>: {message.Content}", 
-                            luna, 
-                            message.Author);
-
-                        // add warn
+                        Thread.Sleep(7000);
+                        await r.DeleteAsync();
                     }).Start();
 
                     return true;
