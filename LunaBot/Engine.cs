@@ -350,7 +350,7 @@ namespace LunaBot
                 User databaseUser = db.Users.Where(x => x.DiscordId == userId).FirstOrDefault();
 
                 // Check for banned words
-                foreach (string bannedWord in BannedWords.words)
+                /*foreach (string bannedWord in BannedWords.words)
                 {
                     if (message.Content.Contains(bannedWord))
                     {
@@ -370,7 +370,7 @@ namespace LunaBot
 
                         return true;
                     }
-                }
+                }*/
 
                 // Return if user is mod or higher
                 if (databaseUser.Privilege >= User.Privileges.Moderator)
