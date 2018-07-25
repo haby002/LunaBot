@@ -388,11 +388,11 @@ namespace LunaBot
                             await KickUserHelper.KickAsync(message.Channel as SocketTextChannel, message.Author as SocketGuildUser);
                         }
 
+                        db.SaveChanges();
+
                         return true;
                     }
                 }
-
-                db.SaveChanges();
 
                 // Return if user is mod or higher
                 if (databaseUser.Privilege >= User.Privileges.Moderator)
