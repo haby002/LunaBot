@@ -132,6 +132,8 @@ namespace LunaBot
                 {
                     await ProcessXpAsync(message);
 
+                    await SecretFeaturesAsync(message);
+
                     return;
                 }
 
@@ -369,7 +371,7 @@ namespace LunaBot
                 // Check for banned words
                 foreach (string bannedWord in BannedWords.words)
                 {
-                    if (Regex.Match(message.Content, string.Format(@"\b{0}\b", bannedWord)).Success)
+                    if (Regex.IsMatch(message.Content, @"\b" + bannedWord + @"\b"))
                     {
                         await message.DeleteAsync();
 
@@ -437,6 +439,18 @@ namespace LunaBot
             messageTimestamps.Add(user, DateTime.Now);
 
             return false;
+        }
+
+        /// <summary>
+        /// Secret Features for Secret stuff
+        /// </summary>
+        /// <returns></returns>
+        private async Task SecretFeaturesAsync(SocketUserMessage message)
+        {
+            if(Regex.IsMatch(message.Content, @"\bbuldge\b"))
+            {
+                await message.Channel.SendMessageAsync("OWO");
+            }
         }
 
         /// <summary>
