@@ -312,8 +312,7 @@ namespace LunaBot
                        title: $"{message.Value.Author.Username} deleted message",
                        content: $"<@{message.Value.Id}> deleted a message in {channel.Name}:\n" +
                                 $"{message.Value.Content}",
-                       originUser: user,
-                       targetUser: user).ConfigureAwait(false);
+                       originUser: user).ConfigureAwait(false);
         }
         
         private async Task ProcessXpAsync(SocketMessage message)
@@ -392,6 +391,8 @@ namespace LunaBot
                         return true;
                     }
                 }
+
+                db.SaveChanges();
 
                 // Return if user is mod or higher
                 if (databaseUser.Privilege >= User.Privileges.Moderator)
