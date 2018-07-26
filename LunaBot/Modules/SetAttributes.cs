@@ -57,7 +57,7 @@ namespace LunaBot.Modules
         {
             if(age < 0)
             {
-                await ReplyAsync("You can't be unborn, no matter how much you try... Age cannot be less than 0");
+                await ReplyAsync("You can't be unborn, no matter how much you try... Age cannot be less than `0`");
                 return;
             }
 
@@ -210,7 +210,8 @@ namespace LunaBot.Modules
                     "- Bisexual\n" +
                     "- Asexual\n" +
                     "- Pansexual\n" +
-                    "- Gray-a (if you'd rather it not be shown)\n" +
+                    "- Demisexual\n" +
+                    "- Other" +
                     "```");
 
                 return;
