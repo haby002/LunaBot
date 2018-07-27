@@ -427,7 +427,7 @@ namespace LunaBot.Modules
                 try
                 {
                     // Look for intervention role
-                    SocketRole intervetionRole = Context.Guild.Roles.Where(x => x.Name == "intervention").First();
+                    SocketRole intervetionRole = Context.Guild.Roles.Where(x => x.Name.ToLower() == "intervention").First();
 
                     // give user the role
                     SocketGuildUser user = requestedUser as SocketGuildUser;
