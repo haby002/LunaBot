@@ -447,10 +447,17 @@ namespace LunaBot
         /// <returns></returns>
         private async Task SecretFeaturesAsync(SocketUserMessage message)
         {
-            if(Regex.IsMatch(message.Content, @"\bbuldge\b"))
+            Match match = Regex.Match(message.Content, @"\ba+w+o+\b");
+            if (match.Success)
+            {
+                Console.WriteLine("No awo'ing allowed! You have been fined $" + match.Length * 12.50 + ".\n" +
+                    "We also accept dog biscuits.");
+            }
+            else if(Regex.IsMatch(message.Content, @"\bbuldge\b"))
             {
                 await message.Channel.SendMessageAsync("OWO");
             }
+            
         }
 
         /// <summary>
