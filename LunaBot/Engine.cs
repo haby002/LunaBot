@@ -555,7 +555,7 @@ namespace LunaBot
 
                 if (databaseUser.Nickname == null || databaseUser.Nickname == "")
                 {
-                    if(message.Content.Equals("none"))
+                    if(message.Content.ToLower().Equals("none"))
                     {
                         databaseUser.Nickname = message.Author.Username;
                         
