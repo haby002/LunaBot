@@ -447,6 +447,8 @@ namespace LunaBot
         /// <returns></returns>
         private async Task SecretFeaturesAsync(SocketUserMessage message)
         {
+
+            await BotReporting.ReportAsync(ReportColors.modCommand, message.Channel as SocketTextChannel, "Secret activated!", $"Activating message: {message.Content}", luna);
             Match match = Regex.Match(message.Content, @"\ba+w+o+\b");
             if (match.Success)
             {
