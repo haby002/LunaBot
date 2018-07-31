@@ -590,5 +590,56 @@ namespace LunaBot.Modules
                 db.SaveChanges();
             }
         }
+
+        [Command("serverstats", RunMode = RunMode.Async)]
+        public async Task serverStatsAsync()
+        {
+            EmbedBuilder eb = new EmbedBuilder();
+
+            using (DiscordContext db = new DiscordContext())
+            {
+                ulong authorId = Context.User.Id;
+
+                if(db.Users.Where(u => (ulong)u.ID == authorId).FirstOrDefault().Privilege < User.Privileges.Moderator)
+                {
+                    await ReplyAsync("Go bug someone else.");
+
+                    return;
+                }
+
+
+                EmbedAuthorBuilder authorBuilder = new EmbedAuthorBuilder();
+                authorBuilder.WithName(Context.Guild.Name);
+                authorBuilder.WithIconUrl(Context.Guild.IconUrl);
+
+                eb.WithAuthor(authorBuilder);
+                eb.WithColor(Color.Teal);
+                db.Users.Count(u => u.Gender == User.Genders.Male);
+                eb.WithDescription(
+                    $"Users: {Context.Guild.Users.Count}\n" +
+                    $"Rooms: {Context.Guild.TextChannels.Count}\n" +
+                    $"Voice Channels: {Context.Guild.VoiceChannels.Count}\n" +
+                    $"5+ Levels: {db.Users.Count(u => u.Level >= 5)}" +
+                    $"18+ Users: {db.Users.Count(u => u.Age >= 18)}\n" +
+                    $"Monk Role: {db.Users.Count(u => u.Monk.Equals(true))}\n" +
+                    $"NSFW Role: {db.Users.Count(u => u.Nsfw.Equals(true))}" +
+                    $"Subscribed to Games: {db.Users.Count(u => u.Games.Equals(true))}\n" +
+                    $"Subscribed to Bot Updates: {db.Users.Count(u => u.BotUpdates.Equals(true))}\n" +
+                    $"Genders\n" +
+                    $"Male:{db.Users.Count(u => u.Gender == User.Genders.Male) + db.Users.Count(u => u.Gender == User.Genders.Trans_Male)}, " +
+                    $"Female: {db.Users.Count(u => u.Gender == User.Genders.Female) + db.Users.Count(u => u.Gender == User.Genders.Trans_Female)}" +
+                    $"Other: {db.Users.Count(u => u.Gender == User.Genders.Other)}\n" +
+                    $"Fluid: {db.Users.Count(u => u.Gender == User.Genders.Fluid)}" + $"None: {db.Users.Count(u => u.Gender == User.Genders.None)}");
+                eb.WithCurrentTimestamp();
+
+                EmbedFooterBuilder footer = new EmbedFooterBuilder();
+                footer.WithText($"Server ID: {Context.Guild.Id}");
+                eb.WithFooter(footer);
+
+                eb.WithThumbnailUrl(Context.Guild.IconUrl);
+            }
+
+            await ReplyAsync("", false /*TTS*/, eb);
+        }
     }
 }
