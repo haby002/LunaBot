@@ -43,7 +43,7 @@ namespace LunaBot.Modules
                             SocketGuildUser gUser = (SocketGuildUser)requestedUser;
                             await gUser.ModifyAsync(u => u.Nickname = content);
                             user.Nickname = content;
-                            Logger.Info(author.Username, $"Changed user <@{ requestedUser.Id}> 's description from {user.Description} to {content}");
+                            Logger.Info(author.Username, $"Changed user <@{ requestedUser.Id}> 's nick from {user.Nickname} to {content}");
                             break;
                         case "description":
                         case "desc":
