@@ -600,7 +600,7 @@ namespace LunaBot.Modules
             {
                 ulong authorId = Context.User.Id;
 
-                User author = db.Users.Where(u => (ulong)u.ID == authorId).FirstOrDefault();
+                User author = db.Users.Where(u => (ulong)u.DiscordId == authorId).FirstOrDefault();
 
                 if(author == null)
                 {
