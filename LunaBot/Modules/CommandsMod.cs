@@ -600,7 +600,15 @@ namespace LunaBot.Modules
             {
                 ulong authorId = Context.User.Id;
 
-                if(db.Users.Where(u => (ulong)u.ID == authorId).FirstOrDefault().Privilege < User.Privileges.Moderator)
+                User author = db.Users.Where(u => (ulong)u.ID == authorId).FirstOrDefault();
+
+                if(author == null)
+                {
+                    Logger.Warning("system", $"Cannot find user {Context.User.Username}");
+                    return;
+                }
+
+                if (author.Privilege < User.Privileges.Moderator)
                 {
                     await ReplyAsync("Go bug someone else.");
 
