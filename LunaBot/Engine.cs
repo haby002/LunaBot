@@ -448,12 +448,12 @@ namespace LunaBot
         private async Task SecretFeaturesAsync(SocketUserMessage message)
         {
 
-            Match match = Regex.Match(message.Content, @"\ba+w+o+\b");
+            Match match = Regex.Match(message.Content, @"\ba+w+oo+\b");
             if (match.Success)
             {
                 await BotReporting.ReportAsync(ReportColors.modCommand, message.Channel as SocketTextChannel, "Secret activated!", $"Activating message: {message.Content}", luna);
 
-                await message.Channel.SendMessageAsync("No awo'ing allowed! You have been fined $" + match.Length * 12.50 + ".\n" +
+                await message.Channel.SendMessageAsync("No awoo'ing allowed! You have been fined $" + match.Length * 12.50 + ".\n" +
                     "*We also accept dog biscuits.*");
             }
             else if(Regex.IsMatch(message.Content, @"\bbuldge\b"))
