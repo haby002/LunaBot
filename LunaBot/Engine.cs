@@ -456,7 +456,7 @@ namespace LunaBot
                 await message.Channel.SendMessageAsync("No awoo'ing allowed! You have been fined $" + match.Length * 12.50 + ".\n" +
                     "*We also accept dog biscuits.*");
             }
-            else if(Regex.IsMatch(message.Content, @"\bbuldge\b"))
+            else if(Regex.IsMatch(message.Content.ToLower(), @"\bbulge\b"))
             {
                 await BotReporting.ReportAsync(ReportColors.modCommand, message.Channel as SocketTextChannel, "Secret activated!", $"Activating message: {message.Content}", luna);
 
