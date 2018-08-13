@@ -750,7 +750,8 @@ namespace LunaBot
                             databaseUser.Nsfw = true;
                             await message.Channel.SendMessageAsync($"I've disabled `RP` for you.\n" +
                                 $"That's it! Your profile has been set and you are ready to venture into our server.\n" +
-                                $"Just type `yes` if you agree to the server rules  and guidelines over at #rules_and_announcements.\n" +
+                                $"Just type `yes` if you agree to the server rules  and guidelines over at #rules.\n" +
+                                $"Additionally we have roles for free games or updates to our main bot, check out the pins in the bot corner for the commands.\n" +
                                 $"Take all the time you need, we'll still be here ^^");
                         } 
                         else
