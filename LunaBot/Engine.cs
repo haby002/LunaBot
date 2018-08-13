@@ -492,7 +492,7 @@ namespace LunaBot
             await introRoom.SendMessageAsync("Welcome to the server! Lets get you settled, alright?");
             Thread.Sleep(2000);
             await introRoom.SendMessageAsync("Firstly, what should we call you? \n" +
-                "If you'd rather not change your nick just type `none`");
+                "If you'd rather not change your name just type `none`");
 
             return register;
             //await introRoom.DeleteAsync();
