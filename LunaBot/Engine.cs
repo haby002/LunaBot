@@ -835,6 +835,20 @@ namespace LunaBot
                         databaseUser.TutorialFinished = true;
                         db.SaveChanges();
 
+                        await BotReporting.ReportAsync(ReportColors.userCommand,
+                            message.Channel as SocketTextChannel,
+                            $"<@{user.Id}> tutorial finished",
+                            $"Nick: {databaseUser.Nickname}\n" +
+                            $"Fur: {databaseUser.Fur}\n" +
+                            $"Age: {databaseUser.Age}\n" +
+                            $"Description: {databaseUser.Description}\n" +
+                            $"Ref: {databaseUser.Ref}\n" +
+                            $"Monk: {databaseUser.Monk}\n" +
+                            $"NSFW: {databaseUser.Nsfw}",
+                            luna,
+                            user,
+                            $"ID: {user.Id}");
+
                         await (message.Channel as SocketGuildChannel).AddPermissionOverwriteAsync(user, Permissions.mutePerm);
 
                         await message.Channel.SendMessageAsync($"Awesome! Let me create your `room` and set up your permissions...");
@@ -845,6 +859,7 @@ namespace LunaBot
                         // Creat personal room
                         await RoomUtilities.CreatePersonalRoomAsync(guild, user);
 
+                        // Fluff
                         Thread.Sleep(500);
                         await message.Channel.SendMessageAsync($"Adding sparkles...");
                         Thread.Sleep(700);
@@ -857,12 +872,12 @@ namespace LunaBot
                         Predicate<SocketRole> newbieFinder = (SocketRole sr) => { return sr.Name == "Newbie"; };
                         SocketRole newbie = roles.Find(newbieFinder);
 
+                        // Server announcement
                         await user.RemoveRoleAsync(newbie);
-
                         await lobby.SendMessageAsync($"Please welcome <@{user.Id}> to the server!");
 
+                        // Tut room deletion
                         await message.Channel.SendMessageAsync("This channel will self-destruct in 2 minutes");
-
                         new Thread(() =>
                         {
                             Thread.CurrentThread.IsBackground = true;
