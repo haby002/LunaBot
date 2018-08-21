@@ -844,7 +844,7 @@ namespace LunaBot
                             $"Description: {databaseUser.Description}\n" +
                             $"Ref: {databaseUser.Ref}\n" +
                             $"Monk: {databaseUser.Monk}\n" +
-                            $"NSFW: {databaseUser.Nsfw}",
+                            $"SFW: {databaseUser.Nsfw}",
                             luna,
                             user,
                             $"ID: {user.Id}");
