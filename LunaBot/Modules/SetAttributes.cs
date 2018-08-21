@@ -553,8 +553,8 @@ namespace LunaBot.Modules
                     // Check if role was found on the server
                     if (AnnouncementRole == null)
                     {
-                        Logger.Warning("System", $"Couldn't find role {Roles.BotUpdates}");
-                        await BotReporting.ReportAsync(ReportColors.exception, Context.Channel as SocketTextChannel, "Error finding Role.", $"Could not find role: {Roles.BotUpdates}, contact admin.", Context.User);
+                        Logger.Warning("System", $"Couldn't find role {Roles.OpenDM}");
+                        await BotReporting.ReportAsync(ReportColors.exception, Context.Channel as SocketTextChannel, "Error finding Role.", $"Could not find role: {Roles.OpenDM}, contact admin.", Context.User);
                         await ReplyAsync("Error finding role, notifying staff.");
                     }
 
@@ -574,7 +574,7 @@ namespace LunaBot.Modules
                         Logger.Verbose("System", $"Found role {AnnouncementRole.Name} and added it.");
                         user.OpenDM = true;
 
-                        await ReplyAsync($"<@{userId}> joined the `{Roles.BotUpdates}` role.");
+                        await ReplyAsync($"<@{userId}> joined the `{Roles.OpenDM}` role.");
                     }
 
                     db.SaveChanges();
