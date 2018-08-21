@@ -489,6 +489,7 @@ namespace LunaBot
             bool register = UserUtilities.manualRegister(user);
 
             // Start interaction with user. Sleeps are for humanizing the bot.
+            await introRoom.SendMessageAsync("(1/10)");
             await introRoom.SendMessageAsync("Welcome to the server! Lets get you settled, alright?");
             Thread.Sleep(2000);
             await introRoom.SendMessageAsync("Firstly, what should we call you? \n" +
@@ -573,7 +574,8 @@ namespace LunaBot
                         databaseUser.Nickname = message.Author.Username;
                         
                         await message.Channel.GetMessagesAsync().ForEachAsync((x) => { foreach (var f in x) {awaitableObject = f.DeleteAsync(); } });
-                        
+
+                        await message.Channel.SendMessageAsync("(2/10)");
                         await message.Channel.SendMessageAsync("Very well, your name will not be changed. Now lets set your gender.");
                     }
                     else
@@ -585,6 +587,7 @@ namespace LunaBot
                         await message.Channel.GetMessagesAsync().ForEachAsync((x) => { foreach (var f in x) { awaitableObject = f.DeleteAsync(); } });
                         
                         Logger.Verbose(user.Username, $"Changed nickname from {user.Username} to {message.Content}");
+                        await message.Channel.SendMessageAsync("(2/10)");
                         await message.Channel.SendMessageAsync("I've gone ahead and changed your name. Now lets set your gender.");
                     }
                     
@@ -616,6 +619,7 @@ namespace LunaBot
                     Logger.Verbose(user.Username, $"Setting gender to {message.Content}");
 
                     await message.Channel.GetMessagesAsync().ForEachAsync((x) => { foreach (var f in x) { awaitableObject = f.DeleteAsync(); } });
+                    await message.Channel.SendMessageAsync("(3/10)");
                     await message.Channel.SendMessageAsync($"Alright, you are now `{message.Content}`. \n" +
                         $"Next lets set your orientation.\n" +
                         "You can choose from below:\n" +
@@ -648,6 +652,7 @@ namespace LunaBot
                     Logger.Verbose(user.Username, $"Setting orientation to {message.Content}");
 
                     await message.Channel.GetMessagesAsync().ForEachAsync((x) => { foreach (var f in x) { awaitableObject = f.DeleteAsync(); } });
+                    await message.Channel.SendMessageAsync("(4/10)");
                     await message.Channel.SendMessageAsync($"Alright, you are now `{message.Content}`. \n" +
                         $"Next lets set your `sona`.\n" +
                         $"Species, type, color, etc..");
@@ -658,6 +663,7 @@ namespace LunaBot
                     Logger.Verbose(user.Username, $"Setting sona to {message.Content}");
 
                     await message.Channel.GetMessagesAsync().ForEachAsync((x) => { foreach (var f in x) { awaitableObject = f.DeleteAsync(); } });
+                    await message.Channel.SendMessageAsync("(5/10)");
                     await message.Channel.SendMessageAsync($"Sona set to `{message.Content}`. Next lets set your `age`.\n" +
                         $"If you don't want to show your age you can just type `no`");
                 }
@@ -686,6 +692,7 @@ namespace LunaBot
                     Logger.Verbose(user.Username, $"Setting age to {message.Content}");
 
                     await message.Channel.GetMessagesAsync().ForEachAsync((x) => { foreach (var f in x) { awaitableObject = f.DeleteAsync(); } });
+                    await message.Channel.SendMessageAsync("(6/10)");
                     await message.Channel.SendMessageAsync($"Cool, I've set your age to `{message.Content}`. Now comes the fun part!.\n" +
                         $"Describe yourself! What do you like, what do you do, hobbies, favorite color, etc...\n" +
                         $"Type anything you want in one sentence! This will be used as an icebreaker and to get to know you.");
@@ -697,6 +704,7 @@ namespace LunaBot
                     databaseUser.Description = message.Content;
 
                     await message.Channel.GetMessagesAsync().ForEachAsync((x) => { foreach (var f in x) { awaitableObject = f.DeleteAsync(); } });
+                    await message.Channel.SendMessageAsync("(7/10)");
                     await message.Channel.SendMessageAsync($"Alright, your description will look like: `{message.Content}`." +
                         $"Lastly got a `ref`? Paste dat link.\n" +
                         $"You can just type `none` otherwise.");
@@ -724,6 +732,7 @@ namespace LunaBot
                             awaitableObject = f.DeleteAsync();
                             Thread.Sleep(50);
                         } });
+                    await message.Channel.SendMessageAsync("(8/10)");
                     await message.Channel.SendMessageAsync($"How about `RP`? Do you want to be able to see rp rooms? `yes` or `no`\n" +
                         $"This can be changed later on if you change your mind.");
                 }
@@ -748,6 +757,8 @@ namespace LunaBot
 
                             await user.AddRoleAsync(sfw);
                             databaseUser.Nsfw = true;
+
+                            await message.Channel.SendMessageAsync("(10/10)");
                             await message.Channel.SendMessageAsync($"I've disabled `RP` for you.\n" +
                                 $"That's it! Your profile has been set and you are ready to venture into our server.\n" +
                                 $"Just type `yes` if you agree to the server rules  and guidelines over at #rules.\n" +
@@ -756,6 +767,7 @@ namespace LunaBot
                         } 
                         else
                         {
+                            await message.Channel.SendMessageAsync("(9/10)");
                             await message.Channel.SendMessageAsync($"I've disabled `RP` for you.\n" +
                                 $"Next we are a server with a `NSFW` section. You can opt-in with a `yes` or opt-out with a `no`.\n" +
                                 $"This can be changed later on if you change your mind.");
@@ -802,6 +814,7 @@ namespace LunaBot
                         databaseUser.Nsfw = true;
 
                         await message.Channel.GetMessagesAsync().ForEachAsync((x) => { foreach (var f in x) { awaitableObject = f.DeleteAsync(); } });
+                        await message.Channel.SendMessageAsync("(10/10)");
                         await message.Channel.SendMessageAsync($"I've enabled `NSFW` for you.\n" +
                             $"That's it! Your profile has been set and you are ready to venture into our server.\n" +
                             $"Just type `yes` if you agree to the server rules  and guidelines over at #rules_and_announcements.\n" +
@@ -818,6 +831,7 @@ namespace LunaBot
                         databaseUser.Nsfw = true;
 
                         await message.Channel.GetMessagesAsync().ForEachAsync((x) => { foreach (var f in x) { awaitableObject = f.DeleteAsync(); } });
+                        await message.Channel.SendMessageAsync("(10/10)");
                         await message.Channel.SendMessageAsync($"I've disabled `NSFW` for you.\n" + 
                             $"That's it! Your profile has been set and you are ready to venture into our server.\n" +
                             $"Just type yes if you agree to the server rules  and guidelines over at #rules_and_announcements.\n" +
