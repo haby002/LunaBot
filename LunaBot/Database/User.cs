@@ -47,6 +47,8 @@ namespace LunaBot.Database
 
         public bool BotUpdates { get; set; }
 
+        public bool OpenDM { get; set; }
+
         public int SnugR { get; set; }
 
         public int SnugG { get; set; }

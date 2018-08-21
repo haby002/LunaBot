@@ -530,5 +530,62 @@ namespace LunaBot.Modules
                 }
             }
         }
+
+        [Command("opendm", RunMode = RunMode.Async)]
+        public async Task SetOpenDMAsync()
+        {
+            SocketUser author = Context.User;
+            ulong userId = author.Id;
+
+            SocketGuildChannel guildChannel = Context.Channel as SocketGuildChannel;
+            List<SocketRole> roles = guildChannel.Guild.Roles.ToList();
+
+            using (DiscordContext db = new DiscordContext())
+            {
+                User user = db.Users.FirstOrDefault(x => x.DiscordId == userId);
+
+                if (user != null)
+                {
+                    Predicate<SocketRole> RoleFinder = (SocketRole sr) => { return sr.Name == Roles.OpenDM; };
+                    SocketRole AnnouncementRole = roles.Find(RoleFinder);
+                    AnnouncementRole = roles.Find(RoleFinder);
+
+                    // Check if role was found on the server
+                    if (AnnouncementRole == null)
+                    {
+                        Logger.Warning("System", $"Couldn't find role {Roles.BotUpdates}");
+                        await BotReporting.ReportAsync(ReportColors.exception, Context.Channel as SocketTextChannel, "Error finding Role.", $"Could not find role: {Roles.BotUpdates}, contact admin.", Context.User);
+                        await ReplyAsync("Error finding role, notifying staff.");
+                    }
+
+                    if (user.OpenDM == true)
+                    {
+                        // Remove the role
+                        await guildChannel.GetUser((ulong)userId).RemoveRoleAsync(AnnouncementRole);
+                        Logger.Verbose("System", $"found role {AnnouncementRole.Name} and removed it.");
+                        user.OpenDM = false;
+
+                        await ReplyAsync($"<@{userId}> left the `{Roles.OpenDM}` role.");
+                    }
+                    else
+                    {
+                        // Add the role
+                        await guildChannel.GetUser((ulong)userId).AddRoleAsync(AnnouncementRole);
+                        Logger.Verbose("System", $"Found role {AnnouncementRole.Name} and added it.");
+                        user.OpenDM = true;
+
+                        await ReplyAsync($"<@{userId}> joined the `{Roles.BotUpdates}` role.");
+                    }
+
+                    db.SaveChanges();
+
+                }
+                else
+                {
+                    Logger.Verbose(author.Username, $"Failed to find user: {userId}");
+                    await ReplyAsync($"Failed to find user: `{author.Username}`");
+                }
+            }
+        }
     }
 }

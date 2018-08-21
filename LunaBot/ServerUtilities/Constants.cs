@@ -101,6 +101,8 @@ namespace LunaBot.ServerUtilities
 
         internal static string BotUpdates = "Bot Updates";
 
+        internal static string OpenDM = "Open DM";
+
     }
 
     internal static class Permissions

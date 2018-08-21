@@ -821,7 +821,7 @@ namespace LunaBot
                         await message.Channel.SendMessageAsync($"I've disabled `NSFW` for you.\n" + 
                             $"That's it! Your profile has been set and you are ready to venture into our server.\n" +
                             $"Just type yes if you agree to the server rules  and guidelines over at #rules_and_announcements.\n" +
-                            $"Additionally we have roles for free games or updates to our main bot, check out the pins in the bot corner for the commands.\n" +
+                            $"Additionally we have roles for free games, updates to our main bot, and other customization roles, check out the pins in the bot corner for the commands.\n" +
                             $"Take all the time you need, we'll still be here ^^");
                     }
 
