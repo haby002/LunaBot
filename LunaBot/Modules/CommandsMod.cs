@@ -433,7 +433,15 @@ namespace LunaBot.Modules
                     SocketGuildUser user = requestedUser as SocketGuildUser;
                     await user.AddRoleAsync(intervetionRole);
 
+                    // Create the channel and add the user
+                    RestTextChannel interventionChannel = await Context.Guild.CreateTextChannelAsync($"intervention-{user.Id}");
+                    await interventionChannel.AddPermissionOverwriteAsync(Context.Guild.EveryoneRole, Permissions.removeAllPerm);
+                    await interventionChannel.AddPermissionOverwriteAsync(user, Permissions.userPerm);
+                    await interventionChannel.AddPermissionOverwriteAsync(Context.Guild.Roles.Where(r => r.Name == Roles.Staff).FirstOrDefault(), Permissions.adminPerm);
 
+                    // Notify user of intervention
+                    await interventionChannel.SendMessageAsync($"{user.Mention} you have been placed in intervention due to either your profile or attitude in the server.\n" +
+                        $"A staff member should be here shortly to assist you.");
                 }
                 catch (Exception e)
                 {
@@ -680,7 +688,7 @@ namespace LunaBot.Modules
                         Engine.luna,
                         Context.User);
 
-                    await ReplyAsync($"Want me to *clear* you from this server?");
+                    await ReplyAsync($"Want me to clear *you* from this server?");
 
                     return;
                 }
