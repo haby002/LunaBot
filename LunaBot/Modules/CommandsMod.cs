@@ -700,7 +700,7 @@ namespace LunaBot.Modules
 
                 Task.Run(async () =>
                 {
-                    Thread.Sleep(5000);
+                    Thread.Sleep(2000);
                     await replyMessage.DeleteAsync();
 
                 }).Start();
