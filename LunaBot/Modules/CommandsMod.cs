@@ -651,7 +651,7 @@ namespace LunaBot.Modules
         }
 
         [Command("clear", RunMode = RunMode.Async)]
-        public async Task clearAsync(int amount = 1)
+        public async Task clearAsync(int amount = 2)
         {
             using (DiscordContext db = new DiscordContext())
             {
@@ -662,7 +662,7 @@ namespace LunaBot.Modules
                     await BotReporting.ReportAsync(ReportColors.exception, 
                         Context.Channel as SocketTextChannel, 
                         "Cannot find user", 
-                        $"Cannot find {Context.User.Username} in the database.", 
+                        $"Cannot find `{Context.User.Username}` in the database.", 
                         Engine.luna, 
                         Context.User);
 
@@ -675,7 +675,7 @@ namespace LunaBot.Modules
                     await BotReporting.ReportAsync(ReportColors.modCommand,
                         Context.Channel as SocketTextChannel,
                         "User attempted mod command",
-                        $"{Context.User.Username} attempted to use `clear` command in {Context.Channel.Name}:\n" +
+                        $"{Context.User.Username} attempted to use `clear` command in `{Context.Channel.Name}`:\n" +
                         $"Message: `{Context.Message.Content}`",
                         Engine.luna,
                         Context.User);
@@ -688,18 +688,15 @@ namespace LunaBot.Modules
                 await BotReporting.ReportAsync(ReportColors.modCommand,
                         Context.Channel as SocketTextChannel,
                         $"Clear all command",
-                        $"{Context.User.Username} used `clear` command in {Context.Channel.Name} to clear {amount} messages.",
+                        $"{Context.User.Username} used `clear` command in `{Context.Channel.Name}` to clear `{amount}` messages.",
                         Engine.luna,
                         Context.User);
 
-                List<IReadOnlyCollection<IMessage>> allMessages = await Context.Channel.GetMessagesAsync(amount).ToList();
+                var allMessages = await Context.Channel.GetMessagesAsync(amount).Flatten();
+                
+                IUserMessage replyMessage = await ReplyAsync($"Deleting last `{amount}` messages");
 
-                IUserMessage replyMessage = await ReplyAsync($"Deleting last {amount} messages");
-
-                IEnumerable<Task> deleteTasks =
-                    allMessages.SelectMany(l => l.Select(m => m.DeleteAsync()));
-
-                await Task.WhenAll(deleteTasks.ToArray());
+                await Context.Channel.DeleteMessagesAsync(allMessages);
 
                 Task.Run(async () =>
                 {
