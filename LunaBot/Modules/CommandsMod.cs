@@ -651,7 +651,7 @@ namespace LunaBot.Modules
         }
 
         [Command("clear", RunMode = RunMode.Async)]
-        public async Task clearAsync(int amount = 2)
+        public async Task clearAsync(int amount = 1)
         {
             using (DiscordContext db = new DiscordContext())
             {
@@ -675,7 +675,7 @@ namespace LunaBot.Modules
                     await BotReporting.ReportAsync(ReportColors.modCommand,
                         Context.Channel as SocketTextChannel,
                         "User attempted mod command",
-                        $"{Context.User.Username} attempted to use `clear` command in `{Context.Channel.Name}`:\n" +
+                        $"{Context.User.Username} attempted to use `clear` command in `{Context.Channel.Name}`\n" +
                         $"Message: `{Context.Message.Content}`",
                         Engine.luna,
                         Context.User);
@@ -692,7 +692,7 @@ namespace LunaBot.Modules
                         Engine.luna,
                         Context.User);
 
-                var allMessages = await Context.Channel.GetMessagesAsync(amount).Flatten();
+                var allMessages = await Context.Channel.GetMessagesAsync(amount + 1).Flatten();
                 
                 IUserMessage replyMessage = await ReplyAsync($"Deleting last `{amount}` messages");
 
