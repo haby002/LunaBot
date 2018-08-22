@@ -851,7 +851,7 @@ namespace LunaBot
 
                         await BotReporting.ReportAsync(ReportColors.userCommand,
                             message.Channel as SocketTextChannel,
-                            $"<@{user.Id}> tutorial finished",
+                            $"<@{user.Username}> tutorial finished",
                             $"Nick: {databaseUser.Nickname}\n" +
                             $"Fur: {databaseUser.Fur}\n" +
                             $"Age: {databaseUser.Age}\n" +
