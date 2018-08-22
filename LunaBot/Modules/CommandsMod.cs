@@ -655,7 +655,7 @@ namespace LunaBot.Modules
         {
             using (DiscordContext db = new DiscordContext())
             {
-                User author = db.Users.Where(u => u.ID == (int)Context.User.Id).FirstOrDefault();
+                User author = db.Users.Where(u => u.DiscordId == Context.User.Id).FirstOrDefault();
 
                 if(author == null)
                 {
