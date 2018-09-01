@@ -771,7 +771,6 @@ namespace LunaBot.Modules
                 foreach(User user in db.Users.Where(u => u.Level >= 10))
                 {
                     await Context.Guild.GetUser(user.DiscordId).AddRoleAsync(verifiedRole);
-                    await ReplyAsync($"{user.Nickname} verified!");
                 }
 
                 await ReplyAsync("Finished adding `Verified` role.");
