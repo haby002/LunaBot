@@ -759,7 +759,14 @@ namespace LunaBot.Modules
 
                 await ReplyAsync("Applying `Verified` role to users above level 10...");
 
-                SocketRole verifiedRole = Context.Guild.GetRole(Roles.VerifiedId);
+                SocketRole verifiedRole = Context.Guild.Roles.Where(r => r.Name == Roles.Verified).FirstOrDefault();
+
+                if(verifiedRole == null)
+                {
+                    await ReplyAsync("Verified role not found!");
+
+                    return;
+                }
 
                 foreach(User user in db.Users.Where(u => u.Level >= 10))
                 {
