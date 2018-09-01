@@ -714,5 +714,61 @@ namespace LunaBot.Modules
                 }).Start();
             }
         }
+
+        [Command("fixroles", RunMode = RunMode.Async)]
+        public async Task fixRolesAsync()
+        {
+            using (DiscordContext db = new DiscordContext())
+            {
+                User author = db.Users.Where(u => u.DiscordId == Context.User.Id).FirstOrDefault();
+
+                if (author == null)
+                {
+                    await BotReporting.ReportAsync(ReportColors.exception,
+                        Context.Channel as SocketTextChannel,
+                        "Cannot find user",
+                        $"Cannot find `{Context.User.Username}` in the database.",
+                        Engine.luna,
+                        Context.User);
+
+                    await ReplyAsync($"Cannot find {Context.User.Username} in the database.");
+
+                    return;
+                }
+                else if (author.Privilege < User.Privileges.Moderator)
+                {
+                    await BotReporting.ReportAsync(ReportColors.modCommand,
+                        Context.Channel as SocketTextChannel,
+                        "User attempted mod command",
+                        $"{Context.User.Username} attempted to use `fixroles` command in `{Context.Channel.Name}`:\n" +
+                        $"Message: `{Context.Message.Content}`",
+                        Engine.luna,
+                        Context.User);
+
+                    await ReplyAsync($"Get out of here chump");
+
+                    return;
+                }
+
+                await BotReporting.ReportAsync(ReportColors.modCommand,
+                        Context.Channel as SocketTextChannel,
+                        $"Clear all command",
+                        $"{Context.User.Username} used `fixroles` command in `{Context.Channel.Name}`.",
+                        Engine.luna,
+                        Context.User);
+
+                await ReplyAsync("Applying `Verified` role to users above level 10...");
+
+                SocketRole verifiedRole = Context.Guild.GetRole(Roles.VerifiedId);
+
+                foreach(User user in db.Users.Where(u => u.Level >= 10))
+                {
+                    await Context.Guild.GetUser(user.DiscordId).AddRoleAsync(verifiedRole);
+                    await ReplyAsync($"{user.Nickname} verified!");
+                }
+
+                await ReplyAsync("Finished adding `Verified` role.");
+            }
+        }
     }
 }

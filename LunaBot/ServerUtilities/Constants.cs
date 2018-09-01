@@ -65,6 +65,9 @@ namespace LunaBot.ServerUtilities
 
         internal static string Monk = "Monk";
 
+        internal static string Verified = "Verified";
+        internal static ulong VerifiedId = 485485460160905228;
+
         // Orientation Roles
         internal static string Gay = "gay";
 
