@@ -752,7 +752,7 @@ namespace LunaBot.Modules
 
                 await BotReporting.ReportAsync(ReportColors.modCommand,
                         Context.Channel as SocketTextChannel,
-                        $"Clear all command",
+                        $"Fix Roles command",
                         $"{Context.User.Username} used `fixroles` command in `{Context.Channel.Name}`.",
                         Engine.luna,
                         Context.User);
@@ -768,9 +768,12 @@ namespace LunaBot.Modules
                     return;
                 }
 
-                foreach(User user in db.Users.Where(u => u.Level >= 10))
+                foreach(SocketGuildUser discordUser in Context.Guild.Users)
                 {
-                    await Context.Guild.GetUser(user.DiscordId).AddRoleAsync(verifiedRole);
+                    if (db.Users.Where(u => u.DiscordId == discordUser.Id && u.Level >= 10).FirstOrDefault() != null)
+                    {
+                        await Context.Guild.GetUser(discordUser.Id).AddRoleAsync(verifiedRole);
+                    }
                 }
 
                 await ReplyAsync("Finished adding `Verified` role.");
