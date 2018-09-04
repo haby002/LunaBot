@@ -338,6 +338,16 @@ namespace LunaBot
                     {
                         await message.Channel.SendMessageAsync($"Congrats <@{user.DiscordId}>! You leveled up to {user.Level}! :confetti_ball:");
                     }
+
+                    SocketRole verifiedrole = guild.Roles.Where(r => r.Name == Roles.Verified).FirstOrDefault();
+
+                    if (user.Level >= 10 && !discordUser.Roles.Contains(verifiedrole))
+                    {
+                        await discordUser.AddRoleAsync(verifiedrole);
+                        reply += $"You now have the verified role and can add reactions!";
+                    }
+
+                    await (await message.Channel.SendMessageAsync(reply)).AddReactionAsync(new Emoji("😸"));
                 }
 
                 // Updates last time message was recieved.
