@@ -323,6 +323,7 @@ namespace LunaBot
             {
                 ulong userId = message.Author.Id;
                 User user = db.Users.Where(x => x.DiscordId == userId).SingleOrDefault();
+                SocketGuildUser discordUser = message.Author as SocketGuildUser;
 
                 // No XP gain if you only say 2 words or less.
                 int words = (message.Content.Split(' ').Count<string>());
@@ -334,6 +335,8 @@ namespace LunaBot
                 // Adds characters (no whitespace) as XP. Returns true if user leveled up.
                 if (user.AddXP(xp))
                 {
+                    string reply = "";
+                    
                     if (user.Level % 10 == 0)
                     {
                         await message.Channel.SendMessageAsync($"Congrats <@{user.DiscordId}>! You leveled up to {user.Level}! :confetti_ball:");
