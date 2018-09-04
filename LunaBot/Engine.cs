@@ -349,8 +349,9 @@ namespace LunaBot
                         await discordUser.AddRoleAsync(verifiedrole);
                         reply += $"You now have the verified role and can add reactions!";
                     }
-
-                    await (await message.Channel.SendMessageAsync(reply)).AddReactionAsync(new Emoji("😸"));
+                    
+                    if(reply != "")
+                        await (await message.Channel.SendMessageAsync(reply)).AddReactionAsync(new Emoji("😸"));
                 }
 
                 // Updates last time message was recieved.
