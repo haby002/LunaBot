@@ -337,7 +337,7 @@ namespace LunaBot.Modules
                 {
                     await guildChannel.GetUser(userId).RemoveRoleAsync(SfwRole);
                     Logger.Verbose("System", $"found role {SfwRole.Name} and removed it.");
-                    await ReplyAsync($"<@{userId}> is now alowed into the NSFW rooms.");
+                    await ReplyAsync($"<@{userId}> is now allowed into the NSFW rooms.");
                 }
                 else
                 {
@@ -386,7 +386,7 @@ namespace LunaBot.Modules
                 {
                     await guildChannel.GetUser(userId).RemoveRoleAsync(MonkRole);
                     Logger.Verbose("System", $"found role {MonkRole.Name} and removed it.");
-                    await ReplyAsync($"<@{userId}> is now alowed into the RP rooms.");
+                    await ReplyAsync($"<@{userId}> is now allowed into the RP rooms.");
                 }
                 else
                 {
