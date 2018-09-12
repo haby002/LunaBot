@@ -461,7 +461,8 @@ namespace LunaBot
         /// <returns></returns>
         private async Task SecretFeaturesAsync(SocketUserMessage message)
         {
-
+            Random r = new Random();
+            
             Match match = Regex.Match(message.Content.ToLower(), @"\ba+w+oo+\b");
             if (match.Success)
             {
