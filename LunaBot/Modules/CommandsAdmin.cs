@@ -311,10 +311,12 @@ namespace LunaBot.Modules
                 if(databaseUser == null)
                 {
                     await ReplyAsync("Error, user not found. Please ask a staff member for assistance.");
+                    return;
                 }
                 else if(databaseUser.Privilege < User.Privileges.Admin)
                 {
                     await ReplyAsync("Nice try lowly human.");
+                    return;
                 }
 
                 await Context.Message.DeleteAsync();
