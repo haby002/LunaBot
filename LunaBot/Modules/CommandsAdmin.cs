@@ -301,5 +301,26 @@ namespace LunaBot.Modules
             await ReplyAsync($"Finished checking rooms. Rooms created: {roomCount}");
         }
 
+        [Command("say", RunMode = RunMode.Async)]
+        public async Task SayAsync([Remainder] string message)
+        {
+            using(DiscordContext db = new DiscordContext())
+            {
+                User databaseUser = db.Users.Where((u) => u.DiscordId == Context.User.Id).First();
+
+                if(databaseUser == null)
+                {
+                    await ReplyAsync("Error, user not found. Please ask a staff member for assistance.");
+                }
+                else if(databaseUser.Privilege < User.Privileges.Admin)
+                {
+                    await ReplyAsync("Nice try lowly human.");
+                }
+
+                await Context.Message.DeleteAsync();
+
+                await ReplyAsync(message);
+            }
+        }
     }
 }
