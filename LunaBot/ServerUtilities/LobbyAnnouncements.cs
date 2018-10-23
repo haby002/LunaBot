@@ -16,7 +16,11 @@ namespace LunaBot.ServerUtilities
             "Another day, another chip",
             "Luna est super vos..",
             "Someone dinged my bell?",
-            "Upgrade complete!"
+            "Upgrade complete!",
+            "Are we open yet?",
+            "Don't forget to try our amazing Porcuwine!",
+            "*beep boop*",
+            "Is it Bot-mas already?"
         };
 
 

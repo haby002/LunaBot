@@ -170,6 +170,12 @@ namespace LunaBot.Modules
                 User user = db.Users.FirstOrDefault(x => x.DiscordId == userId);
                 User user2 = db.Users.FirstOrDefault(x => x.DiscordId == userId2);
 
+                if (requestedUser.IsBot)
+                {
+                    await ReplyAsync("Can't snug a bot, how about a firm handshake?");
+                    return;
+                }
+
                 Logger.Info(author.Username, " is snugging.");
 
                 if (userId == userId2)
@@ -231,6 +237,12 @@ namespace LunaBot.Modules
                 }
                 else if (action == "smooch")
                 {
+                    if (requestedUser.IsBot)
+                    {
+                        await ReplyAsync("We are program to bot, not to love.");
+                        return;
+                    }
+
                     await ReplyAsync($":heart: <@{userId}> :kissing_heart: <@{userId2}> :heart:");
                 }
                 else if (action == "boop")
