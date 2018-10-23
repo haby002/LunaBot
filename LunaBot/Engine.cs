@@ -285,6 +285,17 @@ namespace LunaBot
 
         private async Task UserBannedAsync(SocketUser user, SocketGuild guild)
         {
+            // Ignore users with no profile or haven't finished the tutorial.
+            using(DiscordContext db = new DiscordContext())
+            {
+                User databaseUser = db.Users.Where((u) => user.Id == u.DiscordId).First();
+
+                if (databaseUser == null || databaseUser.TutorialFinished == false)
+                {
+                    return;
+                }
+            }
+
             await lobby.SendMessageAsync($"My hammer to your face {user.Username}!");
             Logger.Info("System", $"User {user.Username}<@{user.Id}> has been banned from the server.");
 
