@@ -706,6 +706,11 @@ namespace LunaBot
                             await message.Channel.SendMessageAsync("Please only use positive numbers.");
                             return;
                         }
+                        else if(age > 100)
+                        {
+                            await message.Channel.SendMessageAsync("You don't expect me to believe that you are over 80 years old right?");
+                            return;
+                        }
 
                         databaseUser.Age = age;
                     }
