@@ -234,7 +234,7 @@ namespace LunaBot
             await BotReporting.ReportAsync(ReportColors.userJoined,
                         channel : null,
                         title : "User Joined",
-                        content : $"<@{user.Id}> has joined the server.",
+                        content : $"<@{user.Id}> {user.Username} has joined the server.",
                         originUser : luna,
                         targetUser : user).ConfigureAwait(false);
 
