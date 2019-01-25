@@ -892,6 +892,7 @@ namespace LunaBot
                             $"Age: {databaseUser.Age}\n" +
                             $"Description: {databaseUser.Description}\n" +
                             $"Ref: {databaseUser.Ref}\n" +
+                            $"Gender: {databaseUser.Gender.ToString()}\n" +
                             $"Monk: {databaseUser.Monk}\n" +
                             $"SFW: {databaseUser.Nsfw}",
                             luna,
