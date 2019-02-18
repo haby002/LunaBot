@@ -236,13 +236,13 @@ namespace LunaBot
             IReadOnlyCollection<RestInviteMetadata> newInvites = await guild.GetInvitesAsync();
 
             Dictionary<string, int?> newInvitesDict = newInvites.ToDictionary(i => i.Code, i => i.Uses);
-            RestInviteMetadata invite = _invites.FirstOrDefault(i => newInvitesDict[i.Code] != i.Uses);
+            RestInviteMetadata invite = _invites.FirstOrDefault(i => newInvitesDict[i.Code] == i.Uses + 1);
             
             // Report user joined
             await BotReporting.ReportAsync(ReportColors.userJoined,
                         channel : null,
                         title : "User Joined",
-                        content : $"<@{user.Id}> {user.Username} has joined the server using invite {invite.Code} from {invite.Inviter.Username}",
+                        content : $"<@{user.Id}> {user.Username} has joined the server using invite `{invite.Code}` from {invite.Inviter.Username}",
                         originUser : luna,
                         targetUser : user).ConfigureAwait(false);
 
