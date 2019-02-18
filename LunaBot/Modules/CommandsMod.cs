@@ -655,7 +655,7 @@ namespace LunaBot.Modules
                 eb.WithThumbnailUrl(Context.Guild.IconUrl);
             }
 
-            await ReplyAsync("", false /*TTS*/, eb);
+            await ReplyAsync("", false /*TTS*/, eb.Build());
         }
 
         [Command("clear", RunMode = RunMode.Async)]
@@ -700,11 +700,11 @@ namespace LunaBot.Modules
                         Engine.luna,
                         Context.User);
 
-                var allMessages = await Context.Channel.GetMessagesAsync(amount + 1).Flatten();
+                var allMessages = Context.Channel.GetMessagesAsync(amount + 1).Flatten();
                 
                 IUserMessage replyMessage = await ReplyAsync($"Deleting last `{amount}` messages");
 
-                await Context.Channel.DeleteMessagesAsync(allMessages);
+                await (Context.Channel as SocketTextChannel).DeleteMessagesAsync(await allMessages.ToList().ConfigureAwait(false));
 
                 Task.Run(async () =>
                 {

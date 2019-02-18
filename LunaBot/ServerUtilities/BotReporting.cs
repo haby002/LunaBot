@@ -43,8 +43,8 @@ namespace LunaBot.ServerUtilities
             else
                 eb.WithThumbnailUrl(originUser.GetAvatarUrl());
             //eb.WithUrl("http://EBUrlshow.com");
-            
-            await reportChannel.SendMessageAsync("",false, eb);
+
+            await reportChannel.SendMessageAsync("", false, eb.Build());
         }
     }
 

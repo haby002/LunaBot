@@ -29,6 +29,7 @@ namespace LunaBot
         private CommandService _setAttributes;
         private CommandService _getAttributes;
         private IServiceProvider _services;
+        IReadOnlyCollection<RestInviteMetadata> _invites;
 
         public SocketGuild guild;
         public SocketTextChannel lobby;
@@ -63,13 +64,12 @@ namespace LunaBot
             await _client.LoginAsync(TokenType.Bot, token);
             await _client.StartAsync();
             
-            //_client.MessageReceived += MessageReceivedAsync;
             _client.UserJoined += UserJoinedAsync;
             _client.UserLeft += UserLeftAsync;
             _client.UserBanned += UserBannedAsync;
             _client.MessageDeleted += MessageDeletedAsync;
 
-            //this.RegisterCommands();
+            _invites = (await guild.GetInvitesAsync());
 
             _client.Ready += ReadyAsync;
 
@@ -79,14 +79,14 @@ namespace LunaBot
         private async Task InstallCommandsAsync()
         {
             _client.MessageReceived += HandleCommandsAsync;
+            
+            await _commands.AddModuleAsync<Modules.CommandsUser>(_services);
+            await _commands.AddModuleAsync<Modules.CommandsMod>(_services);
+            await _commands.AddModuleAsync<Modules.CommandsAdmin>(_services);
+            await _commands.AddModuleAsync<Modules.CommandsOwner>(_services);
 
-            await _commands.AddModuleAsync<Modules.CommandsUser>();
-            await _commands.AddModuleAsync<Modules.CommandsMod>();
-            await _commands.AddModuleAsync<Modules.CommandsAdmin>();
-            await _commands.AddModuleAsync<Modules.CommandsOwner>();
-
-            await _setAttributes.AddModuleAsync<Modules.SetAttributes>();
-            await _getAttributes.AddModuleAsync<Modules.GetAttributes>();
+            await _setAttributes.AddModuleAsync<Modules.SetAttributes>(_services);
+            await _getAttributes.AddModuleAsync<Modules.GetAttributes>(_services);
         }
 
         private async Task HandleCommandsAsync(SocketMessage messageParam)
@@ -212,6 +212,7 @@ namespace LunaBot
 
             UserUtilities.manualRegister(user as SocketGuildUser);
 
+            // Log user joined and announce
             using (DiscordContext db = new DiscordContext())
             {
                 ulong userId = user.Id;
@@ -231,10 +232,17 @@ namespace LunaBot
                 }
             }
 
+            // Check what invite the user used
+            IReadOnlyCollection<RestInviteMetadata> newInvites = await guild.GetInvitesAsync();
+
+            Dictionary<string, int?> newInvitesDict = newInvites.ToDictionary(i => i.Code, i => i.Uses);
+            RestInviteMetadata invite = _invites.FirstOrDefault(i => newInvitesDict[i.Code] != i.Uses);
+            
+            // Report user joined
             await BotReporting.ReportAsync(ReportColors.userJoined,
                         channel : null,
                         title : "User Joined",
-                        content : $"<@{user.Id}> {user.Username} has joined the server.",
+                        content : $"<@{user.Id}> {user.Username} has joined the server using invite {invite.Code} from {invite.Inviter.Username}",
                         originUser : luna,
                         targetUser : user).ConfigureAwait(false);
 
