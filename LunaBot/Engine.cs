@@ -69,8 +69,6 @@ namespace LunaBot
             _client.UserBanned += UserBannedAsync;
             _client.MessageDeleted += MessageDeletedAsync;
 
-            _invites = (await guild.GetInvitesAsync());
-
             _client.Ready += ReadyAsync;
 
             await Task.Delay(-1);
@@ -160,6 +158,8 @@ namespace LunaBot
             roles = guild.Roles.ToList();
             BotReporting.SetBotReportingChannel(guild.GetTextChannel(Channels.BotLogs));
             luna = guild.GetUser(UserIds.Luna);
+
+            _invites = (await guild.GetInvitesAsync());
 
             // Adding owners
             using (DiscordContext db = new DiscordContext())
