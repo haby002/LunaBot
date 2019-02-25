@@ -599,6 +599,31 @@ namespace LunaBot.Modules
             }
         }
 
+        [Command("approve", RunMode = RunMode.Async)]
+        public async Task approveUserAsync(IUser requestedUser)
+        {
+            using (DiscordContext db = new DiscordContext())
+            {
+                ulong userId = Context.User.Id;
+                if (db.Users.Where(x => x.DiscordId == userId).FirstOrDefault().Privilege < User.Privileges.Moderator)
+                {
+                    Logger.Warning(Context.User.Username, "User tried to use removeWarn command and failed");
+                    await ReplyAsync($"You're not my real dad. Go away.");
+                    return;
+                }
+            }
+
+            // Remove Newbie role
+            SocketRole newbie = Context.Guild.Roles.FirstOrDefault((role) => role.Id == Roles.NewbieId);
+            await Context.Guild.GetUser(requestedUser.Id).RemoveRoleAsync(newbie);
+
+            // Remove from approval channel
+            await Context.Guild.GetChannel(Channels.ProvingGrounds).RemovePermissionOverwriteAsync(requestedUser);
+
+            // Server announcement
+            await Context.Guild.GetTextChannel(Channels.Lobby).SendMessageAsync($"Please welcome <@{requestedUser.Id}> to the server!").ConfigureAwait(false);
+        }
+
         [Command("serverstats", RunMode = RunMode.Async)]
         public async Task serverStatsAsync()
         {
