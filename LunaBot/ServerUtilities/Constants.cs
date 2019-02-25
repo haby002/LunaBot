@@ -39,6 +39,11 @@ namespace LunaBot.ServerUtilities
         /// </summary>
         internal static ulong BotLogs = 379784655370584074;
 
+        /// <summary>
+        /// Approval and disapproval of new users
+        /// </summary>
+        internal static ulong ProvingGrounds = 547485847424073739;
+
     }
 
     internal static class Guilds
@@ -60,6 +65,9 @@ namespace LunaBot.ServerUtilities
         internal static string Moddlet = "Mod";
 
         internal static string Staff = "Staff";
+
+        internal static string Newbie = "Newbie";
+        internal static ulong NewbieId = 549391161010159616;
 
         internal static string SFW = "SFW";
 
