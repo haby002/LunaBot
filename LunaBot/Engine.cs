@@ -382,7 +382,7 @@ namespace LunaBot
         }
         
         /// <summary>
-        /// Processes messages and prevents raids by checking the newest message sent by the user and deletes if it doesn't pass criteria
+        /// Sanitizes messages and prevents raids by checking the newest message sent by the user and deletes if it doesn't pass criteria
         /// </summary>
         /// <param name="message"></param>
         /// <returns>True if deleted, false otherwise.</returns>
@@ -905,9 +905,9 @@ namespace LunaBot
                             $"SFW: {databaseUser.Nsfw}",
                             luna,
                             user,
-                            $"ID: {user.Id}");
+                            $"ID: {user.Id}").ConfigureAwait(false);
 
-                        await (message.Channel as SocketGuildChannel).AddPermissionOverwriteAsync(user, Permissions.mutePerm);
+                        await (message.Channel as SocketGuildChannel).AddPermissionOverwriteAsync(user, Permissions.mutePerm).ConfigureAwait(false);
 
                         await message.Channel.SendMessageAsync($"Awesome! Let me create your `room` and set up your permissions...");
                         
@@ -916,16 +916,19 @@ namespace LunaBot
 
                         // Creat personal room
                         await RoomUtilities.CreatePersonalRoomAsync(guild, user);
-
-                        // Fluff
-                        Thread.Sleep(500);
-                        await message.Channel.SendMessageAsync($"Adding sparkles...");
-                        Thread.Sleep(700);
-                        await message.Channel.SendMessageAsync($"Done!");
-                        Thread.Sleep(300);
-                        await message.Channel.SendMessageAsync($"I've created a `room` for you over at: #room-{user.Id}. " +
-                            $"You can always type `!help` for any issues or talk with the staff, most of us don't bite :)");
-                        Thread.Sleep(1000);
+                        
+                        // Fluff for humanizing the bot
+                        await Task.Run(async () =>
+                        {
+                            Thread.Sleep(500);
+                            await message.Channel.SendMessageAsync($"Adding sparkles...");
+                            Thread.Sleep(700);
+                            await message.Channel.SendMessageAsync($"Done!");
+                            Thread.Sleep(300);
+                            await message.Channel.SendMessageAsync($"I've created a `room` for you over at: #room-{user.Id}. " +
+                                $"You can always type `!help` for any issues or talk with the staff, most of us don't bite :)");
+                            Thread.Sleep(1000);
+                       }).ConfigureAwait(false);
 
                         Predicate<SocketRole> newbieFinder = (SocketRole sr) => { return sr.Name == "Newbie"; };
                         SocketRole newbie = roles.Find(newbieFinder);
