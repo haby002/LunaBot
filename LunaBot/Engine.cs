@@ -930,12 +930,10 @@ namespace LunaBot
                             Thread.Sleep(1000);
                        }).ConfigureAwait(false);
 
-                        Predicate<SocketRole> newbieFinder = (SocketRole sr) => { return sr.Name == "Newbie"; };
-                        SocketRole newbie = roles.Find(newbieFinder);
-
-                        // Server announcement
-                        await user.RemoveRoleAsync(newbie);
-                        await lobby.SendMessageAsync($"Please welcome <@{user.Id}> to the server!");
+                        // Place them in approval room and notify staff
+                        await guild.GetTextChannel(Channels.ProvingGrounds).AddPermissionOverwriteAsync(user, Permissions.userPerm);
+                        await guild.GetTextChannel(Channels.ProvingGrounds).SendMessageAsync($"<@{user.Id}> is ready for judgement. Please wait for a staff to approve your account.").ConfigureAwait(false);
+                        //await guild.GetTextChannel(Channels.ProvingGrounds).SendMessageAsync($"@here");
 
                         // Tut room deletion
                         await message.Channel.SendMessageAsync("This channel will self-destruct in 2 minutes");
