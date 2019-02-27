@@ -612,6 +612,11 @@ namespace LunaBot.Modules
                     return;
                 }
             }
+            
+            if (Context.Channel.Id != Channels.ProvingGrounds)
+            {
+                await ReplyAsync("You can only use the deny command in #proving-grounds.");
+            }
 
             await ReplyAsync($"<@{requestedUser.Id}> has been approved by <@{Context.User.Id}>.");
 
@@ -637,6 +642,38 @@ namespace LunaBot.Modules
 
             // Server announcement
             await Context.Guild.GetTextChannel(Channels.Lobby).SendMessageAsync($"Please welcome <@{requestedUser.Id}> to the server!").ConfigureAwait(false);
+        }
+
+        [Command("deny", RunMode = RunMode.Async)]
+        public async Task denyUserAsync(IUser requestedUser)
+        {
+            using (DiscordContext db = new DiscordContext())
+            {
+                ulong userId = Context.User.Id;
+                if (db.Users.Where(x => x.DiscordId == userId).FirstOrDefault().Privilege < User.Privileges.Moderator)
+                {
+                    Logger.Warning(Context.User.Username, "User tried to use deny command and failed");
+                    await ReplyAsync($"You're not my real mom. Go away.");
+                    return;
+                }
+            }
+            
+            if (Context.Channel.Id != Channels.ProvingGrounds)
+            {
+                await ReplyAsync("You can only use the deny command in #proving-grounds.");
+            }
+
+            await ReplyAsync($"<@{requestedUser.Id}> has been denied by <@{Context.User.Id}>.");
+
+            await BotReporting.ReportAsync(ReportColors.modCommand,
+                Context.Channel as SocketTextChannel,
+                $"User denied",
+                $"<@{Context.User.Id}> denied <@{requestedUser.Id}>",
+                Context.User,
+                requestedUser as SocketUser);
+
+           await KickUserHelper.KickAsync(Context.Channel as SocketTextChannel, requestedUser as SocketGuildUser);
+
         }
 
         [Command("serverstats", RunMode = RunMode.Async)]
