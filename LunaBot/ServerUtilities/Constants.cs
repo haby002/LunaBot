@@ -1,7 +1,4 @@
 ﻿using Discord;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 /// <summary>
 /// Stores constant like user, channel, and guild IDs
