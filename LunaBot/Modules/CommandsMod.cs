@@ -607,14 +607,29 @@ namespace LunaBot.Modules
                 ulong userId = Context.User.Id;
                 if (db.Users.Where(x => x.DiscordId == userId).FirstOrDefault().Privilege < User.Privileges.Moderator)
                 {
-                    Logger.Warning(Context.User.Username, "User tried to use removeWarn command and failed");
+                    Logger.Warning(Context.User.Username, "User tried to use approve command and failed");
                     await ReplyAsync($"You're not my real dad. Go away.");
                     return;
                 }
             }
 
+            await ReplyAsync($"<@{requestedUser.Id}> has been approved by <@{Context.User.Id}>.");
+
+            await BotReporting.ReportAsync(ReportColors.modCommand,
+                Context.Channel as SocketTextChannel,
+                $"<@{Context.User.Id}> approved <@{requestedUser.Id}>",
+                "",
+                Context.User,
+                requestedUser as SocketUser);
+
             // Remove Newbie role
             SocketRole newbie = Context.Guild.Roles.FirstOrDefault((role) => role.Id == Roles.NewbieId);
+            if(newbie == null)
+            {
+                Logger.Critical("!approve", "newbie role not found.");
+                return;
+            }
+
             await Context.Guild.GetUser(requestedUser.Id).RemoveRoleAsync(newbie);
 
             // Remove from approval channel
