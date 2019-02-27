@@ -617,13 +617,13 @@ namespace LunaBot.Modules
 
             await BotReporting.ReportAsync(ReportColors.modCommand,
                 Context.Channel as SocketTextChannel,
+                $"User approved",
                 $"<@{Context.User.Id}> approved <@{requestedUser.Id}>",
-                "",
                 Context.User,
                 requestedUser as SocketUser);
 
             // Remove Newbie role
-            SocketRole newbie = Context.Guild.Roles.FirstOrDefault((role) => role.Id == Roles.NewbieId);
+            SocketRole newbie = Context.Guild.Roles.FirstOrDefault((role) => role.Name == Roles.Newbie);
             if(newbie == null)
             {
                 Logger.Critical("!approve", "newbie role not found.");
