@@ -616,6 +616,7 @@ namespace LunaBot.Modules
             if (Context.Channel.Id != Channels.ProvingGrounds)
             {
                 await ReplyAsync("You can only use the deny command in #proving-grounds.");
+                return;
             }
 
             await ReplyAsync($"<@{requestedUser.Id}> has been approved by <@{Context.User.Id}>.");
@@ -632,6 +633,7 @@ namespace LunaBot.Modules
             if(newbie == null)
             {
                 Logger.Critical("!approve", "newbie role not found.");
+                await BotReporting.ReportAsync(ReportColors.exception, Context.Channel as SocketTextChannel, "Couldn't find newbie role", $"Couldn't find role with name: `{Roles.Newbie}`", Context.User);
                 return;
             }
 
@@ -661,6 +663,7 @@ namespace LunaBot.Modules
             if (Context.Channel.Id != Channels.ProvingGrounds)
             {
                 await ReplyAsync("You can only use the deny command in #proving-grounds.");
+                return;
             }
 
             await ReplyAsync($"<@{requestedUser.Id}> has been denied by <@{Context.User.Id}>.");
