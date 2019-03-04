@@ -43,6 +43,11 @@ namespace LunaBot.ServerUtilities
 
     }
 
+    internal static class Categories
+    {
+        internal static ulong IntroRooms = 547485651533299743;
+    }
+
     internal static class Guilds
     {
         /// <summary>

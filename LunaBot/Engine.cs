@@ -517,8 +517,14 @@ namespace LunaBot
 
             await user.AddRoleAsync(newbie);
 
-            // Creat intro room
+            // Create intro room
             RestTextChannel introRoom = await guild.CreateTextChannelAsync($"intro-{user.Id}");
+
+            // Place channel in intro room category
+            await guild.GetTextChannel(introRoom.Id).ModifyAsync(x =>
+            {
+                x.CategoryId = Categories.IntroRooms;
+            });
 
             // Make room only visible to new user and admins
             await introRoom.AddPermissionOverwriteAsync(user, Permissions.userPerm);
