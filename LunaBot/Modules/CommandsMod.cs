@@ -532,17 +532,17 @@ namespace LunaBot.Modules
 
                 User databaseUser = db.Users.Where(x => x.DiscordId == requestedUser.Id).FirstOrDefault();
 
-                databaseUser.warnCount++;
+                databaseUser.WarnCount++;
 
                 // When a user reaches 5 warns they will be kicked.
-                if (databaseUser.warnCount % 5 == 0)
+                if (databaseUser.WarnCount % 5 == 0)
                 {
                     await ReplyAsync($"<@{requestedUser.Id}>, we warned you and you didn't listen. Goodbye.");
                     await KickUserHelper.KickAsync((SocketTextChannel)Context.Channel, (SocketGuildUser)requestedUser);
                 }
                 else
                 {
-                    await ReplyAsync($"<@{requestedUser.Id}> you have been warned. Current: {databaseUser.warnCount}, get 5 and you *will* be kicked.");
+                    await ReplyAsync($"<@{requestedUser.Id}> you have been warned. Current: {databaseUser.WarnCount}, get 5 and you *will* be kicked.");
                 }
 
                 db.SaveChanges();
@@ -577,20 +577,20 @@ namespace LunaBot.Modules
 
                 User databaseUser = db.Users.Where(x => x.DiscordId == requestedUser.Id).FirstOrDefault();
 
-                databaseUser.warnCount = amount == 0 ? databaseUser.warnCount - 1 : databaseUser.warnCount - amount;
+                databaseUser.WarnCount = amount == 0 ? databaseUser.WarnCount - 1 : databaseUser.WarnCount - amount;
 
-                if (databaseUser.warnCount < 0)
+                if (databaseUser.WarnCount < 0)
                 {
-                    databaseUser.warnCount = 0;
+                    databaseUser.WarnCount = 0;
                 }
 
-                await ReplyAsync($"<@{requestedUser.Id}> warnings reduced to: {databaseUser.warnCount}");
+                await ReplyAsync($"<@{requestedUser.Id}> warnings reduced to: {databaseUser.WarnCount}");
 
 
                 await BotReporting.ReportAsync(ReportColors.modCommand,
                                             (SocketTextChannel)Context.Channel,
                                             $"{Context.User.Username} used removeWarn command",
-                                            $"{Context.User.Username} set warns for {requestedUser.Username} to {databaseUser.warnCount} in {Context.Channel.Name}.",
+                                            $"{Context.User.Username} set warns for {requestedUser.Username} to {databaseUser.WarnCount} in {Context.Channel.Name}.",
                                             Context.User,
                                             (SocketGuildUser)requestedUser,
                                             $"Mod ID: {Context.User.Id}");

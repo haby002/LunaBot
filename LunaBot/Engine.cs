@@ -413,12 +413,12 @@ namespace LunaBot
 
                         await BotReporting.ReportAsync(ReportColors.spamBlock,
                                 (SocketTextChannel)message.Channel,
-                                $"User said banned word. Warn given and total is {++databaseUser.warnCount}",
+                                $"User said banned word. Warn given and total is {++databaseUser.WarnCount}",
                                 $"<@{message.Author.Id}>: {message.Content}",
                                 luna,
                                 message.Author);
 
-                        if(databaseUser.warnCount >= 5)
+                        if(databaseUser.WarnCount >= 5)
                         {
                             await KickUserHelper.KickAsync(message.Channel as SocketTextChannel, message.Author as SocketGuildUser);
                         }
