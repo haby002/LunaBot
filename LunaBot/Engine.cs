@@ -938,7 +938,7 @@ namespace LunaBot
 
                         // Place them in approval room and notify staff
                         await guild.GetTextChannel(Channels.ProvingGrounds).AddPermissionOverwriteAsync(user, Permissions.userPerm);
-                        await guild.GetTextChannel(Channels.ProvingGrounds).SendMessageAsync($"<@{user.Id}> is ready for judgement. Please wait for a staff to approve your account.").ConfigureAwait(false);
+                        await guild.GetTextChannel(Channels.ProvingGrounds).SendMessageAsync($"<@{Roles.Staff}> <@{user.Id}> is ready for judgement. Please wait for a staff to approve your account.").ConfigureAwait(false);
                         //await guild.GetTextChannel(Channels.ProvingGrounds).SendMessageAsync($"@here");
 
                         // Tut room deletion
