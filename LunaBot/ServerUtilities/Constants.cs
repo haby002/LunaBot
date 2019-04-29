@@ -67,6 +67,7 @@ namespace LunaBot.ServerUtilities
         internal static string Moddlet = "Mod";
 
         internal static string Staff = "Staff";
+        internal static ulong StaffId = 572463396432248847;
 
         internal static string Newbie = "Newbie";
         internal static ulong NewbieId = 549391161010159616;
