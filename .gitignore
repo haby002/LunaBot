@@ -10,3 +10,4 @@ packages
 /.vs/LunaBot/v15/sqlite3
 /.vs/LunaBot/v15/Server/sqlite3
 log.txt
+**/.dtbcache
