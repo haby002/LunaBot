@@ -29,6 +29,7 @@ namespace LunaBot
         private CommandService _setAttributes;
         private CommandService _getAttributes;
         private IServiceProvider _services;
+        IReadOnlyCollection<RestInviteMetadata> _invites;
 
         public SocketGuild guild;
         public SocketTextChannel lobby;
@@ -63,13 +64,10 @@ namespace LunaBot
             await _client.LoginAsync(TokenType.Bot, token);
             await _client.StartAsync();
             
-            //_client.MessageReceived += MessageReceivedAsync;
             _client.UserJoined += UserJoinedAsync;
             _client.UserLeft += UserLeftAsync;
             _client.UserBanned += UserBannedAsync;
             _client.MessageDeleted += MessageDeletedAsync;
-
-            //this.RegisterCommands();
 
             _client.Ready += ReadyAsync;
 
@@ -79,14 +77,14 @@ namespace LunaBot
         private async Task InstallCommandsAsync()
         {
             _client.MessageReceived += HandleCommandsAsync;
+            
+            await _commands.AddModuleAsync<Modules.CommandsUser>(_services);
+            await _commands.AddModuleAsync<Modules.CommandsMod>(_services);
+            await _commands.AddModuleAsync<Modules.CommandsAdmin>(_services);
+            await _commands.AddModuleAsync<Modules.CommandsOwner>(_services);
 
-            await _commands.AddModuleAsync<Modules.CommandsUser>();
-            await _commands.AddModuleAsync<Modules.CommandsMod>();
-            await _commands.AddModuleAsync<Modules.CommandsAdmin>();
-            await _commands.AddModuleAsync<Modules.CommandsOwner>();
-
-            await _setAttributes.AddModuleAsync<Modules.SetAttributes>();
-            await _getAttributes.AddModuleAsync<Modules.GetAttributes>();
+            await _setAttributes.AddModuleAsync<Modules.SetAttributes>(_services);
+            await _getAttributes.AddModuleAsync<Modules.GetAttributes>(_services);
         }
 
         private async Task HandleCommandsAsync(SocketMessage messageParam)
@@ -161,6 +159,8 @@ namespace LunaBot
             BotReporting.SetBotReportingChannel(guild.GetTextChannel(Channels.BotLogs));
             luna = guild.GetUser(UserIds.Luna);
 
+            _invites = (await guild.GetInvitesAsync());
+
             // Adding owners
             using (DiscordContext db = new DiscordContext())
             {
@@ -212,6 +212,7 @@ namespace LunaBot
 
             UserUtilities.manualRegister(user as SocketGuildUser);
 
+            // Log user joined and announce
             using (DiscordContext db = new DiscordContext())
             {
                 ulong userId = user.Id;
@@ -231,10 +232,17 @@ namespace LunaBot
                 }
             }
 
+            // Check what invite the user used
+            IReadOnlyCollection<RestInviteMetadata> newInvites = await guild.GetInvitesAsync();
+
+            Dictionary<string, int?> newInvitesDict = newInvites.ToDictionary(i => i.Code, i => i.Uses);
+            RestInviteMetadata invite = _invites.FirstOrDefault(i => newInvitesDict[i.Code] == i.Uses + 1);
+            
+            // Report user joined
             await BotReporting.ReportAsync(ReportColors.userJoined,
                         channel : null,
                         title : "User Joined",
-                        content : $"<@{user.Id}> {user.Username} has joined the server.",
+                        content : $"<@{user.Id}> {user.Username} has joined the server using invite `{invite.Code}` from {invite.Inviter.Username}",
                         originUser : luna,
                         targetUser : user).ConfigureAwait(false);
 
@@ -374,7 +382,7 @@ namespace LunaBot
         }
         
         /// <summary>
-        /// Processes messages and prevents raids by checking the newest message sent by the user and deletes if it doesn't pass criteria
+        /// Sanitizes messages and prevents raids by checking the newest message sent by the user and deletes if it doesn't pass criteria
         /// </summary>
         /// <param name="message"></param>
         /// <returns>True if deleted, false otherwise.</returns>
@@ -405,12 +413,12 @@ namespace LunaBot
 
                         await BotReporting.ReportAsync(ReportColors.spamBlock,
                                 (SocketTextChannel)message.Channel,
-                                $"User said banned word. Warn given and total is {++databaseUser.warnCount}",
+                                $"User said banned word. Warn given and total is {++databaseUser.WarnCount}",
                                 $"<@{message.Author.Id}>: {message.Content}",
                                 luna,
                                 message.Author);
 
-                        if(databaseUser.warnCount >= 5)
+                        if(databaseUser.WarnCount >= 5)
                         {
                             await KickUserHelper.KickAsync(message.Channel as SocketTextChannel, message.Author as SocketGuildUser);
                         }
@@ -509,8 +517,14 @@ namespace LunaBot
 
             await user.AddRoleAsync(newbie);
 
-            // Creat intro room
+            // Create intro room
             RestTextChannel introRoom = await guild.CreateTextChannelAsync($"intro-{user.Id}");
+
+            // Place channel in intro room category
+            //await guild.GetTextChannel(introRoom.Id).ModifyAsync(x =>
+            //{
+            //    x.CategoryId = Categories.IntroRooms;
+            //});
 
             // Make room only visible to new user and admins
             await introRoom.AddPermissionOverwriteAsync(user, Permissions.userPerm);
@@ -892,13 +906,14 @@ namespace LunaBot
                             $"Age: {databaseUser.Age}\n" +
                             $"Description: {databaseUser.Description}\n" +
                             $"Ref: {databaseUser.Ref}\n" +
+                            $"Gender: {databaseUser.Gender.ToString()}\n" +
                             $"Monk: {databaseUser.Monk}\n" +
                             $"SFW: {databaseUser.Nsfw}",
                             luna,
                             user,
-                            $"ID: {user.Id}");
+                            $"ID: {user.Id}").ConfigureAwait(false);
 
-                        await (message.Channel as SocketGuildChannel).AddPermissionOverwriteAsync(user, Permissions.mutePerm);
+                        await (message.Channel as SocketGuildChannel).AddPermissionOverwriteAsync(user, Permissions.mutePerm).ConfigureAwait(false);
 
                         await message.Channel.SendMessageAsync($"Awesome! Let me create your `room` and set up your permissions...");
                         
@@ -907,23 +922,24 @@ namespace LunaBot
 
                         // Creat personal room
                         await RoomUtilities.CreatePersonalRoomAsync(guild, user);
+                        
+                        // Fluff for humanizing the bot
+                        await Task.Run(async () =>
+                        {
+                            Thread.Sleep(500);
+                            await message.Channel.SendMessageAsync($"Adding sparkles...");
+                            Thread.Sleep(700);
+                            await message.Channel.SendMessageAsync($"Done!");
+                            Thread.Sleep(300);
+                            await message.Channel.SendMessageAsync($"I've created a `room` for you over at: #room-{user.Id}. " +
+                                $"You can always type `!help` for any issues or talk with the staff, most of us don't bite :)");
+                            Thread.Sleep(1000);
+                       }).ConfigureAwait(false);
 
-                        // Fluff
-                        Thread.Sleep(500);
-                        await message.Channel.SendMessageAsync($"Adding sparkles...");
-                        Thread.Sleep(700);
-                        await message.Channel.SendMessageAsync($"Done!");
-                        Thread.Sleep(300);
-                        await message.Channel.SendMessageAsync($"I've created a `room` for you over at: #room-{user.Id}. " +
-                            $"You can always type `!help` for any issues or talk with the staff, most of us don't bite :)");
-                        Thread.Sleep(1000);
-
-                        Predicate<SocketRole> newbieFinder = (SocketRole sr) => { return sr.Name == "Newbie"; };
-                        SocketRole newbie = roles.Find(newbieFinder);
-
-                        // Server announcement
-                        await user.RemoveRoleAsync(newbie);
-                        await lobby.SendMessageAsync($"Please welcome <@{user.Id}> to the server!");
+                        // Place them in approval room and notify staff
+                        await guild.GetTextChannel(Channels.ProvingGrounds).AddPermissionOverwriteAsync(user, Permissions.userPerm);
+                        await guild.GetTextChannel(Channels.ProvingGrounds).SendMessageAsync($"<@{Roles.StaffId}> <@{user.Id}> is ready for judgement. Please wait for a staff to approve your account.").ConfigureAwait(false);
+                        //await guild.GetTextChannel(Channels.ProvingGrounds).SendMessageAsync($"@here");
 
                         // Tut room deletion
                         await message.Channel.SendMessageAsync("This channel will self-destruct in 2 minutes");

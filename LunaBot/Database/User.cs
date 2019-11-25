@@ -7,6 +7,7 @@ namespace LunaBot.Database
 {
     public class User
     {
+        // Internal metrics
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ID { get; set; }
@@ -17,7 +18,7 @@ namespace LunaBot.Database
 
         public bool TutorialFinished { get; set; }
 
-        public int warnCount { get; set; }
+        public int WarnCount { get; set; }
 
         public int Level { get; set; }
 
@@ -25,6 +26,9 @@ namespace LunaBot.Database
 
         public DateTime LastMessage { get; set; }
 
+        public ulong PersonalRoom { get; set; }
+
+        // User set preferences
         public string Nickname { get; set; }
 
         public Genders Gender { get; set; }
@@ -39,6 +43,7 @@ namespace LunaBot.Database
 
         public string Ref { get; set; }
 
+        // Roles
         public bool Nsfw { get; set; }
 
         public bool Monk { get; set; }

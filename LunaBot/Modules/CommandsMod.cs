@@ -532,17 +532,17 @@ namespace LunaBot.Modules
 
                 User databaseUser = db.Users.Where(x => x.DiscordId == requestedUser.Id).FirstOrDefault();
 
-                databaseUser.warnCount++;
+                databaseUser.WarnCount++;
 
                 // When a user reaches 5 warns they will be kicked.
-                if (databaseUser.warnCount % 5 == 0)
+                if (databaseUser.WarnCount % 5 == 0)
                 {
                     await ReplyAsync($"<@{requestedUser.Id}>, we warned you and you didn't listen. Goodbye.");
                     await KickUserHelper.KickAsync((SocketTextChannel)Context.Channel, (SocketGuildUser)requestedUser);
                 }
                 else
                 {
-                    await ReplyAsync($"<@{requestedUser.Id}> you have been warned. Current: {databaseUser.warnCount}, get 5 and you *will* be kicked.");
+                    await ReplyAsync($"<@{requestedUser.Id}> you have been warned. Current: {databaseUser.WarnCount}, get 5 and you *will* be kicked.");
                 }
 
                 db.SaveChanges();
@@ -577,26 +577,106 @@ namespace LunaBot.Modules
 
                 User databaseUser = db.Users.Where(x => x.DiscordId == requestedUser.Id).FirstOrDefault();
 
-                databaseUser.warnCount = amount == 0 ? databaseUser.warnCount - 1 : databaseUser.warnCount - amount;
+                databaseUser.WarnCount = amount == 0 ? databaseUser.WarnCount - 1 : databaseUser.WarnCount - amount;
 
-                if (databaseUser.warnCount < 0)
+                if (databaseUser.WarnCount < 0)
                 {
-                    databaseUser.warnCount = 0;
+                    databaseUser.WarnCount = 0;
                 }
 
-                await ReplyAsync($"<@{requestedUser.Id}> warnings reduced to: {databaseUser.warnCount}");
+                await ReplyAsync($"<@{requestedUser.Id}> warnings reduced to: {databaseUser.WarnCount}");
 
 
                 await BotReporting.ReportAsync(ReportColors.modCommand,
                                             (SocketTextChannel)Context.Channel,
                                             $"{Context.User.Username} used removeWarn command",
-                                            $"{Context.User.Username} set warns for {requestedUser.Username} to {databaseUser.warnCount} in {Context.Channel.Name}.",
+                                            $"{Context.User.Username} set warns for {requestedUser.Username} to {databaseUser.WarnCount} in {Context.Channel.Name}.",
                                             Context.User,
                                             (SocketGuildUser)requestedUser,
                                             $"Mod ID: {Context.User.Id}");
 
                 db.SaveChanges();
             }
+        }
+
+        [Command("approve", RunMode = RunMode.Async)]
+        public async Task approveUserAsync(IUser requestedUser)
+        {
+            using (DiscordContext db = new DiscordContext())
+            {
+                ulong userId = Context.User.Id;
+                if (db.Users.Where(x => x.DiscordId == userId).FirstOrDefault().Privilege < User.Privileges.Moderator)
+                {
+                    Logger.Warning(Context.User.Username, "User tried to use approve command and failed");
+                    await ReplyAsync($"You're not my real dad. Go away.");
+                    return;
+                }
+            }
+            
+            if (Context.Channel.Id != Channels.ProvingGrounds)
+            {
+                await ReplyAsync("You can only use the deny command in #proving-grounds.");
+                return;
+            }
+
+            await ReplyAsync($"<@{requestedUser.Id}> has been approved by <@{Context.User.Id}>.");
+
+            await BotReporting.ReportAsync(ReportColors.modCommand,
+                Context.Channel as SocketTextChannel,
+                $"User approved",
+                $"<@{Context.User.Id}> approved <@{requestedUser.Id}>",
+                Context.User,
+                requestedUser as SocketUser);
+
+            // Remove Newbie role
+            SocketRole newbie = Context.Guild.Roles.FirstOrDefault((role) => role.Name == Roles.Newbie);
+            if(newbie == null)
+            {
+                Logger.Critical("!approve", "newbie role not found.");
+                await BotReporting.ReportAsync(ReportColors.exception, Context.Channel as SocketTextChannel, "Couldn't find newbie role", $"Couldn't find role with name: `{Roles.Newbie}`", Context.User);
+                return;
+            }
+
+            await Context.Guild.GetUser(requestedUser.Id).RemoveRoleAsync(newbie);
+
+            // Remove from approval channel
+            await Context.Guild.GetChannel(Channels.ProvingGrounds).RemovePermissionOverwriteAsync(requestedUser);
+
+            // Server announcement
+            await Context.Guild.GetTextChannel(Channels.Lobby).SendMessageAsync($"Please welcome <@{requestedUser.Id}> to the server!").ConfigureAwait(false);
+        }
+
+        [Command("deny", RunMode = RunMode.Async)]
+        public async Task denyUserAsync(IUser requestedUser)
+        {
+            using (DiscordContext db = new DiscordContext())
+            {
+                ulong userId = Context.User.Id;
+                if (db.Users.Where(x => x.DiscordId == userId).FirstOrDefault().Privilege < User.Privileges.Moderator)
+                {
+                    Logger.Warning(Context.User.Username, "User tried to use deny command and failed");
+                    await ReplyAsync($"You're not my real mom. Go away.");
+                    return;
+                }
+            }
+            
+            if (Context.Channel.Id != Channels.ProvingGrounds)
+            {
+                await ReplyAsync("You can only use the deny command in #proving-grounds.");
+                return;
+            }
+
+            await ReplyAsync($"<@{requestedUser.Id}> has been denied by <@{Context.User.Id}>.");
+
+            await BotReporting.ReportAsync(ReportColors.modCommand,
+                Context.Channel as SocketTextChannel,
+                $"User denied",
+                $"<@{Context.User.Id}> denied <@{requestedUser.Id}>",
+                Context.User,
+                requestedUser as SocketUser);
+
+           await KickUserHelper.KickAsync(Context.Channel as SocketTextChannel, requestedUser as SocketGuildUser);
+
         }
 
         [Command("serverstats", RunMode = RunMode.Async)]
@@ -655,7 +735,7 @@ namespace LunaBot.Modules
                 eb.WithThumbnailUrl(Context.Guild.IconUrl);
             }
 
-            await ReplyAsync("", false /*TTS*/, eb);
+            await ReplyAsync("", false /*TTS*/, eb.Build());
         }
 
         [Command("clear", RunMode = RunMode.Async)]
@@ -700,11 +780,11 @@ namespace LunaBot.Modules
                         Engine.luna,
                         Context.User);
 
-                var allMessages = await Context.Channel.GetMessagesAsync(amount + 1).Flatten();
+                var allMessages = Context.Channel.GetMessagesAsync(amount + 1).Flatten();
                 
                 IUserMessage replyMessage = await ReplyAsync($"Deleting last `{amount}` messages");
 
-                await Context.Channel.DeleteMessagesAsync(allMessages);
+                await (Context.Channel as SocketTextChannel).DeleteMessagesAsync(await allMessages.ToList().ConfigureAwait(false));
 
                 Task.Run(async () =>
                 {

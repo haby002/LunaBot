@@ -1,5 +1,6 @@
 using Discord;
 using Discord.Commands;
+using Discord.Rest;
 using Discord.WebSocket;
 using LunaBot.Database;
 using LunaBot.ServerUtilities;
@@ -285,16 +286,28 @@ namespace LunaBot.Modules
             await ReplyAsync("Checking rooms...");
 
             int roomCount = 0;
-            foreach(SocketGuildUser user in Context.Guild.Users)
-            {
-                Logger.Verbose("system", $"Room check for {user.Username}");
-                if (Context.Guild.TextChannels.Where(x => x.Name.Contains(user.Id.ToString())).FirstOrDefault() == null)
-                {
-                    Logger.Verbose("system", $"No room found. Creating room.");
-                    await ReplyAsync($"No room found for {user.Username}. Room created");
-                    await RoomUtilities.CreatePersonalRoomAsync(Context.Guild, user);
 
-                    roomCount++;
+            using (DiscordContext db = new DiscordContext())
+            {
+                foreach (SocketGuildUser user in Context.Guild.Users)
+                {
+                    Logger.Verbose("system", $"Room check for {user.Username}");
+                    SocketTextChannel pRoom = Context.Guild.TextChannels.Where(x => x.Name.Contains(user.Id.ToString())).FirstOrDefault();
+
+                    if (pRoom == null)
+                    {
+                        Logger.Verbose("system", $"No room found. Creating room.");
+                        await ReplyAsync($"No room found for {user.Username}. Room created");
+                        RestTextChannel newPersonalRoom = await RoomUtilities.CreatePersonalRoomAsync(Context.Guild, user);
+
+                        db.Users.Where(u => u.DiscordId == user.Id).FirstOrDefault().PersonalRoom = newPersonalRoom.Id;
+
+                        roomCount++;
+                    }
+                    else
+                    {
+                        db.Users.Where(u => u.DiscordId == user.Id).FirstOrDefault().PersonalRoom = pRoom.Id;
+                    }
                 }
             }
 
